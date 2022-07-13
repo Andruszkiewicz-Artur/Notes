@@ -1,5 +1,6 @@
 package com.example.notes.notes_future.present.notes.compose
 
+import android.media.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -13,14 +14,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.VectorPainter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.notes.notes_future.present.util.Screen
 
 @Composable
-fun AddItem(
-    navHostController: NavHostController
+fun ButtonWithImage(
+    image: ImageVector,
+    onClick: () -> Unit
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -31,11 +35,11 @@ fun AddItem(
                 shape = RoundedCornerShape(50)
             )
             .clickable {
-                navHostController.navigate(Screen.AddEdit.route)
+                onClick()
             }
     ) {
         Icon(
-            painter = rememberVectorPainter(image = Icons.Filled.Add),
+            imageVector = image,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onTertiaryContainer,
             modifier = Modifier

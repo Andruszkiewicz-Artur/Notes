@@ -9,5 +9,11 @@ sealed class Screen(
 
     object AddEdit: Screen(
         route = "addEdit"
-    )
+    ) {
+        fun sendNoteId(
+            noteId: Int
+        ): String {
+            return this.route + "?noteId=$noteId"
+        }
+    }
 }

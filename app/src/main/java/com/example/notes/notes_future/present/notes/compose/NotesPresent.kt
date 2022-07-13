@@ -2,7 +2,9 @@ package com.example.notes.notes_future.present.notes.compose
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,7 +14,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.notes.notes_future.domain.model.Note
 import com.example.notes.notes_future.present.notes.NotesViewModel
+import com.example.notes.notes_future.present.util.Screen
 
 @Composable
 fun NotesPresent(
@@ -25,14 +29,11 @@ fun NotesPresent(
     Box(
         contentAlignment = Alignment.BottomEnd
     ) {
-        AddItem(
-            navHostController = navHostController
-        )
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(horizontal = 16.dp)
+                .padding(top = 16.dp)
         ) {
             Text(
                 text = "Notes",
@@ -46,11 +47,12 @@ fun NotesPresent(
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(state.notes) { note ->
+                    itemsIndexed(state.notes) { index: Int, note: Note ->
                         NoteItem(
                             navHostController = navHostController,
                             viewModel = viewModel,
-                            note = note
+                            note = note,
+                            isEven = index%2 == 0
                         )
                     }
                 }
@@ -65,5 +67,11 @@ fun NotesPresent(
                 )
             }
         }
+        ButtonWithImage(
+            image = Icons.Filled.Add,
+            onClick = {
+                navHostController.navigate(Screen.AddEdit.route)
+            }
+        )
     }
 }

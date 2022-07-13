@@ -22,44 +22,48 @@ import com.example.notes.notes_future.present.util.Screen
 fun NoteItem(
     navHostController: NavHostController,
     viewModel: NotesViewModel,
-    note: Note
+    note: Note,
+    isEven: Boolean
 ) {
+    val label = if(isEven) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
             .background(
-                color = MaterialTheme.colorScheme.primaryContainer,
+                color = if(isEven) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer,
                 shape = RoundedCornerShape(20.dp)
             )
             .clickable {
-                navHostController.navigate(Screen.AddEdit.route)
+                navHostController.navigate(Screen.AddEdit.sendNoteId(note.id!!))
             }
+            .padding(16.dp)
     ) {
         Text(
             text = note.title,
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
+            color = label
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = note.content,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
+            color = label
         )
         Row(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
         ) {
             Icon(
                 painter = rememberVectorPainter(image = Icons.Filled.Delete),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(30.dp)
                     .clickable {
                         viewModel.deleteNote(note)
                     },
-                tint = MaterialTheme.colorScheme.primary
+                tint = label
             )
         }
     }
