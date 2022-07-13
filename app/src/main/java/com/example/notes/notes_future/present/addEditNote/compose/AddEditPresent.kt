@@ -3,7 +3,9 @@ package com.example.notes.notes_future.present.addEditNote.compose
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,6 +16,7 @@ import com.example.notes.notes_future.present.addEditNote.AddEditNoteEvent
 import com.example.notes.notes_future.present.addEditNote.AddEditNoteViewModel
 import com.example.notes.notes_future.present.notes.compose.ButtonWithImage
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditPresent(
     navHostController: NavHostController,
@@ -23,15 +26,21 @@ fun AddEditPresent(
     val titleState = viewModel.title.value
     val contentState = viewModel.content.value
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.BottomEnd
+    Scaffold(
+        floatingActionButton = {
+            ButtonWithImage(
+                image = Icons.Filled.Done,
+                onClick = {
+                    viewModel.onEvent(AddEditNoteEvent.SaveNote)
+                    navHostController.popBackStack()
+                }
+            )
+        }
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(8.dp)
+                .padding(16.dp)
         ) {
             TextField(
                 text = titleState.text,
@@ -44,7 +53,7 @@ fun AddEditPresent(
                 },
                 isPlaceholder = titleState.isPlaceholder,
                 singleLine = true,
-                textStyle = MaterialTheme.typography.headlineLarge
+                textStyle = MaterialTheme.typography.displayMedium
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -59,17 +68,9 @@ fun AddEditPresent(
                     viewModel.onEvent(AddEditNoteEvent.ChangeContentFocus(it))
                 },
                 isPlaceholder = contentState.isPlaceholder,
-                textStyle = MaterialTheme.typography.bodySmall,
+                textStyle = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.fillMaxHeight()
             )
         }
-        ButtonWithImage(
-            image = Icons.Filled.Done,
-            onClick = {
-                viewModel.onEvent(AddEditNoteEvent.SaveNote)
-                navHostController.popBackStack()
-            }
-        )
     }
-
 }

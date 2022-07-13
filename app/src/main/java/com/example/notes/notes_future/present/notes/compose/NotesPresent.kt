@@ -5,10 +5,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -18,6 +16,7 @@ import com.example.notes.notes_future.domain.model.Note
 import com.example.notes.notes_future.present.notes.NotesViewModel
 import com.example.notes.notes_future.present.util.Screen
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotesPresent(
     navHostController: NavHostController,
@@ -26,8 +25,15 @@ fun NotesPresent(
 
     val state = viewModel.state.value
 
-    Box(
-        contentAlignment = Alignment.BottomEnd
+    Scaffold(
+        floatingActionButton = {
+            ButtonWithImage(
+                image = Icons.Filled.Add,
+                onClick = {
+                    navHostController.navigate(Screen.AddEdit.route)
+                }
+            )
+        }
     ) {
         Column(
             modifier = Modifier
@@ -54,6 +60,9 @@ fun NotesPresent(
                             note = note,
                             isEven = index%2 == 0
                         )
+                        if(index == state.notes.size - 1) {
+                            Spacer(modifier = Modifier.height(120.dp))
+                        }
                     }
                 }
             } else {
@@ -67,11 +76,5 @@ fun NotesPresent(
                 )
             }
         }
-        ButtonWithImage(
-            image = Icons.Filled.Add,
-            onClick = {
-                navHostController.navigate(Screen.AddEdit.route)
-            }
-        )
     }
 }

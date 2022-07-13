@@ -3,12 +3,16 @@ package com.example.notes.notes_future.present.util
 sealed class Screen(
     val route: String
 ) {
-    object Home: Screen(
-        route = "home"
+    object Notes: Screen(
+        route = "notes_screen"
+    )
+
+    object Profile: Screen(
+        route = "profile_screen"
     )
 
     object AddEdit: Screen(
-        route = "addEdit"
+        route = "addEdit_screen"
     ) {
         fun sendNoteId(
             noteId: Int
