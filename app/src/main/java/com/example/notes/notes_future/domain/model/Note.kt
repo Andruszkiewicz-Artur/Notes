@@ -18,3 +18,5 @@ data class Note(
     @ColumnInfo(name = "timeCreate")
     val timeCreate: Long
 )
+
+class InvalidNoteException(message: String): Exception(message)

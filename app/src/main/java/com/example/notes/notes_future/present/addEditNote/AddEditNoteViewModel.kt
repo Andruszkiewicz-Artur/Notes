@@ -5,9 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.notes.notes_future.domain.model.InvalidNoteException
 import com.example.notes.notes_future.domain.model.Note
 import com.example.notes.notes_future.domain.use_case.NotesUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,6 +29,9 @@ class AddEditNoteViewModel @Inject constructor(
         placeholder = "Add content..."
     ))
     val content: State<TextFieldState> = _content
+
+    private val _eventFlow = MutableSharedFlow<UiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     var currentId: Int? = null
 
@@ -74,14 +80,23 @@ class AddEditNoteViewModel @Inject constructor(
             is AddEditNoteEvent.SaveNote -> {
                 if (_title.value.text.isNotEmpty() && _content.value.text.isNotEmpty()) {
                     viewModelScope.launch {
-                        notesUseCases.insertNoteUseCase.invoke(
-                            Note(
-                                id = currentId,
-                                title = _title.value.text,
-                                content = _content.value.text,
-                                timeCreate = System.currentTimeMillis()
+                        try {
+                            notesUseCases.insertNoteUseCase.invoke(
+                                Note(
+                                    id = currentId,
+                                    title = _title.value.text,
+                                    content = _content.value.text,
+                                    timeCreate = System.currentTimeMillis()
+                                )
                             )
-                        )
+                            _eventFlow.emit(UiEvent.SaveNote)
+                        } catch (e: InvalidNoteException) {
+                            _eventFlow.emit(
+                                UiEvent.ShowSnackbar(
+                                    message = e.message ?: "Couldn't`t save note!"
+                                )
+                            )
+                        }
                     }
                 }
             }
