@@ -1,6 +1,6 @@
-package com.example.notes.notes_future.data.repository
+package com.example.notes.notes_future.data.local_data.repository
 
-import com.example.notes.notes_future.data.data_source.NotesDao
+import com.example.notes.notes_future.data.local_data.data_source.NotesDao
 import com.example.notes.notes_future.domain.model.Note
 import com.example.notes.notes_future.domain.repository.NoteRepository
 import kotlinx.coroutines.flow.Flow

@@ -1,4 +1,4 @@
-package com.example.notes.notes_future.data.data_source
+package com.example.notes.notes_future.data.local_data.data_source
 
 import androidx.room.*
 import com.example.notes.notes_future.domain.model.Note
