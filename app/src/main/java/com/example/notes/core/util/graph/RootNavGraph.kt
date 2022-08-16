@@ -1,10 +1,8 @@
-package com.example.notes.notes_future.presentation.util
+package com.example.notes.core.util.graph
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.example.notes.notes_future.presentation.util.notes.notesNavGraph
-import com.example.notes.notes_future.presentation.util.profile.profileNavGraph
 
 @Composable
 fun RootNavGraph(

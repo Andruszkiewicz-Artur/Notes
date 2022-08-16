@@ -1,4 +1,4 @@
-package com.example.notes.notes_future.presentation.util
+package com.example.notes.core.util.graph
 
 sealed class Screen(
     val route: String

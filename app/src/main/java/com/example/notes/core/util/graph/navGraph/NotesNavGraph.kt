@@ -1,11 +1,9 @@
-package com.example.notes.notes_future.presentation.util.notes
+package com.example.notes.core.util.graph
 
 import androidx.navigation.*
 import androidx.navigation.compose.composable
 import com.example.notes.notes_future.presentation.addEditNote.compose.AddEditPresentation
 import com.example.notes.notes_future.presentation.notes.compose.NotesPresentation
-import com.example.notes.notes_future.presentation.util.Graph
-import com.example.notes.notes_future.presentation.util.Screen
 
 fun NavGraphBuilder.notesNavGraph(
     navController: NavHostController

@@ -1,4 +1,4 @@
-package com.example.notes.notes_future.presentation.forgotPassword
+package com.example.notes.feature_profile.presentation.forgetPassword
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

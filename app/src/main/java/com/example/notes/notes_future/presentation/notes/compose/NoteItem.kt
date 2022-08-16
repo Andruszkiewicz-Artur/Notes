@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.notes.notes_future.domain.model.Note
 import com.example.notes.notes_future.presentation.notes.NotesViewModel
-import com.example.notes.notes_future.presentation.util.Screen
+import com.example.notes.core.util.graph.Screen
 
 @Composable
 fun NoteItem(

@@ -1,12 +1,10 @@
-package com.example.notes.notes_future.presentation.util.profile
+package com.example.notes.core.util.graph
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.notes.notes_future.presentation.profile.compose.ProfilePresentation
-import com.example.notes.notes_future.presentation.util.Graph
-import com.example.notes.notes_future.presentation.util.Screen
 import com.example.notes.notes_future.presentation.util.graph.loginNavGraph
 
 fun NavGraphBuilder.profileNavGraph(
