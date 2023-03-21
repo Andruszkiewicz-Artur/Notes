@@ -1,4 +1,4 @@
-package com.example.notes.feature_notes.presentation.addEditNote
+package com.example.notes.core.compose.textField
 
 data class TextFieldState(
     val text: String = "",

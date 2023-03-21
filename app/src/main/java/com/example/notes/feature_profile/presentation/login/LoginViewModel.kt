@@ -6,9 +6,14 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.notes.core.compose.textField.TextFieldState
 import com.example.notes.core.util.graph.Screen
 import com.example.notes.feature_notes.presentation.auth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,41 +21,64 @@ class LoginViewModel @Inject constructor(
     private val application: Application
 ): ViewModel() {
 
-    private val _state = mutableStateOf(LoginState())
-    val state: State<LoginState> = _state
+    private val _email = mutableStateOf(TextFieldState(
+        placeholder = "Email..."
+    ))
+    val email: State<TextFieldState> = _email
+
+    private val _password = mutableStateOf(TextFieldState(
+        placeholder = "Password..."
+    ))
+    val password: State<TextFieldState> = _password
+
+    private val _eventFlow = MutableSharedFlow<UiEventLogin>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     fun onEvent(event: LoginEvent) {
         when (event) {
             is LoginEvent.EnteredLogin -> {
-                _state.value = state.value.copy(
-                    email = event.value
+                _email.value = email.value.copy(
+                    text = event.value
+                )
+            }
+            is LoginEvent.ChangeLoginFocus -> {
+                _email.value = email.value.copy(
+                    isPlaceholder = !event.focusState.isFocused && _email.value.text.isEmpty()
                 )
             }
             is LoginEvent.EnteredPassword -> {
-                _state.value = state.value.copy(
-                    password = event.value
+                _password.value = password.value.copy(
+                    text = event.value
+                )
+            }
+            is LoginEvent.ChangePasswordFocus -> {
+                _password.value = password.value.copy(
+                    isPlaceholder = !event.focusState.isFocused && _password.value.text.isEmpty()
                 )
             }
             is LoginEvent.ClickLogin -> {
-                if(_state.value.email.isNotBlank() && _state.value.password.isNotBlank()) {
-                    if(_state.value.email.contains("@") && _state.value.email.contains(".")) {
-                        auth.signInWithEmailAndPassword(_state.value.email, _state.value.password)
-                            .addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    Toast.makeText(application, "You log in to app!", Toast.LENGTH_LONG).show()
-                                    event.navController.popBackStack(
-                                        route = Screen.Profile.route,
-                                        inclusive = true
-                                    )
-                                } else {
-                                    Toast.makeText(application, "Wrong email or password!", Toast.LENGTH_LONG).show()
+                viewModelScope.launch {
+                    if(_email.value.text.isNotBlank() && _password.value.text.isNotBlank()) {
+                        if(_email.value.text.contains("@") && _email.value.text.contains(".")) {
+                            auth.signInWithEmailAndPassword(_email.value.text, _password.value.text)
+                                .addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        event.navController.popBackStack(
+                                            route = Screen.Profile.route,
+                                            inclusive = true
+                                        )
+                                    }
                                 }
-                            }
+                        } else {
+                            _eventFlow.emit(UiEventLogin.ShowSnackbar(
+                                message = "Email is incorrect!"
+                            ))
+                        }
                     } else {
-                        Toast.makeText(application, "Email is incorrect!", Toast.LENGTH_LONG).show()
+                        _eventFlow.emit(UiEventLogin.ShowSnackbar(
+                            message = "Fill all fields!"
+                        ))
                     }
-                } else {
-                    Toast.makeText(application, "Fill all fields!", Toast.LENGTH_LONG).show()
                 }
             }
         }

@@ -18,7 +18,7 @@ fun NavGraphBuilder.profileNavGraph(
             route = Screen.Profile.route
         ) {
             ProfilePresentation(
-                navHostController = navController
+                navController = navController
             )
         }
     }

@@ -1,14 +1,116 @@
 package com.example.notes.notes_future.presentation.login.compose
 
+import android.widget.Space
+import android.widget.Toast
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.notes.feature_profile.presentation.login.LoginEvent
+import com.example.notes.feature_profile.presentation.login.LoginEvent.ClickLogin
 import com.example.notes.feature_profile.presentation.login.LoginViewModel
+import com.example.notes.feature_profile.presentation.login.UiEventLogin
+import com.example.notes.notes_future.present.addEditNote.compose.TextField
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun LoginPresentation(
     navController: NavHostController,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
 
+    val emailState = viewModel.email.value
+    val passwordState = viewModel.password.value
+
+    LaunchedEffect(key1 = true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is UiEventLogin.LogIn -> {
+                    navController.popBackStack()
+                }
+                is UiEventLogin.ShowSnackbar -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+        ) {
+            TextField(
+                text = emailState.text,
+                placeholder = emailState.placeholder,
+                onValueChange = {
+                    viewModel.onEvent(LoginEvent.EnteredLogin(it))
+                },
+                onFocusChange = {
+                    viewModel.onEvent(LoginEvent.ChangeLoginFocus(it))
+                },
+                isPlaceholder = emailState.isPlaceholder,
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp)
+                    .border(
+                        color = MaterialTheme.colorScheme.primary,
+                        width = 2.dp,
+                        shape = CircleShape
+                    )
+                    .padding(horizontal = 10.dp)
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            TextField(
+                text = passwordState.text,
+                placeholder = passwordState.placeholder,
+                onValueChange = {
+                    viewModel.onEvent(LoginEvent.EnteredPassword(it))
+                },
+                onFocusChange = {
+                    viewModel.onEvent(LoginEvent.ChangePasswordFocus(it))
+                },
+                singleLine = true,
+                isPlaceholder = passwordState.isPlaceholder,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp)
+                    .border(
+                        color = MaterialTheme.colorScheme.primary,
+                        width = 2.dp,
+                        shape = CircleShape
+                    )
+                    .padding(horizontal = 10.dp)
+            )
+
+            Button(
+                onClick = {
+                    viewModel.onEvent(ClickLogin(navController))
+                },
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp)
+            ) {
+                Text(text = "login")
+            }
+        }
+    }
 }

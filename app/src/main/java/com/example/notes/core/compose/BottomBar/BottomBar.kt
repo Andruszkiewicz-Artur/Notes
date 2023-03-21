@@ -14,6 +14,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.notes.core.compose.BottomBar.BottomBarScreen
+import com.example.notes.core.util.graph.Screen
 
 @Composable
 fun BottomBar(

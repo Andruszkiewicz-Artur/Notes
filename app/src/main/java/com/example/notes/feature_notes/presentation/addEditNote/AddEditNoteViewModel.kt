@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.notes.core.compose.textField.TextFieldState
 import com.example.notes.notes_future.domain.model.InvalidNoteException
 import com.example.notes.notes_future.domain.model.Note
 import com.example.notes.feature_notes.domain.use_case.NotesUseCases
@@ -22,15 +23,15 @@ class AddEditNoteViewModel @Inject constructor(
 
     private val _title = mutableStateOf(
         TextFieldState(
-        placeholder = "Title..."
-    )
+            placeholder = "Title..."
+        )
     )
     val title: State<TextFieldState> = _title
 
     private val _content = mutableStateOf(
         TextFieldState(
-        placeholder = "Add content..."
-    )
+            placeholder = "Add content..."
+        )
     )
     val content: State<TextFieldState> = _content
 

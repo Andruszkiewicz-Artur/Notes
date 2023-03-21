@@ -3,9 +3,11 @@ package com.example.notes.notes_future.present.addEditNote.compose
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
@@ -24,6 +26,7 @@ fun TextField(
 ) {
 
     Box(
+        contentAlignment = Alignment.CenterStart,
         modifier = modifier
     ) {
         BasicTextField(
