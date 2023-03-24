@@ -1,12 +1,16 @@
 package com.example.notes.notes_future.presentation.login.compose
 
+import android.graphics.Color
 import android.widget.Space
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.notes.core.util.graph.Screen
 import com.example.notes.feature_profile.presentation.login.LoginEvent
 import com.example.notes.feature_profile.presentation.login.LoginEvent.ClickLogin
 import com.example.notes.feature_profile.presentation.login.LoginViewModel
@@ -100,16 +105,60 @@ fun LoginPresentation(
                     .padding(horizontal = 10.dp)
             )
 
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "Forget password?",
+                    modifier = Modifier
+                        .clickable {
+                            navController.navigate(Screen.ForgetPassword.route)
+                        }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
             Button(
                 onClick = {
                     viewModel.onEvent(ClickLogin(navController))
                 },
-                shape = RoundedCornerShape(10.dp),
+                shape = RoundedCornerShape(20.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 10.dp)
             ) {
-                Text(text = "login")
+                Text(text = "Login")
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .padding(vertical = 10.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "Or"
+                )
+            }
+
+            Button(
+                onClick = {
+                    navController.navigate(Screen.Register.route)
+                },
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                    contentColor = MaterialTheme.colorScheme.onSurface
+                ),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+            ) {
+                Text(text = "Register")
             }
         }
     }
