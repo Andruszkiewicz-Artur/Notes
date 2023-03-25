@@ -34,9 +34,13 @@ fun ForgetPasswordPresentation(
             modifier = Modifier
                 .fillMaxWidth(0.8f)
         ) {
+            androidx.compose.material3.Text(
+                text = "Forget password?",
+                style = MaterialTheme.typography.headlineLarge
+            )
             Text(
                 text = "If you forget password, send the message to reset password on your email.",
-                style = MaterialTheme.typography.headlineSmall
+                style = MaterialTheme.typography.labelLarge
             )
             Spacer(modifier = Modifier.padding(top = 40.dp))
 
@@ -61,6 +65,8 @@ fun ForgetPasswordPresentation(
                     )
                     .padding(horizontal = 10.dp)
             )
+            
+            Spacer(modifier = Modifier.height(40.dp))
 
             Button(
                 onClick = {

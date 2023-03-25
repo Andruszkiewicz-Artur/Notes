@@ -61,6 +61,24 @@ fun LoginPresentation(
             modifier = Modifier
                 .fillMaxWidth(0.8f)
         ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "Login",
+                    style = MaterialTheme.typography.headlineLarge
+                )
+
+                Text(
+                    text = "Welcome back!",
+                    style = MaterialTheme.typography.headlineSmall
+                )
+            }
+
+            Spacer(modifier = Modifier.height(40.dp))
+
             TextField(
                 text = emailState.text,
                 placeholder = emailState.placeholder,
@@ -105,6 +123,8 @@ fun LoginPresentation(
                     .padding(horizontal = 10.dp)
             )
 
+            Spacer(modifier = Modifier.height(10.dp))
+
             Row(
                 horizontalArrangement = Arrangement.End,
                 modifier = Modifier
@@ -132,7 +152,7 @@ fun LoginPresentation(
             ) {
                 Text(text = "Login")
             }
-
+            
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
