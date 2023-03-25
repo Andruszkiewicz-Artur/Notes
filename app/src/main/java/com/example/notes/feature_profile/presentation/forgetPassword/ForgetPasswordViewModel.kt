@@ -6,6 +6,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
+import com.example.notes.core.compose.textField.TextFieldState
 import com.example.notes.feature_profile.presentation.profile.ProfileEvent
 import com.example.notes.feature_profile.presentation.registration.RegistrationEvent
 import com.google.firebase.auth.ktx.auth
@@ -18,12 +19,24 @@ class ForgetPasswordViewModel @Inject constructor(
     private val application: Application
 ): ViewModel() {
 
+    private val _email = mutableStateOf(TextFieldState(
+        placeholder = "Email..."
+    ))
+    val email: State<TextFieldState> = _email
+
     var state = mutableStateOf("")
 
     fun onEvent(event: ForgetPasswordEvent) {
         when (event) {
             is ForgetPasswordEvent.EnteredEmail -> {
-                state.value = event.value
+                _email.value = email.value.copy(
+                    text = event.value
+                )
+            }
+            is ForgetPasswordEvent.ChangeEmailFocus -> {
+                _email.value = email.value.copy(
+                    isPlaceholder = !event.focusState.isFocused && _email.value.text.isEmpty()
+                )
             }
             is ForgetPasswordEvent.OnClickForgetPassword -> {
                 if(state.value.isNotBlank()) {
