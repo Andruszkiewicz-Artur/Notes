@@ -1,11 +1,25 @@
 package com.example.notes.notes_future.presentation.profile.compose
 
+import android.widget.Toast
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.notes.core.util.graph.Screen
+import com.example.notes.feature_profile.presentation.profile.ProfileEvent
 import com.example.notes.feature_profile.presentation.profile.ProfileViewModel
+import com.example.notes.feature_profile.presentation.profile.UiEventProfile
+import com.example.notes.feature_profile.presentation.registration.RegistrationEvent
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun ProfilePresentation(
@@ -18,6 +32,45 @@ fun ProfilePresentation(
         if(!state.value.isUser) {
             navController.navigate(Screen.Login.route)
         }
+
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is UiEventProfile.LogOut -> {
+                    navController.navigate(Screen.Login.route)
+                }
+            }
+        }
     }
 
+
+
+    Box(
+        contentAlignment = Alignment.TopCenter,
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(0.8f)
+        ) {
+            Spacer(modifier = Modifier.height(40.dp))
+            Text(
+                text = state.value.email,
+                style = MaterialTheme.typography.headlineMedium
+            )
+
+            Button(
+                onClick = {
+                    viewModel.onEvent(ProfileEvent.LogOut)
+                },
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp)
+            ) {
+                Text(text = "Log out")
+            }
+        }
+    }
 }

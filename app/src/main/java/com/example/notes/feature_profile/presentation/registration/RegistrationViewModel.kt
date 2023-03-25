@@ -78,29 +78,40 @@ class RegistrationViewModel @Inject constructor(
                    )
             }
             is RegistrationEvent.OnClickRegistration -> {
-                if(_state.value.email.isNotBlank() && _state.value.password.isNotBlank()) {
-                    if(_state.value.email.contains("@") && _state.value.email.contains(".")) {
-                        if(_state.value.password.length > 8) {
-                            if(_state.value.isRules) {
-                                auth.createUserWithEmailAndPassword(_state.value.email, _state.value.password)
-                                    .addOnCompleteListener { task ->
-                                        if(task.isSuccessful) {
-                                            Toast.makeText(application, "You create account!", Toast.LENGTH_LONG).show()
-                                        } else {
-                                            Toast.makeText(application, "You can`t create account!", Toast.LENGTH_LONG).show()
+                _state.value = state.value.copy(
+                    email = _email.value.text,
+                    password = _password.value.text,
+                    rePassword = _rePassword.value.text,
+                    isRules = _checkBox.value.isChacked
+                )
+
+                if (_state.value.isRules) {
+                    if(_state.value.email.isNotBlank() && _state.value.password.isNotBlank()) {
+                        if(_state.value.email.contains("@") && _state.value.email.contains(".")) {
+                            if(_state.value.password.length >= 8) {
+                                if(_state.value.isRules) {
+                                    auth.createUserWithEmailAndPassword(_state.value.email, _state.value.password)
+                                        .addOnCompleteListener { task ->
+                                            if(task.isSuccessful) {
+                                                Toast.makeText(application, "You create account!", Toast.LENGTH_LONG).show()
+                                            } else {
+                                                Toast.makeText(application, "You can`t create account!", Toast.LENGTH_LONG).show()
+                                            }
                                         }
-                                    }
+                                } else {
+                                    Toast.makeText(application, "You need check rules!", Toast.LENGTH_LONG).show()
+                                }
                             } else {
-                                Toast.makeText(application, "You need check rules!", Toast.LENGTH_LONG).show()
+                                Toast.makeText(application, "Password need at least 8 chars!", Toast.LENGTH_LONG).show()
                             }
                         } else {
-                            Toast.makeText(application, "Password need at least 8 chars!", Toast.LENGTH_LONG).show()
+                            Toast.makeText(application, "Email is incorrect!", Toast.LENGTH_LONG).show()
                         }
                     } else {
-                        Toast.makeText(application, "Email is incorrect!", Toast.LENGTH_LONG).show()
+                        Toast.makeText(application, "You need first fill all fields!", Toast.LENGTH_LONG).show()
                     }
                 } else {
-                    Toast.makeText(application, "You need first fill all fields!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(application, "You need accept rules", Toast.LENGTH_LONG)
                 }
             }
         }

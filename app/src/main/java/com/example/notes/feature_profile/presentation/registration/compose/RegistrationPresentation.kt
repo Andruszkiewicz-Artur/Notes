@@ -112,7 +112,7 @@ fun RegistrationPresentation(
                 text = rePassword.text,
                 placeholder = rePassword.placeholder,
                 onValueChange = {
-                    viewModel.onEvent(RegistrationEvent.EnteredPassword(it))
+                    viewModel.onEvent(RegistrationEvent.EnteredRePassword(it))
                 },
                 onFocusChange = {
                     viewModel.onEvent(RegistrationEvent.ChangeFocusRePassword(it))
