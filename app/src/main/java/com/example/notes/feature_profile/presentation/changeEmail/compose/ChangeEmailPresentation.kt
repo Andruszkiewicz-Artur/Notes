@@ -1,5 +1,6 @@
 package com.example.notes.feature_profile.presentation.changeEmail.compose
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -10,5 +11,9 @@ fun ChangeEmailPresentation(
     navController: NavHostController,
     viewModel: ChangeEmailViewModel = hiltViewModel()
 ) {
+    Column(
 
+    ) {
+
+    }
 }
