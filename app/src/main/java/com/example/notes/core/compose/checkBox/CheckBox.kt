@@ -1,4 +1,4 @@
-package com.example.notes.core.compose
+package com.example.notes.core.compose.checkBox
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Checkbox

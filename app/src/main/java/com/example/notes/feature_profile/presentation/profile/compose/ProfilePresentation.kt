@@ -1,5 +1,6 @@
 package com.example.notes.notes_future.presentation.profile.compose
 
+import android.widget.Space
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,6 +15,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.notes.core.compose.button.ListButton
 import com.example.notes.core.util.graph.Screen
 import com.example.notes.feature_profile.presentation.profile.ProfileEvent
 import com.example.notes.feature_profile.presentation.profile.ProfileViewModel
@@ -59,6 +61,25 @@ fun ProfilePresentation(
                 text = state.value.email,
                 style = MaterialTheme.typography.headlineMedium
             )
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+            ListButton(
+                text = "Change Email",
+                onClick = {
+                    navController.navigate(Screen.ChangeEmail.route)
+                }
+            )
+
+            ListButton(
+                text = "Change Password",
+                onClick = {
+                    navController.navigate(Screen.ChangePassword.route)
+                },
+                isBottomBar = false
+            )
+
+            Spacer(modifier = Modifier.height(40.dp))
 
             Button(
                 onClick = {

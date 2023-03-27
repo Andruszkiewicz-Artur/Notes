@@ -5,9 +5,8 @@ import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.notes.core.compose.CheckBoxState
+import com.example.notes.core.compose.checkBox.CheckBoxState
 import com.example.notes.core.compose.textField.TextFieldState
-import com.example.notes.core.util.graph.Screen
 import com.example.notes.feature_notes.presentation.auth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -32,9 +31,11 @@ class RegistrationViewModel @Inject constructor(
     ))
     val rePassword: State<TextFieldState> = _rePassword
 
-    private val _checkBox = mutableStateOf(CheckBoxState(
+    private val _checkBox = mutableStateOf(
+        CheckBoxState(
         text = "Accept rules of app."
-    ))
+    )
+    )
     val checkBox: State<CheckBoxState> = _checkBox
 
     private val _state = mutableStateOf(RegistrationState())

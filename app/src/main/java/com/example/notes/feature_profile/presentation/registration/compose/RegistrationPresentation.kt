@@ -1,12 +1,10 @@
 package com.example.notes.notes_future.presentation.register.compose
 
-import android.widget.Space
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Checkbox
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -18,7 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.notes.core.compose.CheckBox
+import com.example.notes.core.compose.checkBox.CheckBox
 import com.example.notes.feature_profile.presentation.registration.RegistrationEvent
 import com.example.notes.feature_profile.presentation.registration.RegistrationViewModel
 import com.example.notes.notes_future.present.addEditNote.compose.TextField

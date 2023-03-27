@@ -32,4 +32,12 @@ sealed class Screen(
     object ForgetPassword: Screen(
         route = "forgetPassword_screen"
     )
+
+    object ChangePassword: Screen(
+        route = "changePassword_screen"
+    )
+
+    object ChangeEmail: Screen(
+        route = "changeEmial_screen"
+    )
 }
