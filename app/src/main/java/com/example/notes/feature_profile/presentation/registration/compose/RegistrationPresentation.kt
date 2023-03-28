@@ -16,7 +16,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.notes.core.compose.button.StandardButton
 import com.example.notes.core.compose.checkBox.CheckBox
+import com.example.notes.core.compose.textField.SecureTextField
+import com.example.notes.core.compose.textField.TextFieldWithBorder
 import com.example.notes.feature_profile.presentation.registration.RegistrationEvent
 import com.example.notes.feature_profile.presentation.registration.RegistrationViewModel
 import com.example.notes.notes_future.present.addEditNote.compose.TextField
@@ -58,7 +61,7 @@ fun RegistrationPresentation(
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            TextField(
+            TextFieldWithBorder(
                 text = email.text,
                 placeholder = email.placeholder,
                 onValueChange = {
@@ -68,21 +71,12 @@ fun RegistrationPresentation(
                     viewModel.onEvent(RegistrationEvent.ChangeFocusEmail(it))
                 },
                 singleLine = true,
-                isPlaceholder = email.isPlaceholder,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp)
-                    .border(
-                        color = MaterialTheme.colorScheme.primary,
-                        width = 2.dp,
-                        shape = CircleShape
-                    )
-                    .padding(horizontal = 10.dp)
+                isPlaceholder = email.isPlaceholder
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            TextField(
+            SecureTextField(
                 text = password.text,
                 placeholder = password.placeholder,
                 onValueChange = {
@@ -92,21 +86,12 @@ fun RegistrationPresentation(
                     viewModel.onEvent(RegistrationEvent.ChangeFocusPassword(it))
                 },
                 singleLine = true,
-                isPlaceholder = password.isPlaceholder,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp)
-                    .border(
-                        color = MaterialTheme.colorScheme.primary,
-                        width = 2.dp,
-                        shape = CircleShape
-                    )
-                    .padding(horizontal = 10.dp)
+                isPlaceholder = password.isPlaceholder
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            TextField(
+            SecureTextField(
                 text = rePassword.text,
                 placeholder = rePassword.placeholder,
                 onValueChange = {
@@ -116,16 +101,7 @@ fun RegistrationPresentation(
                     viewModel.onEvent(RegistrationEvent.ChangeFocusRePassword(it))
                 },
                 singleLine = true,
-                isPlaceholder = rePassword.isPlaceholder,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp)
-                    .border(
-                        color = MaterialTheme.colorScheme.primary,
-                        width = 2.dp,
-                        shape = CircleShape
-                    )
-                    .padding(horizontal = 10.dp)
+                isPlaceholder = rePassword.isPlaceholder
             )
 
             CheckBox(
@@ -138,16 +114,10 @@ fun RegistrationPresentation(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Button(
-                onClick = {
-                    viewModel.onEvent(RegistrationEvent.OnClickRegistration)
-                },
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp)
+            StandardButton(
+                text = "Register"
             ) {
-                Text(text = "Register")
+                viewModel.onEvent(RegistrationEvent.OnClickRegistration)
             }
 
             Spacer(modifier = Modifier.height(10.dp))

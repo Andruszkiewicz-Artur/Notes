@@ -21,6 +21,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.notes.core.compose.button.StandardButton
+import com.example.notes.core.compose.textField.SecureTextField
+import com.example.notes.core.compose.textField.TextFieldWithBorder
 import com.example.notes.core.util.graph.Screen
 import com.example.notes.feature_profile.presentation.login.LoginEvent
 import com.example.notes.feature_profile.presentation.login.LoginEvent.ClickLogin
@@ -79,7 +82,7 @@ fun LoginPresentation(
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            TextField(
+            TextFieldWithBorder(
                 text = emailState.text,
                 placeholder = emailState.placeholder,
                 onValueChange = {
@@ -89,19 +92,10 @@ fun LoginPresentation(
                     viewModel.onEvent(LoginEvent.ChangeLoginFocus(it))
                 },
                 isPlaceholder = emailState.isPlaceholder,
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp)
-                    .border(
-                        color = MaterialTheme.colorScheme.primary,
-                        width = 2.dp,
-                        shape = CircleShape
-                    )
-                    .padding(horizontal = 10.dp)
+                singleLine = true
             )
             Spacer(modifier = Modifier.height(20.dp))
-            TextField(
+            SecureTextField(
                 text = passwordState.text,
                 placeholder = passwordState.placeholder,
                 onValueChange = {
@@ -111,16 +105,7 @@ fun LoginPresentation(
                     viewModel.onEvent(LoginEvent.ChangePasswordFocus(it))
                 },
                 singleLine = true,
-                isPlaceholder = passwordState.isPlaceholder,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp)
-                    .border(
-                        color = MaterialTheme.colorScheme.primary,
-                        width = 2.dp,
-                        shape = CircleShape
-                    )
-                    .padding(horizontal = 10.dp)
+                isPlaceholder = passwordState.isPlaceholder
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -141,16 +126,10 @@ fun LoginPresentation(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Button(
-                onClick = {
-                    viewModel.onEvent(ClickLogin(navController))
-                },
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp)
+            StandardButton(
+                text = "Login"
             ) {
-                Text(text = "Login")
+                viewModel.onEvent(ClickLogin(navController))
             }
             
             Row(

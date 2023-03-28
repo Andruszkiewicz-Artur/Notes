@@ -14,6 +14,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.notes.core.compose.button.StandardButton
+import com.example.notes.core.compose.textField.TextFieldWithBorder
 import com.example.notes.feature_profile.presentation.forgetPassword.ForgetPasswordEvent
 import com.example.notes.feature_profile.presentation.forgetPassword.ForgetPasswordViewModel
 import com.example.notes.notes_future.present.addEditNote.compose.TextField
@@ -44,7 +46,7 @@ fun ForgetPasswordPresentation(
             )
             Spacer(modifier = Modifier.padding(top = 40.dp))
 
-            TextField(
+            TextFieldWithBorder(
                 text = emailState.text,
                 placeholder = emailState.placeholder,
                 onValueChange = {
@@ -54,30 +56,15 @@ fun ForgetPasswordPresentation(
                     viewModel.onEvent(ForgetPasswordEvent.ChangeEmailFocus(it))
                 },
                 isPlaceholder = emailState.isPlaceholder,
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp)
-                    .border(
-                        color = MaterialTheme.colorScheme.primary,
-                        width = 2.dp,
-                        shape = CircleShape
-                    )
-                    .padding(horizontal = 10.dp)
+                singleLine = true
             )
             
             Spacer(modifier = Modifier.height(40.dp))
 
-            Button(
-                onClick = {
-                    viewModel.onEvent(ForgetPasswordEvent.OnClickForgetPassword)
-                },
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp)
+            StandardButton(
+                text = "Send message"
             ) {
-                androidx.compose.material3.Text(text = "Send message")
+                viewModel.onEvent(ForgetPasswordEvent.OnClickForgetPassword)
             }
         }
     }

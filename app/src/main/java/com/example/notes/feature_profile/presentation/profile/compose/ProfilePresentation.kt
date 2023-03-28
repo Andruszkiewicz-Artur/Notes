@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.notes.core.compose.button.ListButton
+import com.example.notes.core.compose.button.StandardButton
 import com.example.notes.core.util.graph.Screen
 import com.example.notes.feature_profile.presentation.profile.ProfileEvent
 import com.example.notes.feature_profile.presentation.profile.ProfileViewModel
@@ -81,16 +82,10 @@ fun ProfilePresentation(
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            Button(
-                onClick = {
-                    viewModel.onEvent(ProfileEvent.LogOut)
-                },
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp)
+            StandardButton(
+                text = "Log out"
             ) {
-                Text(text = "Log out")
+                viewModel.onEvent(ProfileEvent.LogOut)
             }
         }
     }
