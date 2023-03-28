@@ -67,32 +67,36 @@ class ChangePasswordViewModel @Inject constructor(
                 )
             }
             is ChangePasswordEvent.ResetPassword -> {
-                if (_oldPassword.value.text.isEmpty() && _newPassword.value.text.isEmpty() && _rePassword.value.text.isEmpty()) {
+                if (_oldPassword.value.text.isNotEmpty() && _newPassword.value.text.isNotEmpty() && _rePassword.value.text.isNotEmpty()) {
                     if(_newPassword.value.text == _rePassword.value.text) {
                         if(_newPassword.value.text.length >= 8) {
-                            if (auth.currentUser != null) {
-                                val user = auth.currentUser!!
+                            if (_newPassword.value.text != _oldPassword.value.text) {
+                                if (auth.currentUser != null) {
+                                    val user = auth.currentUser!!
 
-                                val credential = EmailAuthProvider
-                                    .getCredential(user.email!!, _oldPassword.value.text)
+                                    val credential = EmailAuthProvider
+                                        .getCredential(user.email!!, _oldPassword.value.text)
 
-                                user.reauthenticate(credential)
-                                    .addOnCompleteListener { task ->
-                                        if (task.isSuccessful) {
-                                            user.updatePassword(_newPassword.value.text)
-                                                .addOnCompleteListener { task ->
-                                                    if (task.isSuccessful) {
-                                                        Toast.makeText(application, "Change password!", Toast.LENGTH_LONG).show()
-                                                    } else {
-                                                        Toast.makeText(application, "Problem with database!", Toast.LENGTH_LONG).show()
+                                    user.reauthenticate(credential)
+                                        .addOnCompleteListener { task ->
+                                            if (task.isSuccessful) {
+                                                user.updatePassword(_newPassword.value.text)
+                                                    .addOnCompleteListener { task ->
+                                                        if (task.isSuccessful) {
+                                                            Toast.makeText(application, "Change password!", Toast.LENGTH_LONG).show()
+                                                        } else {
+                                                            Toast.makeText(application, "Problem with database!", Toast.LENGTH_LONG).show()
+                                                        }
                                                     }
-                                                }
-                                        } else {
-                                            Toast.makeText(application, "Old password is wrong!", Toast.LENGTH_LONG).show()
+                                            } else {
+                                                Toast.makeText(application, "Old password is wrong!", Toast.LENGTH_LONG).show()
+                                            }
                                         }
-                                    }
+                                } else {
+                                    Toast.makeText(application, "Problem with Database!", Toast.LENGTH_LONG).show()
+                                }
                             } else {
-                                Toast.makeText(application, "Problem with Database!", Toast.LENGTH_LONG).show()
+                                Toast.makeText(application, "The new password is the same like the old one!", Toast.LENGTH_LONG).show()
                             }
                         } else {
                             Toast.makeText(application, "Password is to short!", Toast.LENGTH_LONG).show()
