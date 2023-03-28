@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.VisualTransformation
 
 @Composable
 fun TextField(
@@ -22,7 +23,8 @@ fun TextField(
     onValueChange: (String) -> Unit,
     singleLine: Boolean = false,
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
-    onFocusChange: (FocusState) -> Unit
+    onFocusChange: (FocusState) -> Unit,
+    visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
 
     Box(
@@ -34,6 +36,7 @@ fun TextField(
             onValueChange = onValueChange,
             singleLine = singleLine,
             textStyle = textStyle,
+            visualTransformation = visualTransformation,
             modifier = Modifier
                 .fillMaxWidth()
                 .onFocusChanged {

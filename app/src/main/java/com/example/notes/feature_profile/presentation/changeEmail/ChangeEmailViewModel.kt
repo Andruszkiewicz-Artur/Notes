@@ -7,6 +7,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.notes.core.compose.textField.TextFieldState
 import com.example.notes.feature_notes.presentation.auth
+import com.google.firebase.auth.EmailAuthCredential
+import com.google.firebase.auth.EmailAuthProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -50,10 +52,13 @@ class ChangeEmailViewModel @Inject constructor(
             is ChangeEmailEvent.ChangeEmail -> {
                 if (_password.value.text.isNotEmpty() && _email.value.text.isNotEmpty()) {
                     if(_email.value.text.contains(".") && _email.value.text.contains("@")) {
-                        auth.signInWithEmailAndPassword(_email.value.text, _password.value.text)
-                            .addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    if (auth.currentUser != null) {
+                        if (auth.currentUser != null) {
+                            val credential = EmailAuthProvider
+                                .getCredential(auth.currentUser!!.email!!, _password.value.text)
+
+                            auth.currentUser!!.reauthenticate(credential)
+                                .addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
                                         auth.currentUser!!.updateEmail(_email.value.text)
                                             .addOnCompleteListener { task ->
                                                 if (task.isSuccessful) {
@@ -63,12 +68,12 @@ class ChangeEmailViewModel @Inject constructor(
                                                 }
                                             }
                                     } else {
-                                        Toast.makeText(application, "Problem with database!", Toast.LENGTH_LONG).show()
+                                        Toast.makeText(application, "Wrong password!", Toast.LENGTH_LONG).show()
                                     }
-                                } else {
-                                    Toast.makeText(application, "Wrong password!", Toast.LENGTH_LONG).show()
                                 }
-                            }
+                        } else {
+                            Toast.makeText(application, "Problem with database!", Toast.LENGTH_LONG).show()
+                        }
                     } else {
                         Toast.makeText(application, "Wrong email sentence!", Toast.LENGTH_LONG).show()
                     }
