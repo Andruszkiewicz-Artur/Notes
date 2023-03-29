@@ -1,13 +1,9 @@
 package com.example.notes.notes_future.presentation.login.compose
 
-import android.graphics.Color
-import android.widget.Space
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -22,14 +18,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.notes.core.compose.button.StandardButton
-import com.example.notes.core.compose.textField.SecureTextField
-import com.example.notes.core.compose.textField.TextFieldWithBorder
+import com.example.notes.core.compose.textField.TextFieldBordered
 import com.example.notes.core.util.graph.Screen
 import com.example.notes.feature_profile.presentation.login.LoginEvent
 import com.example.notes.feature_profile.presentation.login.LoginEvent.ClickLogin
 import com.example.notes.feature_profile.presentation.login.LoginViewModel
 import com.example.notes.feature_profile.presentation.login.UiEventLogin
-import com.example.notes.notes_future.present.addEditNote.compose.TextField
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -82,7 +76,7 @@ fun LoginPresentation(
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            TextFieldWithBorder(
+            TextFieldBordered(
                 text = emailState.text,
                 placeholder = emailState.placeholder,
                 onValueChange = {
@@ -95,7 +89,7 @@ fun LoginPresentation(
                 singleLine = true
             )
             Spacer(modifier = Modifier.height(20.dp))
-            SecureTextField(
+            TextFieldBordered(
                 text = passwordState.text,
                 placeholder = passwordState.placeholder,
                 onValueChange = {
@@ -105,7 +99,8 @@ fun LoginPresentation(
                     viewModel.onEvent(LoginEvent.ChangePasswordFocus(it))
                 },
                 singleLine = true,
-                isPlaceholder = passwordState.isPlaceholder
+                isPlaceholder = passwordState.isPlaceholder,
+                isSecure = true
             )
 
             Spacer(modifier = Modifier.height(10.dp))

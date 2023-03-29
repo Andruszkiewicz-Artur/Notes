@@ -1,24 +1,18 @@
 package com.example.notes.notes_future.presentation.forgotPassword.compose
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.notes.core.compose.button.StandardButton
-import com.example.notes.core.compose.textField.TextFieldWithBorder
+import com.example.notes.core.compose.textField.TextFieldBordered
 import com.example.notes.feature_profile.presentation.forgetPassword.ForgetPasswordEvent
 import com.example.notes.feature_profile.presentation.forgetPassword.ForgetPasswordViewModel
-import com.example.notes.notes_future.present.addEditNote.compose.TextField
 
 @Composable
 fun ForgetPasswordPresentation(
@@ -46,7 +40,7 @@ fun ForgetPasswordPresentation(
             )
             Spacer(modifier = Modifier.padding(top = 40.dp))
 
-            TextFieldWithBorder(
+            TextFieldBordered(
                 text = emailState.text,
                 placeholder = emailState.placeholder,
                 onValueChange = {

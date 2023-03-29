@@ -2,16 +2,13 @@ package com.example.notes.feature_profile.presentation.changePassword.compose
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.notes.core.compose.button.StandardButton
-import com.example.notes.core.compose.textField.SecureTextField
-import com.example.notes.core.compose.textField.TextFieldState
-import com.example.notes.core.compose.textField.TextFieldWithBorder
+import com.example.notes.core.compose.textField.TextFieldBordered
 import com.example.notes.feature_profile.presentation.changePassword.ChangePasswordEvent
 import com.example.notes.feature_profile.presentation.changePassword.ChangePasswordViewModel
 
@@ -34,8 +31,8 @@ fun ChangePasswordPresentation(
                 .fillMaxWidth(0.8f)
         ) {
             Spacer(modifier = Modifier.height(40.dp))
-            
-            SecureTextField(
+
+            TextFieldBordered(
                 text = oldPasswordState.text,
                 placeholder = oldPasswordState.placeholder,
                 onValueChange = {
@@ -44,12 +41,13 @@ fun ChangePasswordPresentation(
                 onFocusChange = {
                     viewModel.onEvent(ChangePasswordEvent.ChangeOldPasswordFocus(it))
                 },
-                isPlaceholder = oldPasswordState.isPlaceholder
+                isPlaceholder = oldPasswordState.isPlaceholder,
+                isSecure = true
             )
             
             Spacer(modifier = Modifier.height(40.dp))
 
-            SecureTextField(
+            TextFieldBordered(
                 text = newPasswordState.text,
                 placeholder = newPasswordState.placeholder,
                 onValueChange = {
@@ -58,12 +56,13 @@ fun ChangePasswordPresentation(
                 onFocusChange = {
                     viewModel.onEvent(ChangePasswordEvent.ChangeNewPasswordFocus(it))
                 },
-                isPlaceholder = newPasswordState.isPlaceholder
+                isPlaceholder = newPasswordState.isPlaceholder,
+                isSecure = true
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            SecureTextField(
+            TextFieldBordered(
                 text = rePasswordState.text,
                 placeholder = rePasswordState.placeholder,
                 onValueChange = {
@@ -72,7 +71,8 @@ fun ChangePasswordPresentation(
                 onFocusChange = {
                     viewModel.onEvent(ChangePasswordEvent.ChangeRePasswordFocus(it))
                 },
-                isPlaceholder = rePasswordState.isPlaceholder
+                isPlaceholder = rePasswordState.isPlaceholder,
+                isSecure = true
             )
 
             Spacer(modifier = Modifier.height(40.dp))

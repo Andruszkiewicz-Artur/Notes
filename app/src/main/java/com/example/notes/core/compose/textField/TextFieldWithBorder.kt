@@ -10,18 +10,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.notes.notes_future.present.addEditNote.compose.TextField
 
 @Composable
-fun TextFieldWithBorder(
+fun TextFieldBordered(
     text: String,
     placeholder: String,
     isPlaceholder: Boolean = true,
     onValueChange: (String) -> Unit,
     singleLine: Boolean = false,
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
-    onFocusChange: (FocusState) -> Unit
+    onFocusChange: (FocusState) -> Unit,
+    isSecure: Boolean = false
 ) {
     TextField(
         text = text,
@@ -36,6 +39,7 @@ fun TextFieldWithBorder(
             )
             .padding(horizontal = 10.dp),
         isPlaceholder = isPlaceholder,
+        visualTransformation = if (isSecure) PasswordVisualTransformation() else VisualTransformation.None,
         onValueChange = {
             onValueChange(it)
         },

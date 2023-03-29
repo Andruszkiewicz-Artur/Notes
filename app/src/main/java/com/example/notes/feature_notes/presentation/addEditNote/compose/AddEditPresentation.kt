@@ -86,8 +86,7 @@ fun AddEditPresentation(
                     viewModel.onEvent(AddEditNoteEvent.ChangeContentFocus(it))
                 },
                 isPlaceholder = contentState.isPlaceholder,
-                textStyle = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.fillMaxHeight()
+                textStyle = MaterialTheme.typography.headlineSmall
             )
         }
     }

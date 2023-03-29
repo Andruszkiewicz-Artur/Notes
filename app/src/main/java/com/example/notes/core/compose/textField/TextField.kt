@@ -1,7 +1,11 @@
 package com.example.notes.notes_future.present.addEditNote.compose
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
@@ -12,7 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun TextField(
@@ -26,7 +32,6 @@ fun TextField(
     onFocusChange: (FocusState) -> Unit,
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
-
     Box(
         contentAlignment = Alignment.CenterStart,
         modifier = modifier

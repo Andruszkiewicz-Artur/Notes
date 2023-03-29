@@ -1,11 +1,7 @@
 package com.example.notes.notes_future.presentation.register.compose
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,11 +14,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.notes.core.compose.button.StandardButton
 import com.example.notes.core.compose.checkBox.CheckBox
-import com.example.notes.core.compose.textField.SecureTextField
-import com.example.notes.core.compose.textField.TextFieldWithBorder
+import com.example.notes.core.compose.textField.TextFieldBordered
 import com.example.notes.feature_profile.presentation.registration.RegistrationEvent
 import com.example.notes.feature_profile.presentation.registration.RegistrationViewModel
-import com.example.notes.notes_future.present.addEditNote.compose.TextField
 
 @Composable
 fun RegistrationPresentation(
@@ -61,7 +55,7 @@ fun RegistrationPresentation(
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            TextFieldWithBorder(
+            TextFieldBordered(
                 text = email.text,
                 placeholder = email.placeholder,
                 onValueChange = {
@@ -76,7 +70,7 @@ fun RegistrationPresentation(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            SecureTextField(
+            TextFieldBordered(
                 text = password.text,
                 placeholder = password.placeholder,
                 onValueChange = {
@@ -86,12 +80,13 @@ fun RegistrationPresentation(
                     viewModel.onEvent(RegistrationEvent.ChangeFocusPassword(it))
                 },
                 singleLine = true,
-                isPlaceholder = password.isPlaceholder
+                isPlaceholder = password.isPlaceholder,
+                isSecure = true
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            SecureTextField(
+            TextFieldBordered(
                 text = rePassword.text,
                 placeholder = rePassword.placeholder,
                 onValueChange = {
@@ -101,7 +96,8 @@ fun RegistrationPresentation(
                     viewModel.onEvent(RegistrationEvent.ChangeFocusRePassword(it))
                 },
                 singleLine = true,
-                isPlaceholder = rePassword.isPlaceholder
+                isPlaceholder = rePassword.isPlaceholder,
+                isSecure = true
             )
 
             CheckBox(
