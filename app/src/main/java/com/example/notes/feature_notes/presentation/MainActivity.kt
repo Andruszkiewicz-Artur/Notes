@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
                         BottomBar(navHostController = navHostController)
                     }
                 ) {
-                    RootNavGraph(
+      \             RootNavGraph(
                         navHostController = navHostController
                     )
                 }

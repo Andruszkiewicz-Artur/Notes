@@ -1,15 +1,16 @@
 package com.example.notes.feature_profile.presentation.login
 
 import android.app.Application
-import android.widget.Toast
-import androidx.compose.runtime.MutableState
+import android.provider.Settings.Global.getString
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.notes.R
 import com.example.notes.core.compose.textField.TextFieldState
 import com.example.notes.core.util.graph.Screen
 import com.example.notes.feature_notes.presentation.auth
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -20,6 +21,8 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val application: Application
 ): ViewModel() {
+
+
 
     private val _email = mutableStateOf(TextFieldState(
         placeholder = "Email..."
@@ -58,8 +61,8 @@ class LoginViewModel @Inject constructor(
             }
             is LoginEvent.ClickLogin -> {
                 viewModelScope.launch {
-                    if(_email.value.text.isNotBlank() && _password.value.text.isNotBlank()) {
-                        if(_email.value.text.contains("@") && _email.value.text.contains(".")) {
+                    if (_email.value.text.isNotBlank() && _password.value.text.isNotBlank()) {
+                        if (_email.value.text.contains("@") && _email.value.text.contains(".")) {
                             auth.signInWithEmailAndPassword(_email.value.text, _password.value.text)
                                 .addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
@@ -70,16 +73,29 @@ class LoginViewModel @Inject constructor(
                                     }
                                 }
                         } else {
-                            _eventFlow.emit(UiEventLogin.ShowSnackbar(
-                                message = "Email is incorrect!"
-                            ))
+                            _eventFlow.emit(
+                                UiEventLogin.ShowSnackbar(
+                                    message = "Email is incorrect!"
+                                )
+                            )
                         }
                     } else {
-                        _eventFlow.emit(UiEventLogin.ShowSnackbar(
-                            message = "Fill all fields!"
-                        ))
+                        _eventFlow.emit(
+                            UiEventLogin.ShowSnackbar(
+                                message = "Fill all fields!"
+                            )
+                        )
                     }
                 }
+            }
+            is LoginEvent.loginViaGoogle -> {
+
+            }
+            is LoginEvent.loginViaFacebook -> {
+
+            }
+            is LoginEvent.loginViaGithub -> {
+
             }
         }
     }
