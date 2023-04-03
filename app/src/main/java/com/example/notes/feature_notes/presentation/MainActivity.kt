@@ -1,5 +1,6 @@
 package com.example.notes.feature_notes.presentation
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,7 +23,7 @@ class MainActivity : ComponentActivity() {
 
     lateinit var navHostController: NavHostController
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -35,9 +36,9 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     bottomBar = {
                         BottomBar(navHostController = navHostController)
-                    }
+                    },
                 ) {
-      \             RootNavGraph(
+                    RootNavGraph(
                         navHostController = navHostController
                     )
                 }

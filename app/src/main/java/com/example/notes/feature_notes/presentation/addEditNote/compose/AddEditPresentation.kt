@@ -1,5 +1,6 @@
 package com.example.notes.notes_future.presentation.addEditNote.compose
 
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -21,6 +22,7 @@ import com.example.notes.notes_future.present.addEditNote.compose.TextField
 import com.example.notes.notes_future.present.notes.compose.ButtonWithImage
 import kotlinx.coroutines.flow.collectLatest
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditPresentation(

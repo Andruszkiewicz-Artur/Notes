@@ -1,5 +1,6 @@
 package com.example.notes.notes_future.presentation.notes.compose
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -17,6 +18,7 @@ import com.example.notes.notes_future.present.notes.compose.ButtonWithImage
 import com.example.notes.feature_notes.presentation.notes.NotesViewModel
 import com.example.notes.core.util.graph.Screen
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotesPresentation(
