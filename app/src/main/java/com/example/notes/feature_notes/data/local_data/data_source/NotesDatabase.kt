@@ -6,7 +6,7 @@ import com.example.notes.notes_future.domain.model.Note
 
 @Database(
     entities = [Note::class],
-    version = 1
+    version = 2
 )
 abstract class NotesDatabase: RoomDatabase() {
 
