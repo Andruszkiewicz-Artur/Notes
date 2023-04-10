@@ -1,16 +1,23 @@
 package com.example.notes.feature_profile.presentation.login
 
+import android.app.Activity.RESULT_OK
 import android.app.Application
 import android.provider.Settings.Global.getString
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.notes.R
 import com.example.notes.core.compose.textField.TextFieldState
 import com.example.notes.core.util.graph.Screen
 import com.example.notes.feature_notes.presentation.auth
+import com.example.notes.feature_profile.data.remote_data.GoogleAuthUiClient
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.identity.Identity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -22,7 +29,12 @@ class LoginViewModel @Inject constructor(
     private val application: Application
 ): ViewModel() {
 
-
+    private val googleAuthUiClient by lazy {
+        GoogleAuthUiClient(
+            context = application,
+            oneTapClient = Identity.getSignInClient(application)
+        )
+    }
 
     private val _email = mutableStateOf(TextFieldState(
         placeholder = "Email..."

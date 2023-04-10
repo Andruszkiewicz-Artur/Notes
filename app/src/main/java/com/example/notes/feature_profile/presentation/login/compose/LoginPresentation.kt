@@ -1,6 +1,10 @@
 package com.example.notes.notes_future.presentation.login.compose
 
+import android.app.Activity
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,20 +15,26 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.notes.core.compose.button.StandardButton
 import com.example.notes.core.compose.textField.TextFieldBordered
 import com.example.notes.core.util.graph.Screen
+import com.example.notes.feature_profile.data.remote_data.GoogleAuthUiClient
 import com.example.notes.feature_profile.presentation.login.LoginEvent
 import com.example.notes.feature_profile.presentation.login.LoginEvent.ClickLogin
 import com.example.notes.feature_profile.presentation.login.LoginViewModel
 import com.example.notes.feature_profile.presentation.login.UiEventLogin
+import com.google.android.gms.auth.api.identity.Identity
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginPresentation(
@@ -35,6 +45,33 @@ fun LoginPresentation(
 
     val emailState = viewModel.email.value
     val passwordState = viewModel.password.value
+
+    val googleAuthUiClient by lazy {
+        GoogleAuthUiClient(
+            context = context,
+            oneTapClient = Identity.getSignInClient(context)
+        )
+    }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartIntentSenderForResult(),
+        onResult = { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                MainScope().launch {
+                    val signInResult = googleAuthUiClient.signInWithIntent(
+                        intent = result.data ?: return@launch
+                    )
+
+                    if (signInResult) {
+                        navController.popBackStack(
+                            route = Screen.Profile.route,
+                            inclusive = true
+                        )
+                    }
+                }
+            }
+        }
+    )
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -153,6 +190,21 @@ fun LoginPresentation(
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
             ) {
                 Text(text = "Register")
+            }
+
+            Spacer(modifier = Modifier.height(60.dp))
+
+            Button(onClick = {
+                MainScope().launch {
+                    val signInIntentSender = googleAuthUiClient.signIn()
+                    launcher.launch(
+                        IntentSenderRequest.Builder(
+                            signInIntentSender ?: return@launch
+                        ).build()
+                    )
+                }
+            }) {
+                Text(text = "Via Google")
             }
         }
     }
