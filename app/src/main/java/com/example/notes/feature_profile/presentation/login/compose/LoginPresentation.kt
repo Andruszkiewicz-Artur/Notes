@@ -1,6 +1,7 @@
 package com.example.notes.notes_future.presentation.login.compose
 
 import android.app.Activity
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -21,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.notes.core.compose.button.StandardButton
 import com.example.notes.core.compose.textField.TextFieldBordered
@@ -63,12 +63,15 @@ fun LoginPresentation(
                     )
 
                     if (signInResult) {
+                        Log.d("launcher", "true")
                         navController.popBackStack(
                             route = Screen.Profile.route,
                             inclusive = true
                         )
+                    } else {
+                        Log.d("launcher", "false")
                     }
-                }
+                }.start()
             }
         }
     )
@@ -195,7 +198,9 @@ fun LoginPresentation(
             Spacer(modifier = Modifier.height(60.dp))
 
             Button(onClick = {
+                Log.d("click", "click Button")
                 MainScope().launch {
+                    Log.d("click", "click in scope")
                     val signInIntentSender = googleAuthUiClient.signIn()
                     launcher.launch(
                         IntentSenderRequest.Builder(

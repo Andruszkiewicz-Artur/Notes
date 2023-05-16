@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "270874656704",
+    "firebase_url": "https://notes-53de5-default-rtdb.firebaseio.com",
     "project_id": "notes-53de5",
     "storage_bucket": "notes-53de5.appspot.com"
   },
@@ -14,7 +15,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "270874656704-mr4slh93fj9d9rn2slt6uu6f88qkcrr9.apps.googleusercontent.com",
+          "client_id": "270874656704-mbdda248oaa48ums5fanovef5v1uinh7.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,7 +28,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "270874656704-mr4slh93fj9d9rn2slt6uu6f88qkcrr9.apps.googleusercontent.com",
+              "client_id": "270874656704-mbdda248oaa48ums5fanovef5v1uinh7.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

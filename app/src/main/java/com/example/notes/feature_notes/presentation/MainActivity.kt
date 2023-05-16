@@ -13,10 +13,12 @@ import com.example.notes.core.util.graph.RootNavGraph
 import com.example.notes.ui.theme.NotesTheme
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 
 lateinit var auth: FirebaseAuth
+lateinit var database: DatabaseReference
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
