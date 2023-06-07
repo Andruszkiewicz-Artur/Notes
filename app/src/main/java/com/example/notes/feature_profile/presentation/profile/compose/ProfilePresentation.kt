@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -75,9 +76,27 @@ fun ProfilePresentation(
                     text = "Change Password",
                     onClick = {
                         navController.navigate(Screen.ChangePassword.route)
-                    },
-                    isBottomBar = false
+                    }
                 )
+
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                ) {
+                    Text(
+                        text = "Synchronize data"
+                    )
+
+                    Switch(
+                        checked = state.value.isSynchronized,
+                        onCheckedChange = {
+                            viewModel.onEvent(ProfileEvent.saveDataInCloud(it))
+                        }
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(40.dp))
 

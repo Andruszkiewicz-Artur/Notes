@@ -1,15 +1,13 @@
 package com.example.notes.feature_profile.presentation.profile
 
-import android.app.Application
+import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.datastore.dataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.notes.core.serializer.SettingSerializer
 import com.example.notes.feature_notes.presentation.auth
-import com.example.notes.feature_notes.presentation.database
-import com.example.notes.feature_profile.presentation.login.UiEventLogin
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -40,7 +38,9 @@ class ProfileViewModel @Inject constructor(): ViewModel() {
     fun onEvent(event: ProfileEvent) {
         when (event) {
             is ProfileEvent.saveDataInCloud -> {
-
+                _state.value = state.value.copy(
+                    isSynchronized = event.isSaved
+                )
             }
             is ProfileEvent.LogOut -> {
                 viewModelScope.launch {
@@ -55,5 +55,4 @@ class ProfileViewModel @Inject constructor(): ViewModel() {
             }
         }
     }
-
 }
