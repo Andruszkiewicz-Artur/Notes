@@ -19,13 +19,11 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(): ViewModel() {
 
-    private val ref = database.database.reference
-
     private val _state = mutableStateOf(ProfileState())
     val state: State<ProfileState> = _state
 
     init {
-        var currentUser = auth.currentUser
+        val currentUser = auth.currentUser
         if(currentUser != null) {
             currentUser.let { user ->
                 _state.value = state.value.copy(

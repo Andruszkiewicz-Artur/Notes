@@ -45,47 +45,47 @@ fun ProfilePresentation(
         }
     }
 
-
-
-    Box(
-        contentAlignment = Alignment.TopCenter,
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        Column(
+    if (state.value.isUser) {
+        Box(
+            contentAlignment = Alignment.TopCenter,
             modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth(0.8f)
+                .fillMaxSize()
         ) {
-            Spacer(modifier = Modifier.height(40.dp))
-            Text(
-                text = state.value.email,
-                style = MaterialTheme.typography.headlineMedium
-            )
-
-            Spacer(modifier = Modifier.height(40.dp))
-
-            ListButton(
-                text = "Change Email",
-                onClick = {
-                    navController.navigate(Screen.ChangeEmail.route)
-                }
-            )
-
-            ListButton(
-                text = "Change Password",
-                onClick = {
-                    navController.navigate(Screen.ChangePassword.route)
-                },
-                isBottomBar = false
-            )
-
-            Spacer(modifier = Modifier.height(40.dp))
-
-            StandardButton(
-                text = "Log out"
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(0.8f)
             ) {
-                viewModel.onEvent(ProfileEvent.LogOut)
+                Spacer(modifier = Modifier.height(40.dp))
+                Text(
+                    text = state.value.email,
+                    style = MaterialTheme.typography.headlineMedium
+                )
+
+                Spacer(modifier = Modifier.height(40.dp))
+
+                ListButton(
+                    text = "Change Email",
+                    onClick = {
+                        navController.navigate(Screen.ChangeEmail.route)
+                    }
+                )
+
+                ListButton(
+                    text = "Change Password",
+                    onClick = {
+                        navController.navigate(Screen.ChangePassword.route)
+                    },
+                    isBottomBar = false
+                )
+
+                Spacer(modifier = Modifier.height(40.dp))
+
+                StandardButton(
+                    text = "Log out"
+                ) {
+                    viewModel.onEvent(ProfileEvent.LogOut)
+                }
             }
         }
     }
