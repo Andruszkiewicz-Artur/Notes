@@ -28,16 +28,7 @@ fun NotesPresentation(
 
     val state = viewModel.state.value
 
-    Scaffold(
-        floatingActionButton = {
-            ButtonWithImage(
-                image = Icons.Filled.Add,
-                onClick = {
-                    navHostController.navigate(Screen.AddEdit.route)
-                }
-            )
-        }
-    ) {
+    Scaffold {
         Column(
             modifier = Modifier
                 .fillMaxSize()

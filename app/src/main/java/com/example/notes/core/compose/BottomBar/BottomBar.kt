@@ -18,29 +18,19 @@ import com.example.notes.core.util.graph.Screen
 
 @Composable
 fun BottomBar(
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    screens: List<BottomBarScreen>,
+    currentDestination: NavDestination?
 ) {
-    val screens = listOf(
-        BottomBarScreen.Home,
-        BottomBarScreen.Profile
-    )
-
-    val navBackStackEntry by navHostController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
-
-    val bottomBarDestionation = screens.any { it.route == currentDestination?.route }
-
-    if(bottomBarDestionation) {
-        BottomNavigation(
-            backgroundColor = MaterialTheme.colorScheme.tertiaryContainer
-        ) {
-            screens.forEach { screen ->
-                AddItem(
-                    screen = screen,
-                    currentDestination = currentDestination,
-                    navHostController = navHostController
-                )
-            }
+    BottomNavigation(
+        backgroundColor = MaterialTheme.colorScheme.tertiaryContainer
+    ) {
+        screens.forEach { screen ->
+            AddItem(
+                screen = screen,
+                currentDestination = currentDestination,
+                navHostController = navHostController
+            )
         }
     }
 }
