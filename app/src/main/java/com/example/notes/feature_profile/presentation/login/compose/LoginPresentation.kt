@@ -40,7 +40,7 @@ fun LoginPresentation(
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is UiEventLogin.LogIn -> {
-
+                    navController.popBackStack()
                 }
                 is UiEventLogin.ShowSnackbar -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
@@ -140,6 +140,7 @@ fun LoginPresentation(
 
             Button(
                 onClick = {
+                    navController.popBackStack()
                     navController.navigate(Screen.Register.route)
                 },
                 shape = RoundedCornerShape(20.dp),

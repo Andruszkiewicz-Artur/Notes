@@ -22,6 +22,7 @@ import com.example.notes.core.util.graph.Screen
 import com.example.notes.feature_profile.presentation.profile.ProfileEvent
 import com.example.notes.feature_profile.presentation.profile.ProfileViewModel
 import com.example.notes.feature_profile.presentation.profile.UiEventProfile
+import com.example.notes.feature_profile.presentation.profile.compose.LoginRegisterPresentation
 import com.example.notes.feature_profile.presentation.registration.RegistrationEvent
 import kotlinx.coroutines.flow.collectLatest
 
@@ -33,10 +34,6 @@ fun ProfilePresentation(
     val state = viewModel.state
 
     LaunchedEffect(key1 = true) {
-        if(!state.value.isUser) {
-            navController.navigate(Screen.Login.route)
-        }
-
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is UiEventProfile.LogOut -> {
@@ -107,5 +104,9 @@ fun ProfilePresentation(
                 }
             }
         }
+    } else {
+        LoginRegisterPresentation(
+            navController = navController
+        )
     }
 }

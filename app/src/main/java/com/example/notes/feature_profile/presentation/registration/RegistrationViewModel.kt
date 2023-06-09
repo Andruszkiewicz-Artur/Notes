@@ -5,10 +5,15 @@ import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.notes.core.compose.checkBox.CheckBoxState
 import com.example.notes.core.compose.textField.TextFieldState
 import com.example.notes.feature_notes.presentation.auth
+import com.example.notes.feature_profile.presentation.login.UiEventLogin
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,6 +45,9 @@ class RegistrationViewModel @Inject constructor(
 
     private val _state = mutableStateOf(RegistrationState())
     val state: State<RegistrationState> = _state
+
+    private val _eventFlow = MutableSharedFlow<UiEventRegistration>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     fun onEvent(event: RegistrationEvent) {
         when (event) {
@@ -95,6 +103,11 @@ class RegistrationViewModel @Inject constructor(
                                         .addOnCompleteListener { task ->
                                             if(task.isSuccessful) {
                                                 Toast.makeText(application, "You create account!", Toast.LENGTH_LONG).show()
+                                                viewModelScope.launch {
+                                                    _eventFlow.emit(
+                                                        UiEventRegistration.Register
+                                                    )
+                                                }
                                             } else {
                                                 Toast.makeText(application, "You can`t create account!", Toast.LENGTH_LONG).show()
                                             }

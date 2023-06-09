@@ -1,10 +1,12 @@
 package com.example.notes.notes_future.presentation.register.compose
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -15,8 +17,12 @@ import androidx.navigation.NavHostController
 import com.example.notes.core.compose.button.StandardButton
 import com.example.notes.core.compose.checkBox.CheckBox
 import com.example.notes.core.compose.textField.TextFieldBordered
+import com.example.notes.core.util.graph.Screen
+import com.example.notes.feature_profile.presentation.login.UiEventLogin
 import com.example.notes.feature_profile.presentation.registration.RegistrationEvent
 import com.example.notes.feature_profile.presentation.registration.RegistrationViewModel
+import com.example.notes.feature_profile.presentation.registration.UiEventRegistration
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun RegistrationPresentation(
@@ -27,6 +33,16 @@ fun RegistrationPresentation(
     val password = viewModel.password.value
     val rePassword = viewModel.rePassword.value
     val checkBox = viewModel.checkBox.value
+
+    LaunchedEffect(key1 = true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is UiEventRegistration.Register -> {
+                    navController.popBackStack()
+                }
+            }
+        }
+    }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -123,7 +139,7 @@ fun RegistrationPresentation(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Text(text = "You have accoutn?")
+                Text(text = "You have account?")
 
                 Text(
                     text = " Log in!",
@@ -133,6 +149,7 @@ fun RegistrationPresentation(
                     modifier = Modifier
                         .clickable {
                             navController.popBackStack()
+                            navController.navigate(Screen.Login.route)
                         }
                 )
             }
