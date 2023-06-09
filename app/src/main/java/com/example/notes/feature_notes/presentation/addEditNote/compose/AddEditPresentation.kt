@@ -61,7 +61,7 @@ fun AddEditPresentation(
                     onClick = {
                         viewModel.onEvent(AddEditNoteEvent.SaveNote)
                     },
-                    backgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
                     shape = CircleShape,
                     elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
                     modifier = Modifier

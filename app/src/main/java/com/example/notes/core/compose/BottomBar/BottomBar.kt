@@ -23,7 +23,7 @@ fun BottomBar(
     currentDestination: NavDestination?
 ) {
     BottomNavigation(
-        backgroundColor = MaterialTheme.colorScheme.tertiaryContainer
+        backgroundColor = MaterialTheme.colorScheme.secondaryContainer
     ) {
         screens.forEach { screen ->
             AddItem(
@@ -45,20 +45,20 @@ fun RowScope.AddItem(
         label = {
             Text(
                 text = screen.title,
-                color = MaterialTheme.colorScheme.tertiary
+                color = MaterialTheme.colorScheme.secondary
             )
         },
         icon = {
             Icon(
                 imageVector = screen.icon,
                 contentDescription = "Navigation Icon",
-                tint = MaterialTheme.colorScheme.tertiary
+                tint = MaterialTheme.colorScheme.secondary
             )
         },
         selected = currentDestination?.hierarchy?.any {
             it.route == screen.route
         } == true,
-        unselectedContentColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
+        unselectedContentColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f),
         onClick = {
             navHostController.navigate(screen.route) {
                 popUpTo(navHostController.graph.findStartDestination().id)

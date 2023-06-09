@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
                                 onClick = {
                                     navHostController.navigate(Screen.AddEdit.route)
                                 },
-                                backgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
                                 shape = CircleShape,
                                 elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
                                 modifier = Modifier

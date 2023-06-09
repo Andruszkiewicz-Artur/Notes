@@ -23,15 +23,15 @@ fun NoteItem(
     navHostController: NavHostController,
     viewModel: NotesViewModel,
     note: Note,
-    isEven: Boolean
+    isSecondColor: Boolean
 ) {
-    val label = if(isEven) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+    val label = if(isSecondColor) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .padding(8.dp)
             .background(
-                color = if(isEven) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer,
+                color = if(isSecondColor) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer,
                 shape = RoundedCornerShape(20.dp)
             )
             .clickable {
