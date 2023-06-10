@@ -1,6 +1,17 @@
 package com.example.notes.notes_future.presentation.notes.compose
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.with
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -16,19 +27,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.notes.notes_future.domain.model.Note
 import com.example.notes.feature_notes.presentation.notes.NotesViewModel
-import com.example.notes.core.util.graph.Screen
 import com.example.notes.feature_notes.model.GridCellEnum
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedMutableState",
     "AutoboxingStateCreation"
 )
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
+    ExperimentalAnimationApi::class
+)
 @Composable
 fun NotesPresentation(
     navHostController: NavHostController,
@@ -56,17 +69,38 @@ fun NotesPresentation(
                     color = MaterialTheme.colorScheme.primary
                 )
 
-                Icon(
-                    imageVector = if (gridCell == GridCellEnum.Grid) Icons.Filled.List
-                                else Icons.Filled.GridView,
-                    contentDescription = "Grid",
-                    modifier = Modifier
-                        .size(50.dp)
-                        .clickable {
-                            if (gridCell == GridCellEnum.Flat) gridCell = GridCellEnum.Grid
-                            else gridCell = GridCellEnum.Flat
-                        }
-                )
+                AnimatedContent(
+                    targetState = gridCell,
+                    transitionSpec = {
+                        fadeIn(
+                            animationSpec = tween(500)
+                        ) with fadeOut(
+                            animationSpec = tween(500)
+                        )
+                    }
+                ) {
+                    if (it == GridCellEnum.Grid) {
+                        Icon(
+                            imageVector = Icons.Filled.GridView,
+                            contentDescription = "Grid type",
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clickable {
+                                    gridCell = GridCellEnum.Flat
+                                }
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Filled.List,
+                            contentDescription = "Grid type",
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clickable {
+                                    gridCell = GridCellEnum.Grid
+                                }
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -76,7 +110,10 @@ fun NotesPresentation(
                     columns = GridCells.Fixed(
                         if (gridCell == GridCellEnum.Grid) 2
                         else 1
-                    )
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
                 ) {
                     itemsIndexed(state.notes) { index: Int, note: Note ->
                         NoteItem(
@@ -91,7 +128,13 @@ fun NotesPresentation(
                                 }
                             } else {
                                 index % 2 == 0
-                            }
+                            },
+                            modifier = Modifier
+                                .animateItemPlacement(
+                                    animationSpec = tween(
+                                        durationMillis = 1000
+                                    )
+                                )
                         )
                         if(index == state.notes.size - 1) {
                             Spacer(modifier = Modifier.height(120.dp))
