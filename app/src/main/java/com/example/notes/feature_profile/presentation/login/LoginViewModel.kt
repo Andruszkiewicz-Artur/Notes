@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.notes.core.compose.textField.TextFieldState
 import com.example.notes.core.util.graph.Screen
 import com.example.notes.feature_notes.presentation.auth
+import com.example.notes.feature_profile.domain.use_case.ValidateUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -16,6 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
+    private val validateUseCases: ValidateUseCases,
     private val application: Application
 ): ViewModel() {
 
@@ -56,31 +58,15 @@ class LoginViewModel @Inject constructor(
             }
             is LoginEvent.ClickLogin -> {
                 viewModelScope.launch {
-                    if (_email.value.text.isNotBlank() && _password.value.text.isNotBlank()) {
-                        if (_email.value.text.contains("@") && _email.value.text.contains(".")) {
-                            auth.signInWithEmailAndPassword(_email.value.text, _password.value.text)
-                                .addOnCompleteListener { task ->
-                                    if (task.isSuccessful) {
-                                        event.navController.popBackStack(
-                                            route = Screen.Profile.route,
-                                            inclusive = true
-                                        )
-                                    }
-                                }
-                        } else {
-                            _eventFlow.emit(
-                                UiEventLogin.ShowSnackbar(
-                                    message = "Email is incorrect!"
+                    auth.signInWithEmailAndPassword(_email.value.text, _password.value.text)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                event.navController.popBackStack(
+                                    route = Screen.Profile.route,
+                                    inclusive = true
                                 )
-                            )
+                            }
                         }
-                    } else {
-                        _eventFlow.emit(
-                            UiEventLogin.ShowSnackbar(
-                                message = "Fill all fields!"
-                            )
-                        )
-                    }
                 }
             }
         }

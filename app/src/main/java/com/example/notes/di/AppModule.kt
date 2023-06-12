@@ -6,6 +6,11 @@ import com.example.notes.feature_notes.domain.use_case.*
 import com.example.notes.feature_notes.data.local_data.data_source.NotesDatabase
 import com.example.notes.feature_notes.data.local_data.repository.NotesRepositoryImpl
 import com.example.notes.feature_notes.domain.repository.NoteRepository
+import com.example.notes.feature_profile.domain.use_case.ValidateEmail
+import com.example.notes.feature_profile.domain.use_case.ValidatePassword
+import com.example.notes.feature_profile.domain.use_case.ValidateRePassword
+import com.example.notes.feature_profile.domain.use_case.ValidateTerms
+import com.example.notes.feature_profile.domain.use_case.ValidateUseCases
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,6 +45,17 @@ object AppModule {
             getNoteByIdUseCase = GetNoteByIdUseCase(repository),
             insertNoteUseCase = InsertNoteUseCase(repository),
             deleteNoteUseCase = DeleteNoteUseCase(repository)
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideValidateUseCases(): ValidateUseCases {
+        return ValidateUseCases(
+            validateEmail = ValidateEmail(),
+            validatePassword = ValidatePassword(),
+            validateRePassword = ValidateRePassword(),
+            validateTerms = ValidateTerms()
         )
     }
 

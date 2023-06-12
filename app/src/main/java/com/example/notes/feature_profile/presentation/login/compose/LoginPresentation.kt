@@ -42,9 +42,6 @@ fun LoginPresentation(
                 is UiEventLogin.LogIn -> {
                     navController.popBackStack()
                 }
-                is UiEventLogin.ShowSnackbar -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
-                }
             }
         }
     }

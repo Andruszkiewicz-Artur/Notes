@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.notes.core.compose.checkBox.CheckBoxState
 import com.example.notes.core.compose.textField.TextFieldState
 import com.example.notes.feature_notes.presentation.auth
+import com.example.notes.feature_profile.domain.use_case.ValidateUseCases
 import com.example.notes.feature_profile.presentation.login.UiEventLogin
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,6 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
+    private val validateUseCases: ValidateUseCases,
     private val application: Application
 ): ViewModel() {
 
@@ -91,44 +93,50 @@ class RegistrationViewModel @Inject constructor(
                     email = _email.value.text,
                     password = _password.value.text,
                     rePassword = _rePassword.value.text,
-                    isRules = _checkBox.value.isChacked
+                    isTerms = _checkBox.value.isChacked
                 )
 
-                if (_state.value.isRules) {
-                    if(_state.value.email.isNotBlank() && _state.value.password.isNotBlank()) {
-                        if(_state.value.email.contains("@") && _state.value.email.contains(".")) {
-                            if(_state.value.password.length >= 8) {
-                                if(_state.value.isRules) {
-                                    auth.createUserWithEmailAndPassword(_state.value.email, _state.value.password)
-                                        .addOnCompleteListener { task ->
-                                            if(task.isSuccessful) {
-                                                Toast.makeText(application, "You create account!", Toast.LENGTH_LONG).show()
-                                                viewModelScope.launch {
-                                                    _eventFlow.emit(
-                                                        UiEventRegistration.Register
-                                                    )
-                                                }
-                                            } else {
-                                                Toast.makeText(application, "You can`t create account!", Toast.LENGTH_LONG).show()
-                                            }
-                                        }
-                                } else {
-                                    Toast.makeText(application, "You need check rules!", Toast.LENGTH_LONG).show()
+                if (isNoneErrors()) {
+                    auth.createUserWithEmailAndPassword(_state.value.email, _state.value.password)
+                        .addOnCompleteListener { task ->
+                            if(task.isSuccessful) {
+                                viewModelScope.launch {
+                                    _eventFlow.emit(
+                                        UiEventRegistration.Register
+                                    )
+                                    Toast.makeText(application, "Successful registration!", Toast.LENGTH_LONG).show()
                                 }
                             } else {
-                                Toast.makeText(application, "Password need at least 8 chars!", Toast.LENGTH_LONG).show()
+                                Toast.makeText(application, "Problem with registration!", Toast.LENGTH_LONG).show()
                             }
-                        } else {
-                            Toast.makeText(application, "Email is incorrect!", Toast.LENGTH_LONG).show()
                         }
-                    } else {
-                        Toast.makeText(application, "You need first fill all fields!", Toast.LENGTH_LONG).show()
-                    }
-                } else {
-                    Toast.makeText(application, "You need accept rules", Toast.LENGTH_LONG)
                 }
             }
         }
     }
 
+    private fun isNoneErrors(): Boolean {
+        val email = validateUseCases.validateEmail.execute(_state.value.email)
+        val password = validateUseCases.validatePassword.execute(_state.value.password)
+        val rePassword = validateUseCases.validateRePassword.execute(_state.value.password, _state.value.rePassword)
+        val terms = validateUseCases.validateTerms.execute(_state.value.isTerms)
+
+        val hasError = listOf(
+            email,
+            password,
+            rePassword,
+            terms
+        ).any { !it.successful }
+
+        if (hasError) {
+            _state.value = state.value.copy(
+                erroeEmail = email.errorMessage,
+                errorPassword = password.errorMessage,
+                errorRePassword = rePassword.errorMessage,
+                errorTerms = terms.errorMessage
+            )
+        }
+
+        return !hasError
+    }
 }
