@@ -56,7 +56,7 @@ fun AddEditPresentation(
 
     Scaffold(
         floatingActionButton = {
-            if (titleState.text.isNotEmpty() && contentState.text.isNotEmpty()) {
+            if (titleState.text.isNotBlank() && contentState.text.isNotBlank()) {
                 FloatingActionButton(
                     onClick = {
                         viewModel.onEvent(AddEditNoteEvent.SaveNote)
