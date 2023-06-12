@@ -1,6 +1,7 @@
 package com.example.notes.feature_profile.presentation.registration
 
 import android.app.Application
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -136,6 +137,8 @@ class RegistrationViewModel @Inject constructor(
                 errorTerms = terms.errorMessage
             )
         }
+
+        Log.d("has error", hasError.toString())
 
         return !hasError
     }

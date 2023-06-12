@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.example.notes.core.compose.textField.TextFieldState
+import com.example.notes.feature_profile.domain.use_case.ValidateUseCases
 import com.example.notes.feature_profile.presentation.profile.ProfileEvent
 import com.example.notes.feature_profile.presentation.registration.RegistrationEvent
 import com.google.firebase.auth.ktx.auth
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ForgetPasswordViewModel @Inject constructor(
-    private val application: Application
+    private val application: Application,
+    private val validateUseCases: ValidateUseCases
 ): ViewModel() {
 
     private val _email = mutableStateOf(TextFieldState(
@@ -24,7 +26,8 @@ class ForgetPasswordViewModel @Inject constructor(
     ))
     val email: State<TextFieldState> = _email
 
-    var state = mutableStateOf("")
+    private val _state = mutableStateOf(ForgetPasswordState())
+    val state: State<ForgetPasswordState> = _state
 
     fun onEvent(event: ForgetPasswordEvent) {
         when (event) {
@@ -39,22 +42,31 @@ class ForgetPasswordViewModel @Inject constructor(
                 )
             }
             is ForgetPasswordEvent.OnClickForgetPassword -> {
-                if(state.value.isNotBlank()) {
-                    if(state.value.contains("@") && state.value.contains(".")) {
-                        Firebase.auth.sendPasswordResetEmail(state.value)
-                            .addOnCompleteListener { task ->
-                                if(task.isSuccessful) {
-                                    Toast.makeText(application, "Email sent!", Toast.LENGTH_LONG).show()
-                                }
+                _state.value = state.value.copy(
+                    email = _email.value.text
+                )
+
+                if(isNoneError()) {
+                    Firebase.auth.sendPasswordResetEmail(_state.value.email)
+                        .addOnCompleteListener { task ->
+                            if(task.isSuccessful) {
+                                Toast.makeText(application, "Email sent!", Toast.LENGTH_LONG).show()
                             }
-                    } else {
-                        Toast.makeText(application, "Email is incorrect!", Toast.LENGTH_LONG).show()
-                    }
-                } else {
-                    Toast.makeText(application, "Fill field!", Toast.LENGTH_LONG).show()
+                        }
                 }
             }
         }
     }
 
+    fun isNoneError(): Boolean {
+        val email = validateUseCases.validateEmail.execute(_email.value.text)
+
+        if (!email.successful) {
+            _state.value = state.value.copy(
+                errorEmail = email.errorMessage
+            )
+        }
+
+        return email.successful
+    }
 }

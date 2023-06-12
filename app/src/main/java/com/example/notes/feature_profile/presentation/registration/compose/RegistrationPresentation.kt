@@ -1,6 +1,5 @@
 package com.example.notes.notes_future.presentation.register.compose
 
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -18,10 +17,10 @@ import com.example.notes.core.compose.button.StandardButton
 import com.example.notes.core.compose.checkBox.CheckBox
 import com.example.notes.core.compose.textField.TextFieldBordered
 import com.example.notes.core.util.graph.Screen
-import com.example.notes.feature_profile.presentation.login.UiEventLogin
 import com.example.notes.feature_profile.presentation.registration.RegistrationEvent
 import com.example.notes.feature_profile.presentation.registration.RegistrationViewModel
 import com.example.notes.feature_profile.presentation.registration.UiEventRegistration
+import com.example.notes.feature_profile.presentation.unit.presentation.ValidateText
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -33,6 +32,7 @@ fun RegistrationPresentation(
     val password = viewModel.password.value
     val rePassword = viewModel.rePassword.value
     val checkBox = viewModel.checkBox.value
+    val state = viewModel.state.value
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -84,7 +84,7 @@ fun RegistrationPresentation(
                 isPlaceholder = email.isPlaceholder
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            ValidateText(text = state.erroeEmail)
 
             TextFieldBordered(
                 text = password.text,
@@ -100,7 +100,7 @@ fun RegistrationPresentation(
                 isSecure = true
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            ValidateText(text = state.errorPassword)
 
             TextFieldBordered(
                 text = rePassword.text,
@@ -116,12 +116,22 @@ fun RegistrationPresentation(
                 isSecure = true
             )
 
+            ValidateText(text = state.errorRePassword)
+
             CheckBox(
                 text = checkBox.text,
                 checked = checkBox.isChacked,
                 onCheckedChange = {
                     viewModel.onEvent(RegistrationEvent.CheckBox(it))
                 }
+            )
+
+            ValidateText(
+                text = state.errorTerms,
+                modifier = Modifier
+                    .offset(
+                        y = -8.dp
+                    )
             )
 
             Spacer(modifier = Modifier.height(20.dp))

@@ -13,6 +13,7 @@ import com.example.notes.core.compose.button.StandardButton
 import com.example.notes.core.compose.textField.TextFieldBordered
 import com.example.notes.feature_profile.presentation.forgetPassword.ForgetPasswordEvent
 import com.example.notes.feature_profile.presentation.forgetPassword.ForgetPasswordViewModel
+import com.example.notes.feature_profile.presentation.unit.presentation.ValidateText
 
 @Composable
 fun ForgetPasswordPresentation(
@@ -20,6 +21,7 @@ fun ForgetPasswordPresentation(
     viewModel: ForgetPasswordViewModel = hiltViewModel()
 ) {
     val emailState = viewModel.email.value
+    val state = viewModel.state.value
 
     Box(
         contentAlignment = Alignment.Center,
@@ -52,8 +54,12 @@ fun ForgetPasswordPresentation(
                 isPlaceholder = emailState.isPlaceholder,
                 singleLine = true
             )
-            
-            Spacer(modifier = Modifier.height(40.dp))
+
+            ValidateText(
+                text = state.errorEmail,
+                spaceModifier = Modifier
+                    .height(40.dp)
+            )
 
             StandardButton(
                 text = "Send message"
