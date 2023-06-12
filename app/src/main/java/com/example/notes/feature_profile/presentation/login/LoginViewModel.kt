@@ -1,6 +1,7 @@
 package com.example.notes.feature_profile.presentation.login
 
 import android.app.Application
+import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -8,7 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.notes.core.compose.textField.TextFieldState
 import com.example.notes.core.util.graph.Screen
 import com.example.notes.feature_notes.presentation.auth
-import com.example.notes.feature_profile.domain.use_case.ValidateUseCases
+import com.example.notes.feature_profile.domain.use_case.profileUseCases.ProfileUseCases
+import com.example.notes.feature_profile.domain.use_case.validationUseCases.ValidateUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -18,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val validateUseCases: ValidateUseCases,
-    private val application: Application
+    private val application: Application,
+    private val profileUseCases: ProfileUseCases
 ): ViewModel() {
 
     private val _email = mutableStateOf(TextFieldState(
@@ -57,16 +60,17 @@ class LoginViewModel @Inject constructor(
                 )
             }
             is LoginEvent.ClickLogin -> {
-                viewModelScope.launch {
-                    auth.signInWithEmailAndPassword(_email.value.text, _password.value.text)
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                event.navController.popBackStack(
-                                    route = Screen.Profile.route,
-                                    inclusive = true
-                                )
-                            }
-                        }
+                val loginResult = profileUseCases.logInUseCase.execute(
+                    email = _email.value.text,
+                    password = _password.value.text
+                )
+
+                if(!loginResult.successful) {
+                    Toast.makeText(application, loginResult.errorMessage, Toast.LENGTH_LONG).show()
+                } else {
+                    viewModelScope.launch {
+                        _eventFlow.emit(UiEventLogin.LogIn)
+                    }
                 }
             }
         }

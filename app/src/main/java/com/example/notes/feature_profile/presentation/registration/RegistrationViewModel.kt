@@ -10,7 +10,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.notes.core.compose.checkBox.CheckBoxState
 import com.example.notes.core.compose.textField.TextFieldState
 import com.example.notes.feature_notes.presentation.auth
-import com.example.notes.feature_profile.domain.use_case.ValidateUseCases
+import com.example.notes.feature_profile.domain.use_case.profileUseCases.ProfileUseCases
+import com.example.notes.feature_profile.domain.use_case.validationUseCases.ValidateUseCases
 import com.example.notes.feature_profile.presentation.login.UiEventLogin
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,7 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
     private val validateUseCases: ValidateUseCases,
-    private val application: Application
+    private val application: Application,
+    private val profileUseCases: ProfileUseCases
 ): ViewModel() {
 
     private val _email = mutableStateOf(TextFieldState(
@@ -98,19 +100,18 @@ class RegistrationViewModel @Inject constructor(
                 )
 
                 if (isNoneErrors()) {
-                    auth.createUserWithEmailAndPassword(_state.value.email, _state.value.password)
-                        .addOnCompleteListener { task ->
-                            if(task.isSuccessful) {
-                                viewModelScope.launch {
-                                    _eventFlow.emit(
-                                        UiEventRegistration.Register
-                                    )
-                                    Toast.makeText(application, "Successful registration!", Toast.LENGTH_LONG).show()
-                                }
-                            } else {
-                                Toast.makeText(application, "Problem with registration!", Toast.LENGTH_LONG).show()
-                            }
+                    val registrationResult = profileUseCases.registrationUseCase.execute(
+                        email = _email.value.text,
+                        password = _password.value.text
+                    )
+
+                    if(!registrationResult.successful) {
+                        Toast.makeText(application, registrationResult.errorMessage, Toast.LENGTH_LONG).show()
+                    } else {
+                        viewModelScope.launch {
+                            _eventFlow.emit(UiEventRegistration.Register)
                         }
+                    }
                 }
             }
         }

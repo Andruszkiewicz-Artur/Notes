@@ -1,8 +1,7 @@
-package com.example.notes.feature_profile.domain.use_case
+package com.example.notes.feature_profile.domain.use_case.validationUseCases
 
 import android.util.Patterns
 import com.example.notes.feature_profile.domain.unit.ValidationResult
-import org.intellij.lang.annotations.Pattern
 
 class ValidateEmail {
 

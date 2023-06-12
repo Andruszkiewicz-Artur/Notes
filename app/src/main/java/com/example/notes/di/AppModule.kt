@@ -6,11 +6,19 @@ import com.example.notes.feature_notes.domain.use_case.*
 import com.example.notes.feature_notes.data.local_data.data_source.NotesDatabase
 import com.example.notes.feature_notes.data.local_data.repository.NotesRepositoryImpl
 import com.example.notes.feature_notes.domain.repository.NoteRepository
-import com.example.notes.feature_profile.domain.use_case.ValidateEmail
-import com.example.notes.feature_profile.domain.use_case.ValidatePassword
-import com.example.notes.feature_profile.domain.use_case.ValidateRePassword
-import com.example.notes.feature_profile.domain.use_case.ValidateTerms
-import com.example.notes.feature_profile.domain.use_case.ValidateUseCases
+import com.example.notes.feature_profile.data.repository.ProfileRepositoryImpl
+import com.example.notes.feature_profile.domain.repository.ProfileRepository
+import com.example.notes.feature_profile.domain.use_case.profileUseCases.ChangeEmailUseCase
+import com.example.notes.feature_profile.domain.use_case.profileUseCases.ChangePasswordUseCase
+import com.example.notes.feature_profile.domain.use_case.profileUseCases.ForgetPasswordUseCase
+import com.example.notes.feature_profile.domain.use_case.profileUseCases.LogInUseCase
+import com.example.notes.feature_profile.domain.use_case.profileUseCases.ProfileUseCases
+import com.example.notes.feature_profile.domain.use_case.profileUseCases.RegistrationUseCase
+import com.example.notes.feature_profile.domain.use_case.validationUseCases.ValidateEmail
+import com.example.notes.feature_profile.domain.use_case.validationUseCases.ValidatePassword
+import com.example.notes.feature_profile.domain.use_case.validationUseCases.ValidateRePassword
+import com.example.notes.feature_profile.domain.use_case.validationUseCases.ValidateTerms
+import com.example.notes.feature_profile.domain.use_case.validationUseCases.ValidateUseCases
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -58,5 +66,24 @@ object AppModule {
             validateTerms = ValidateTerms()
         )
     }
+
+    @Provides
+    @Singleton
+    fun provideProfileRepository(): ProfileRepository {
+        return ProfileRepositoryImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun provideProfileUseCases(repository: ProfileRepository): ProfileUseCases {
+        return ProfileUseCases(
+            logInUseCase = LogInUseCase(repository),
+            registrationUseCase = RegistrationUseCase(repository),
+            forgetPasswordUseCase = ForgetPasswordUseCase(repository),
+            changeEmailUseCase = ChangeEmailUseCase(repository),
+            changePasswordUseCase = ChangePasswordUseCase(repository)
+        )
+    }
+
 
 }

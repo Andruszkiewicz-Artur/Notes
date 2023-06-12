@@ -2,6 +2,7 @@ package com.example.notes.feature_profile.presentation.changePassword.compose
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -11,6 +12,10 @@ import com.example.notes.core.compose.button.StandardButton
 import com.example.notes.core.compose.textField.TextFieldBordered
 import com.example.notes.feature_profile.presentation.changePassword.ChangePasswordEvent
 import com.example.notes.feature_profile.presentation.changePassword.ChangePasswordViewModel
+import com.example.notes.feature_profile.presentation.changePassword.UiEventChangePassword
+import com.example.notes.feature_profile.presentation.login.UiEventLogin
+import com.example.notes.feature_profile.presentation.unit.presentation.ValidateText
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun ChangePasswordPresentation(
@@ -20,6 +25,17 @@ fun ChangePasswordPresentation(
     val oldPasswordState = viewModel.oldPassword.value
     val newPasswordState = viewModel.newPassword.value
     val rePasswordState = viewModel.rePassword.value
+    val state = viewModel.state.value
+
+    LaunchedEffect(key1 = true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is UiEventChangePassword.ChangePassword -> {
+                    navController.popBackStack()
+                }
+            }
+        }
+    }
     
     Box(
         contentAlignment = Alignment.TopCenter,
@@ -60,7 +76,9 @@ fun ChangePasswordPresentation(
                 isSecure = true
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            ValidateText(
+                text = state.errorNewPassword
+            )
 
             TextFieldBordered(
                 text = rePasswordState.text,
@@ -75,7 +93,11 @@ fun ChangePasswordPresentation(
                 isSecure = true
             )
 
-            Spacer(modifier = Modifier.height(40.dp))
+            ValidateText(
+                text = state.errorNewRePassword,
+                spaceModifier = Modifier
+                    .height(40.dp)
+            )
 
             StandardButton(
                 text = "Change Password"

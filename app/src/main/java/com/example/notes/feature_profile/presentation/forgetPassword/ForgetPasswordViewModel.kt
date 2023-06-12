@@ -5,20 +5,25 @@ import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavHostController
+import androidx.lifecycle.viewModelScope
 import com.example.notes.core.compose.textField.TextFieldState
-import com.example.notes.feature_profile.domain.use_case.ValidateUseCases
-import com.example.notes.feature_profile.presentation.profile.ProfileEvent
-import com.example.notes.feature_profile.presentation.registration.RegistrationEvent
+import com.example.notes.feature_profile.domain.use_case.profileUseCases.ProfileUseCases
+import com.example.notes.feature_profile.domain.use_case.validationUseCases.ValidateUseCases
+import com.example.notes.feature_profile.presentation.login.UiEventLogin
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ForgetPasswordViewModel @Inject constructor(
     private val application: Application,
-    private val validateUseCases: ValidateUseCases
+    private val validateUseCases: ValidateUseCases,
+    private val profileUseCases: ProfileUseCases
 ): ViewModel() {
 
     private val _email = mutableStateOf(TextFieldState(
@@ -28,6 +33,9 @@ class ForgetPasswordViewModel @Inject constructor(
 
     private val _state = mutableStateOf(ForgetPasswordState())
     val state: State<ForgetPasswordState> = _state
+
+    private val _eventFlow = MutableSharedFlow<UiEventForgetPassword>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     fun onEvent(event: ForgetPasswordEvent) {
         when (event) {
@@ -47,12 +55,17 @@ class ForgetPasswordViewModel @Inject constructor(
                 )
 
                 if(isNoneError()) {
-                    Firebase.auth.sendPasswordResetEmail(_state.value.email)
-                        .addOnCompleteListener { task ->
-                            if(task.isSuccessful) {
-                                Toast.makeText(application, "Email sent!", Toast.LENGTH_LONG).show()
-                            }
+                    val loginResult = profileUseCases.forgetPasswordUseCase.execute(
+                        email = _state.value.email
+                    )
+
+                    if(!loginResult.successful) {
+                        Toast.makeText(application, loginResult.errorMessage, Toast.LENGTH_LONG).show()
+                    } else {
+                        viewModelScope.launch {
+                            _eventFlow.emit(UiEventForgetPassword.ClickForgetPassword)
                         }
+                    }
                 }
             }
         }

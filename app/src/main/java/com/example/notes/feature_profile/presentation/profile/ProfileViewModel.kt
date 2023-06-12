@@ -20,18 +20,6 @@ class ProfileViewModel @Inject constructor(): ViewModel() {
     private val _state = mutableStateOf(ProfileState())
     val state: State<ProfileState> = _state
 
-    init {
-        val currentUser = auth.currentUser
-        if(currentUser != null) {
-            currentUser.let { user ->
-                _state.value = state.value.copy(
-                    email = user.email ?: "",
-                    isUser = true
-                )
-            }
-        }
-    }
-
     private val _eventFlow = MutableSharedFlow<UiEventProfile>()
     val eventFlow = _eventFlow.asSharedFlow()
 
@@ -52,6 +40,18 @@ class ProfileViewModel @Inject constructor(): ViewModel() {
 
                     _eventFlow.emit(UiEventProfile.LogOut)
                 }
+            }
+        }
+    }
+
+    fun initFunc() {
+        val currentUser = auth.currentUser
+        if(currentUser != null) {
+            currentUser.let { user ->
+                _state.value = state.value.copy(
+                    email = user.email ?: "",
+                    isUser = true
+                )
             }
         }
     }

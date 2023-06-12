@@ -5,15 +5,23 @@ import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.notes.core.compose.textField.TextFieldState
 import com.example.notes.feature_notes.presentation.auth
+import com.example.notes.feature_profile.domain.use_case.profileUseCases.ProfileUseCases
+import com.example.notes.feature_profile.domain.use_case.validationUseCases.ValidateUseCases
+import com.example.notes.feature_profile.presentation.login.UiEventLogin
 import com.google.firebase.auth.EmailAuthProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ChangePasswordViewModel @Inject constructor(
-    private val application: Application
+    private val application: Application,
+    private val profileUseCases: ProfileUseCases,
+    private val validateUseCases: ValidateUseCases
 ): ViewModel() {
 
     private val _oldPassword = mutableStateOf(TextFieldState(
@@ -33,6 +41,12 @@ class ChangePasswordViewModel @Inject constructor(
     )
     )
     val rePassword: State<TextFieldState> = _rePassword
+
+    private val _state = mutableStateOf(ChangePasswordState())
+    val state: State<ChangePasswordState> = _state
+
+    private val _eventFlow = MutableSharedFlow<UiEventChangePassword>()
+    val eventFlow = _eventFlow
 
     fun onEvent(event: ChangePasswordEvent) {
         when (event) {
@@ -67,47 +81,50 @@ class ChangePasswordViewModel @Inject constructor(
                 )
             }
             is ChangePasswordEvent.ResetPassword -> {
-                if (_oldPassword.value.text.isNotEmpty() && _newPassword.value.text.isNotEmpty() && _rePassword.value.text.isNotEmpty()) {
-                    if(_newPassword.value.text == _rePassword.value.text) {
-                        if(_newPassword.value.text.length >= 8) {
-                            if (_newPassword.value.text != _oldPassword.value.text) {
-                                if (auth.currentUser != null) {
-                                    val user = auth.currentUser!!
+                _state.value = state.value.copy(
+                    oldPassword = _oldPassword.value.text,
+                    newPassword = _newPassword.value.text,
+                    newRePassword = _rePassword.value.text
+                )
 
-                                    val credential = EmailAuthProvider
-                                        .getCredential(user.email!!, _oldPassword.value.text)
+                val user = auth.currentUser
 
-                                    user.reauthenticate(credential)
-                                        .addOnCompleteListener { task ->
-                                            if (task.isSuccessful) {
-                                                user.updatePassword(_newPassword.value.text)
-                                                    .addOnCompleteListener { task ->
-                                                        if (task.isSuccessful) {
-                                                            Toast.makeText(application, "Change password!", Toast.LENGTH_LONG).show()
-                                                        } else {
-                                                            Toast.makeText(application, "Problem with database!", Toast.LENGTH_LONG).show()
-                                                        }
-                                                    }
-                                            } else {
-                                                Toast.makeText(application, "Old password is wrong!", Toast.LENGTH_LONG).show()
-                                            }
-                                        }
-                                } else {
-                                    Toast.makeText(application, "Problem with Database!", Toast.LENGTH_LONG).show()
-                                }
-                            } else {
-                                Toast.makeText(application, "The new password is the same like the old one!", Toast.LENGTH_LONG).show()
-                            }
-                        } else {
-                            Toast.makeText(application, "Password is to short!", Toast.LENGTH_LONG).show()
-                        }
+                if (isNoneErrors() && user != null) {
+                   val changePasswordResult = profileUseCases.changePasswordUseCase.execute(
+                        user = user,
+                        email = user.email ?: "",
+                        oldPassword = _state.value.oldPassword,
+                        newPassword = _state.value.newPassword
+                    )
+
+                    if(!changePasswordResult.successful) {
+                        Toast.makeText(application, changePasswordResult.errorMessage, Toast.LENGTH_LONG).show()
                     } else {
-                        Toast.makeText(application, "Passwords are not the same!", Toast.LENGTH_LONG).show()
+                        viewModelScope.launch {
+                            _eventFlow.emit(UiEventChangePassword.ChangePassword)
+                        }
                     }
-                } else {
-                    Toast.makeText(application, "Fill all fields!", Toast.LENGTH_LONG).show()
                 }
             }
         }
+    }
+
+    private fun isNoneErrors(): Boolean {
+        val password = validateUseCases.validatePassword.execute(_newPassword.value.text)
+        val rePassword = validateUseCases.validateRePassword.execute(_newPassword.value.text, _rePassword.value.text)
+
+        val hasError = listOf(
+            password,
+            rePassword
+        ).any { !it.successful }
+
+        if (hasError) {
+            _state.value = state.value.copy(
+                errorNewPassword = password.errorMessage,
+                errorNewRePassword = password.errorMessage
+            )
+        }
+
+        return !hasError
     }
 }

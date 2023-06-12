@@ -1,4 +1,4 @@
-package com.example.notes.feature_profile.domain.use_case
+package com.example.notes.feature_profile.domain.use_case.validationUseCases
 
 data class ValidateUseCases(
     val validateEmail: ValidateEmail,

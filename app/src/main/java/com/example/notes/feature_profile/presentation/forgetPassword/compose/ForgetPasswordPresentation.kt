@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -13,7 +14,10 @@ import com.example.notes.core.compose.button.StandardButton
 import com.example.notes.core.compose.textField.TextFieldBordered
 import com.example.notes.feature_profile.presentation.forgetPassword.ForgetPasswordEvent
 import com.example.notes.feature_profile.presentation.forgetPassword.ForgetPasswordViewModel
+import com.example.notes.feature_profile.presentation.forgetPassword.UiEventForgetPassword
+import com.example.notes.feature_profile.presentation.login.UiEventLogin
 import com.example.notes.feature_profile.presentation.unit.presentation.ValidateText
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun ForgetPasswordPresentation(
@@ -22,6 +26,16 @@ fun ForgetPasswordPresentation(
 ) {
     val emailState = viewModel.email.value
     val state = viewModel.state.value
+
+    LaunchedEffect(key1 = true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is UiEventForgetPassword.ClickForgetPassword -> {
+                    navController.popBackStack()
+                }
+            }
+        }
+    }
 
     Box(
         contentAlignment = Alignment.Center,

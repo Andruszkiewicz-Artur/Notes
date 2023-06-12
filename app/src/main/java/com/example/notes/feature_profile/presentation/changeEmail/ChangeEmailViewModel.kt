@@ -5,16 +5,24 @@ import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.notes.core.compose.textField.TextFieldState
 import com.example.notes.feature_notes.presentation.auth
+import com.example.notes.feature_profile.domain.use_case.profileUseCases.ProfileUseCases
+import com.example.notes.feature_profile.domain.use_case.validationUseCases.ValidateUseCases
+import com.example.notes.feature_profile.presentation.changePassword.UiEventChangePassword
 import com.google.firebase.auth.EmailAuthCredential
 import com.google.firebase.auth.EmailAuthProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ChangeEmailViewModel @Inject constructor(
-    private val application: Application
+    private val application: Application,
+    private val profileUseCases: ProfileUseCases,
+    private val validateUseCases: ValidateUseCases
 ): ViewModel() {
 
     private val _password = mutableStateOf(TextFieldState(
@@ -26,6 +34,12 @@ class ChangeEmailViewModel @Inject constructor(
         placeholder = "New email..."
     ))
     val email: State<TextFieldState> = _email
+
+    private val _state = mutableStateOf(ChangeEmailState())
+    val state: State<ChangeEmailState> = _state
+
+    private val _eventFlow = MutableSharedFlow<UiEventChangeEmail>()
+    val eventFlow = _eventFlow
 
     fun onEvent(event: ChangeEmailEvent) {
         when (event) {
@@ -50,38 +64,44 @@ class ChangeEmailViewModel @Inject constructor(
                 )
             }
             is ChangeEmailEvent.ChangeEmail -> {
-                if (_password.value.text.isNotEmpty() && _email.value.text.isNotEmpty()) {
-                    if(_email.value.text.contains(".") && _email.value.text.contains("@")) {
-                        if (auth.currentUser != null) {
-                            val credential = EmailAuthProvider
-                                .getCredential(auth.currentUser!!.email!!, _password.value.text)
+                _state.value = state.value.copy(
+                    password = password.value.text,
+                    email = email.value.text
+                )
 
-                            auth.currentUser!!.reauthenticate(credential)
-                                .addOnCompleteListener { task ->
-                                    if (task.isSuccessful) {
-                                        auth.currentUser!!.updateEmail(_email.value.text)
-                                            .addOnCompleteListener { task ->
-                                                if (task.isSuccessful) {
-                                                    Toast.makeText(application, "Update email", Toast.LENGTH_LONG).show()
-                                                } else {
-                                                    Toast.makeText(application, "Problme with update email", Toast.LENGTH_LONG).show()
-                                                }
-                                            }
-                                    } else {
-                                        Toast.makeText(application, "Wrong password!", Toast.LENGTH_LONG).show()
-                                    }
-                                }
-                        } else {
-                            Toast.makeText(application, "Problem with database!", Toast.LENGTH_LONG).show()
-                        }
+                val user = auth.currentUser
+
+                if (isNoneError() && user != null) {
+                    val changeEmailResult = profileUseCases.changeEmailUseCase.execute(
+                        user = user,
+                        oldEmail = user.email ?: "",
+                        newEmail = _state.value.email,
+                        password = _state.value.password
+                    )
+
+                    if(!changeEmailResult.successful) {
+                        Toast.makeText(application, changeEmailResult.errorMessage, Toast.LENGTH_LONG).show()
                     } else {
-                        Toast.makeText(application, "Wrong email sentence!", Toast.LENGTH_LONG).show()
+                        viewModelScope.launch {
+                            _eventFlow.emit(UiEventChangeEmail.ChangeEmail)
+                        }
                     }
-                } else {
-                    Toast.makeText(application, "Fill all fields!", Toast.LENGTH_LONG).show()
                 }
             }
         }
     }
 
+    private fun isNoneError(): Boolean {
+        val email = validateUseCases.validateEmail.execute(_state.value.email)
+
+        val hasError = !email.successful
+
+        if (hasError) {
+            _state.value = state.value.copy(
+                errorEmail = email.errorMessage
+            )
+        }
+
+        return !hasError
+    }
 }

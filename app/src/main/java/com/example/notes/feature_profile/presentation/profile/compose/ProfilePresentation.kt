@@ -34,6 +34,8 @@ fun ProfilePresentation(
     val state = viewModel.state
 
     LaunchedEffect(key1 = true) {
+        viewModel.initFunc()
+
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is UiEventProfile.LogOut -> {

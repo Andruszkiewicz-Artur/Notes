@@ -2,6 +2,7 @@ package com.example.notes.feature_profile.presentation.changeEmail.compose
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -11,6 +12,10 @@ import com.example.notes.core.compose.button.StandardButton
 import com.example.notes.core.compose.textField.TextFieldBordered
 import com.example.notes.feature_profile.presentation.changeEmail.ChangeEmailEvent
 import com.example.notes.feature_profile.presentation.changeEmail.ChangeEmailViewModel
+import com.example.notes.feature_profile.presentation.changeEmail.UiEventChangeEmail
+import com.example.notes.feature_profile.presentation.changePassword.UiEventChangePassword
+import com.example.notes.feature_profile.presentation.unit.presentation.ValidateText
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun ChangeEmailPresentation(
@@ -19,6 +24,17 @@ fun ChangeEmailPresentation(
 ) {
     val passwordState = viewModel.password.value
     val emailState = viewModel.email.value
+    val state = viewModel.state.value
+
+    LaunchedEffect(key1 = true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is UiEventChangeEmail.ChangeEmail -> {
+                    navController.popBackStack()
+                }
+            }
+        }
+    }
 
     Box(
         contentAlignment = Alignment.TopCenter,
@@ -57,7 +73,11 @@ fun ChangeEmailPresentation(
                 isPlaceholder = emailState.isPlaceholder
             )
 
-            Spacer(modifier = Modifier.height(40.dp))
+            ValidateText(
+                text = state.errorEmail,
+                spaceModifier = Modifier
+                    .height(40.dp)
+            )
 
             StandardButton(
                 text = "Change email"
