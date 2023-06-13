@@ -27,18 +27,11 @@ class ProfileRepositoryImpl(): ProfileRepository {
     }
 
     override fun Registration(email: String, password: String): ValidationResult {
-        var errorMessage: String? = null
-
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    errorMessage = "Problem with database"
-                }
-            }
+        val result = auth.createUserWithEmailAndPassword(email, password)
 
         return ValidationResult(
-            successful = errorMessage == null,
-            errorMessage = errorMessage
+            successful = result.isSuccessful,
+            errorMessage = result.exception?.message
         )
     }
 

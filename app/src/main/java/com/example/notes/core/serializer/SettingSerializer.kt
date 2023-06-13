@@ -1,21 +1,21 @@
 package com.example.notes.core.serializer
 
 import androidx.datastore.core.Serializer
-import com.example.notes.core.model.Settings
+import com.example.notes.core.model.ProfileModel
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.io.InputStream
 import java.io.OutputStream
 
 @Suppress("BlockingMethodInNonBlockingContext")
-object SettingSerializer: Serializer<Settings> {
-    override val defaultValue: Settings
-        get() = Settings()
+object SettingSerializer: Serializer<ProfileModel> {
+    override val defaultValue: ProfileModel
+        get() = ProfileModel()
 
-    override suspend fun readFrom(input: InputStream): Settings {
+    override suspend fun readFrom(input: InputStream): ProfileModel {
         return try {
             Json.decodeFromString(
-                deserializer = Settings.serializer(),
+                deserializer = ProfileModel.serializer(),
                 string = input.readBytes().decodeToString()
             )
         } catch (e: SerializationException) {
@@ -24,10 +24,10 @@ object SettingSerializer: Serializer<Settings> {
         }
     }
 
-    override suspend fun writeTo(t: Settings, output: OutputStream) {
+    override suspend fun writeTo(t: ProfileModel, output: OutputStream) {
         output.write(
             Json.encodeToString(
-                serializer = Settings.serializer(),
+                serializer = ProfileModel.serializer(),
                 value = t
             ).encodeToByteArray()
         )

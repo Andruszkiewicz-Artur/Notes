@@ -1,4 +1,4 @@
-package com.example.notes.feature_notes.domain.use_case
+package com.example.notes.feature_notes.domain.use_case.local
 
 data class NotesUseCases(
     val getAllNotesUseCase: GetAllNotesUseCase,

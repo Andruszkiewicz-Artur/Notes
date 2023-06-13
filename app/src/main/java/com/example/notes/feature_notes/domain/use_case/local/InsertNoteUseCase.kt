@@ -1,4 +1,4 @@
-package com.example.notes.feature_notes.domain.use_case
+package com.example.notes.feature_notes.domain.use_case.local
 
 import com.example.notes.notes_future.domain.model.InvalidNoteException
 import com.example.notes.notes_future.domain.model.Note

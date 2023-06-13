@@ -4,8 +4,10 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.notes.feature_notes.domain.repository.NotesRemoteRepository
 import com.example.notes.notes_future.domain.model.Note
-import com.example.notes.feature_notes.domain.use_case.NotesUseCases
+import com.example.notes.feature_notes.domain.use_case.local.NotesUseCases
+import com.example.notes.feature_notes.domain.use_case.remote.RemoteUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
@@ -15,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NotesViewModel @Inject constructor(
-    private val notesUseCases: NotesUseCases
+    private val notesUseCases: NotesUseCases,
+    private val remoteUseCases: RemoteUseCases
 ): ViewModel() {
 
     private val _state = mutableStateOf(NotesState())
@@ -38,5 +41,13 @@ class NotesViewModel @Inject constructor(
                 notes = notes
             )
         }.launchIn(viewModelScope)
+    }
+
+    private fun checkSynchronizeData() {
+        val isSynchronize = remoteUseCases.checkIsSynchronize
+    }
+
+    private fun getAllRemoteNotes() {
+
     }
 }

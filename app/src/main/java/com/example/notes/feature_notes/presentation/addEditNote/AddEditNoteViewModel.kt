@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.notes.core.compose.textField.TextFieldState
 import com.example.notes.notes_future.domain.model.InvalidNoteException
 import com.example.notes.notes_future.domain.model.Note
-import com.example.notes.feature_notes.domain.use_case.NotesUseCases
+import com.example.notes.feature_notes.domain.use_case.local.NotesUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
