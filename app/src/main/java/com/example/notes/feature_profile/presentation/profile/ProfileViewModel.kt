@@ -1,13 +1,12 @@
 package com.example.notes.feature_profile.presentation.profile
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.datastore.dataStore
+import androidx.core.util.rangeTo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.notes.core.serializer.SettingSerializer
+import com.example.notes.core.value.profileSetting
 import com.example.notes.feature_notes.domain.unit.Resource
 import com.example.notes.feature_notes.domain.use_case.remote.RemoteUseCases
 import com.example.notes.feature_notes.presentation.auth
@@ -35,7 +34,7 @@ class ProfileViewModel @Inject constructor(
                     isSynchronized = event.isSaved
                 )
                 val result = remoteUseCases.setUpSynchronizeUseCase.execute(_state.value.isSynchronized)
-                Log.d("Result set up synchronize", result.errorMessage ?: "None")
+                profileSetting?.isSynchronize = _state.value.isSynchronized
             }
             is ProfileEvent.LogOut -> {
                 viewModelScope.launch {
@@ -46,6 +45,7 @@ class ProfileViewModel @Inject constructor(
                     )
 
                     _eventFlow.emit(UiEventProfile.LogOut)
+                    profileSetting = null
                 }
             }
         }
@@ -54,18 +54,20 @@ class ProfileViewModel @Inject constructor(
     fun initFunc() {
         val currentUser = auth.currentUser
         if(currentUser != null) {
-            viewModelScope.launch {
-                val result = remoteUseCases.checkIsSynchronize.execute()
-                Log.d("result in profile", result.data.toString())
+            if (profileSetting?.isSynchronize == null) {
+                viewModelScope.launch {
+                    val result = remoteUseCases.checkIsSynchronize.execute()
 
-                when (result) {
-                    is Resource.Error -> {
-                        Log.d("Error isSynchronize", result.message.toString())
-                    }
-                    is Resource.Success -> {
-                        _state.value = state.value.copy(
-                            isSynchronized = result.data ?: _state.value.isSynchronized
-                        )
+                    when (result) {
+                        is Resource.Error -> {
+                            Log.d("Error isSynchronize", result.message.toString())
+                        }
+                        is Resource.Success -> {
+                            _state.value = state.value.copy(
+                                isSynchronized = result.data ?: _state.value.isSynchronized
+                            )
+                            profileSetting?.isSynchronize = result.data
+                        }
                     }
                 }
             }
@@ -73,7 +75,8 @@ class ProfileViewModel @Inject constructor(
             currentUser.let { user ->
                 _state.value = state.value.copy(
                     email = user.email ?: "",
-                    isUser = true
+                    isUser = true,
+                    isSynchronized = profileSetting?.isSynchronize ?: false
                 )
             }
         }

@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ProfileModel (
-    val isSynchronize: Boolean = false
+    var isSynchronize: Boolean? = null
 )

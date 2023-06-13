@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.notes.core.compose.checkBox.CheckBoxState
 import com.example.notes.core.compose.textField.TextFieldState
+import com.example.notes.core.model.ProfileModel
+import com.example.notes.core.value.profileSetting
 import com.example.notes.feature_notes.presentation.auth
 import com.example.notes.feature_profile.domain.use_case.profileUseCases.ProfileUseCases
 import com.example.notes.feature_profile.domain.use_case.validationUseCases.ValidateUseCases
@@ -108,6 +110,7 @@ class RegistrationViewModel @Inject constructor(
                     if(!registrationResult.successful) {
                         Toast.makeText(application, registrationResult.errorMessage, Toast.LENGTH_LONG).show()
                     } else {
+                        profileSetting = ProfileModel()
                         viewModelScope.launch {
                             _eventFlow.emit(UiEventRegistration.Register)
                         }

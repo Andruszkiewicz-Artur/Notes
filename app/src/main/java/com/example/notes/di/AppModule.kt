@@ -114,10 +114,4 @@ object AppModule {
             setUpSynchronizeUseCase = SetUpSynchronizeUseCase(repository)
         )
     }
-
-    @Provides
-    @Singleton
-    fun provideProfileModel(): ProfileModel {
-        return ProfileModel()
-    }
 }

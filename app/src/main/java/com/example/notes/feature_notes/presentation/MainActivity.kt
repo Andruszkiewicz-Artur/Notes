@@ -24,8 +24,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.notes.core.compose.BottomBar
 import com.example.notes.core.compose.BottomBar.BottomBarScreen
+import com.example.notes.core.model.ProfileModel
 import com.example.notes.core.util.graph.RootNavGraph
 import com.example.notes.core.util.graph.Screen
+import com.example.notes.core.value.profileSetting
 import com.example.notes.ui.theme.NotesTheme
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -45,6 +47,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         auth = Firebase.auth
+
+        if (auth.currentUser != null) {
+            profileSetting = ProfileModel()
+        }
 
         setContent {
             navHostController = rememberNavController()
