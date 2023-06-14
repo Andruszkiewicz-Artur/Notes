@@ -3,6 +3,7 @@ package com.example.notes.notes_future.domain.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.notes.feature_notes.domain.model.StatusNoteEnum
 
 @Entity(tableName = "notes")
 data class Note(
@@ -16,7 +17,10 @@ data class Note(
     val content: String,
 
     @ColumnInfo(name = "timeCreate")
-    val timeCreate: Long
+    val timeCreate: Long,
+
+    @ColumnInfo(name = "status")
+    val status: StatusNoteEnum
 )
 
 class InvalidNoteException(message: String): Exception(message)
