@@ -13,32 +13,37 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 import kotlinx.serialization.json.Json
 
-@Suppress("KotlinConstantConditions")
 class NotesRemoteRepositoryImpl(): NotesRemoteRepository {
 
     companion object {
-        val ref = Firebase.database.reference
-        val auth = FirebaseAuth.getInstance()
+        private val ref = Firebase.database.reference
+        private val auth = FirebaseAuth.getInstance()
     }
 
-    override fun takeAllNotes(): Resource<List<RemoteNoteModel>> {
+    override suspend fun takeAllNotes(): Resource<List<RemoteNoteModel>> {
         return Resource.Success(
             data = emptyList()
         )
     }
 
-    override fun uploadNotes(idUser: String, remoteNoteModel: RemoteNoteModel): ValidationResult {
-        var errorMessage: String? = null
+    override suspend fun uploadNotes(remoteNoteModel: RemoteNoteModel): ValidationResult {
+        val userId = auth.uid
 
-        val jsonValue = Json.parseToJsonElement(remoteNoteModel.toString())
-        Log.d("Json result", jsonValue.toString())
-        Log.d("String result", remoteNoteModel.toString())
+        if (userId != null) {
+            val result = ref.child(userId)
+                            .child("notes")
+                            .child(remoteNoteModel.id)
+                            .setValue(remoteNoteModel.value)
 
-//        database.child(idUser).child("notes").child(jsonValue.toString())
+            return ValidationResult(
+                successful = result.isSuccessful,
+                errorMessage = result.exception?.message
+            )
+        }
 
         return ValidationResult(
-            successful = errorMessage == null,
-            errorMessage = errorMessage
+            successful = false,
+            errorMessage = "Problem with taking userId"
         )
     }
 

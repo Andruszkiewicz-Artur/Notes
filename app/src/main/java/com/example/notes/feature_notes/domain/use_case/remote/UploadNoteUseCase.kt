@@ -8,9 +8,8 @@ class UploadNoteUseCase(
     private val repository: NotesRemoteRepository
 ) {
 
-    fun execute(idUser: String, remoteNoteModel: RemoteNoteModel): ValidationResult {
+    suspend fun execute(remoteNoteModel: RemoteNoteModel): ValidationResult {
         return repository.uploadNotes(
-            idUser = idUser,
             remoteNoteModel = remoteNoteModel
         )
     }

@@ -6,9 +6,9 @@ import com.example.notes.feature_profile.domain.unit.ValidationResult
 
 interface NotesRemoteRepository {
 
-    fun takeAllNotes(): Resource<List<RemoteNoteModel>>
+    suspend fun takeAllNotes(): Resource<List<RemoteNoteModel>>
 
-    fun uploadNotes(idUser: String, remoteNoteModel: RemoteNoteModel): ValidationResult
+    suspend fun uploadNotes(remoteNoteModel: RemoteNoteModel): ValidationResult
 
     fun setUpSynchronize(isSynchronized: Boolean): ValidationResult
 

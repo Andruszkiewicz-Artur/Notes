@@ -1,14 +1,17 @@
 package com.example.notes.feature_notes.presentation.addEditNote
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.notes.core.compose.textField.TextFieldState
+import com.example.notes.feature_notes.data.mapper.toRemoteNote
 import com.example.notes.notes_future.domain.model.InvalidNoteException
 import com.example.notes.notes_future.domain.model.Note
 import com.example.notes.feature_notes.domain.use_case.local.NotesUseCases
+import com.example.notes.feature_notes.domain.use_case.remote.RemoteUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -18,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AddEditNoteViewModel @Inject constructor(
     private val notesUseCases: NotesUseCases,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val remoteUseCases: RemoteUseCases
 ): ViewModel() {
 
     private val _title = mutableStateOf(
@@ -84,16 +88,16 @@ class AddEditNoteViewModel @Inject constructor(
             }
             is AddEditNoteEvent.SaveNote -> {
                 if (_title.value.text.isNotEmpty() && _content.value.text.isNotEmpty()) {
+                    val note = Note(
+                        id = currentId,
+                        title = _title.value.text,
+                        content = _content.value.text,
+                        timeCreate = System.currentTimeMillis()
+                    )
+
                     viewModelScope.launch {
                         try {
-                            notesUseCases.insertNoteUseCase.invoke(
-                                Note(
-                                    id = currentId,
-                                    title = _title.value.text,
-                                    content = _content.value.text,
-                                    timeCreate = System.currentTimeMillis()
-                                )
-                            )
+                            notesUseCases.insertNoteUseCase.invoke(note)
                             _eventFlow.emit(UiEvent.SaveNote)
                         } catch (e: InvalidNoteException) {
                             _eventFlow.emit(
@@ -101,6 +105,11 @@ class AddEditNoteViewModel @Inject constructor(
                                     message = e.message ?: "Couldn't`t save note!"
                                 )
                             )
+                        }
+
+                        val result = remoteUseCases.uploadNoteUseCase.execute(note.toRemoteNote())
+                        if(!result.successful) {
+                            Log.d("Problem with add note to firebase", result.errorMessage ?: "Unknown error")
                         }
                     }
                 }

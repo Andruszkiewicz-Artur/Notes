@@ -8,7 +8,7 @@ class TakeAllNotesUseCase(
     private val repository: NotesRemoteRepository
 ) {
 
-    fun execute(): Resource<List<RemoteNoteModel>> {
+    suspend fun execute(): Resource<List<RemoteNoteModel>> {
         return repository.takeAllNotes()
     }
 }
