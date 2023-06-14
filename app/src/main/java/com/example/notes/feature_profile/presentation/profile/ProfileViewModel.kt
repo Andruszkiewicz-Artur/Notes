@@ -10,6 +10,7 @@ import com.example.notes.core.value.profileSetting
 import com.example.notes.feature_notes.domain.unit.Resource
 import com.example.notes.feature_notes.domain.use_case.remote.RemoteUseCases
 import com.example.notes.feature_notes.presentation.auth
+import com.example.notes.feature_profile.domain.use_case.profileUseCases.ProfileUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -18,14 +19,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val remoteUseCases: RemoteUseCases
+    private val remoteUseCases: RemoteUseCases,
+    private val profileUseCases: ProfileUseCases
 ): ViewModel() {
 
     private val _state = mutableStateOf(ProfileState())
     val state: State<ProfileState> = _state
-
-    private val _eventFlow = MutableSharedFlow<UiEventProfile>()
-    val eventFlow = _eventFlow.asSharedFlow()
 
     fun onEvent(event: ProfileEvent) {
         when (event) {
@@ -38,14 +37,18 @@ class ProfileViewModel @Inject constructor(
             }
             is ProfileEvent.LogOut -> {
                 viewModelScope.launch {
-                    auth.signOut()
-                    _state.value = state.value.copy(
-                        email = "",
-                        isUser = false
-                    )
+                    val result = profileUseCases.logOutUseCase.execute()
 
-                    _eventFlow.emit(UiEventProfile.LogOut)
-                    profileSetting = null
+                    if(result.successful) {
+                        _state.value = state.value.copy(
+                            email = "",
+                            isUser = false
+                        )
+
+                        profileSetting = null
+                    } else {
+                        Log.d("Problem with login", result.errorMessage.toString())
+                    }
                 }
             }
         }

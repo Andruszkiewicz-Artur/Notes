@@ -5,5 +5,6 @@ data class ProfileUseCases(
     val registrationUseCase: RegistrationUseCase,
     val forgetPasswordUseCase: ForgetPasswordUseCase,
     val changePasswordUseCase: ChangePasswordUseCase,
-    val changeEmailUseCase: ChangeEmailUseCase
+    val changeEmailUseCase: ChangeEmailUseCase,
+    val logOutUseCase: LogOutUseCase
 )

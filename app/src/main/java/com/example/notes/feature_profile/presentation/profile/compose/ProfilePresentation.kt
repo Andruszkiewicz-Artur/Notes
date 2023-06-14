@@ -19,6 +19,7 @@ import androidx.navigation.NavHostController
 import com.example.notes.core.compose.button.ListButton
 import com.example.notes.core.compose.button.StandardButton
 import com.example.notes.core.util.graph.Screen
+import com.example.notes.feature_notes.presentation.auth
 import com.example.notes.feature_profile.presentation.profile.ProfileEvent
 import com.example.notes.feature_profile.presentation.profile.ProfileViewModel
 import com.example.notes.feature_profile.presentation.profile.UiEventProfile
@@ -33,16 +34,8 @@ fun ProfilePresentation(
 ) {
     val state = viewModel.state
 
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(key1 = true, key2 = auth.currentUser) {
         viewModel.initFunc()
-
-        viewModel.eventFlow.collectLatest { event ->
-            when (event) {
-                is UiEventProfile.LogOut -> {
-                    navController.navigate(Screen.Login.route)
-                }
-            }
-        }
     }
 
     if (state.value.isUser) {

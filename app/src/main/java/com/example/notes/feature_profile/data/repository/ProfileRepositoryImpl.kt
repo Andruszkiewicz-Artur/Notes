@@ -1,6 +1,5 @@
 package com.example.notes.feature_profile.data.repository
 
-import android.widget.Toast
 import com.example.notes.feature_notes.presentation.auth
 import com.example.notes.feature_profile.domain.repository.ProfileRepository
 import com.example.notes.feature_profile.domain.unit.ValidationResult
@@ -23,6 +22,15 @@ class ProfileRepositoryImpl(): ProfileRepository {
         return ValidationResult(
             successful = errorMessage == null,
             errorMessage = errorMessage
+        )
+    }
+
+    override fun LogOut(): ValidationResult {
+        val result = auth.signOut()
+
+        return ValidationResult(
+            successful = auth.currentUser == null,
+            errorMessage = if (auth.currentUser == null) null else "Problem with log out"
         )
     }
 

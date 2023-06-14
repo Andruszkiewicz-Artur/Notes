@@ -25,6 +25,7 @@ import com.example.notes.feature_profile.domain.use_case.profileUseCases.ChangeE
 import com.example.notes.feature_profile.domain.use_case.profileUseCases.ChangePasswordUseCase
 import com.example.notes.feature_profile.domain.use_case.profileUseCases.ForgetPasswordUseCase
 import com.example.notes.feature_profile.domain.use_case.profileUseCases.LogInUseCase
+import com.example.notes.feature_profile.domain.use_case.profileUseCases.LogOutUseCase
 import com.example.notes.feature_profile.domain.use_case.profileUseCases.ProfileUseCases
 import com.example.notes.feature_profile.domain.use_case.profileUseCases.RegistrationUseCase
 import com.example.notes.feature_profile.domain.use_case.validationUseCases.ValidateEmail
@@ -94,7 +95,8 @@ object AppModule {
             registrationUseCase = RegistrationUseCase(repository),
             forgetPasswordUseCase = ForgetPasswordUseCase(repository),
             changeEmailUseCase = ChangeEmailUseCase(repository),
-            changePasswordUseCase = ChangePasswordUseCase(repository)
+            changePasswordUseCase = ChangePasswordUseCase(repository),
+            logOutUseCase = LogOutUseCase(repository)
         )
     }
 
