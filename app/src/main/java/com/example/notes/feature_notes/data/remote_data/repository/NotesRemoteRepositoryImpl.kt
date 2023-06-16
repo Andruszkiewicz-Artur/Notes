@@ -21,8 +21,21 @@ class NotesRemoteRepositoryImpl(): NotesRemoteRepository {
     }
 
     override suspend fun takeAllNotes(): Resource<List<RemoteNoteModel>> {
-        return Resource.Success(
-            data = emptyList()
+        val userId = auth.uid
+
+        if (userId != null) {
+            val result = ref.child(userId)
+                .child("notes")
+                .get()
+
+//            return ValidationResult(
+//                successful = result.isSuccessful,
+//                errorMessage = result.exception?.message ?: "UnkownError"
+//            )
+        }
+
+        return Resource.Error(
+            message = "Problem with taking userId"
         )
     }
 

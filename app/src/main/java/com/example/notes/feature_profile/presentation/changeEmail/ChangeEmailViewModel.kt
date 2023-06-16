@@ -6,6 +6,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.notes.R
 import com.example.notes.core.compose.textField.TextFieldState
 import com.example.notes.feature_notes.presentation.auth
 import com.example.notes.feature_profile.domain.use_case.profileUseCases.ProfileUseCases
@@ -26,12 +27,12 @@ class ChangeEmailViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _password = mutableStateOf(TextFieldState(
-        placeholder = "Current password..."
+        placeholder = R.string.CurrentPassword.toString()
     ))
     val password: State<TextFieldState> = _password
 
     private val _email = mutableStateOf(TextFieldState(
-        placeholder = "New email..."
+        placeholder = R.string.NewEmail.toString()
     ))
     val email: State<TextFieldState> = _email
 

@@ -1,5 +1,6 @@
 package com.example.notes.feature_profile.domain.use_case.validationUseCases
 
+import com.example.notes.R
 import com.example.notes.feature_profile.domain.unit.ValidationResult
 
 class ValidateTerms {
@@ -8,7 +9,7 @@ class ValidateTerms {
         if(!isAccepted) {
             return ValidationResult(
                 successful = false,
-                errorMessage = "Terms are not accepted"
+                errorMessage = R.string.TermsNotAccepted.toString()
             )
         }
 

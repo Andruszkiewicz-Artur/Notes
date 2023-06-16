@@ -1,5 +1,6 @@
 package com.example.notes.feature_profile.data.repository
 
+import com.example.notes.R
 import com.example.notes.feature_notes.presentation.auth
 import com.example.notes.feature_profile.domain.repository.ProfileRepository
 import com.example.notes.feature_profile.domain.unit.ValidationResult
@@ -15,7 +16,7 @@ class ProfileRepositoryImpl(): ProfileRepository {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (!task.isSuccessful) {
-                    errorMessage = "Problem with database"
+                    errorMessage = R.string.ProblemWithDatabase.toString()
                 }
             }
 
@@ -30,7 +31,7 @@ class ProfileRepositoryImpl(): ProfileRepository {
 
         return ValidationResult(
             successful = auth.currentUser == null,
-            errorMessage = if (auth.currentUser == null) null else "Problem with log out"
+            errorMessage = if (auth.currentUser == null) null else R.string.ProblemWithLogOut.toString()
         )
     }
 
@@ -49,7 +50,7 @@ class ProfileRepositoryImpl(): ProfileRepository {
         Firebase.auth.sendPasswordResetEmail(email)
             .addOnCompleteListener { task ->
                 if (!task.isSuccessful) {
-                    errorMessage = "Problem with database"
+                    errorMessage = R.string.ProblemWithDatabase.toString()
                 }
             }
 
@@ -75,11 +76,11 @@ class ProfileRepositoryImpl(): ProfileRepository {
                     user.updatePassword(newPassword)
                         .addOnCompleteListener { task ->
                             if (!task.isSuccessful) {
-                                errorMessage = "Problem with database!"
+                                errorMessage = R.string.ProblemWithDatabase.toString()
                             }
                         }
                 } else {
-                    errorMessage = "Old password is wrong!"
+                    errorMessage = R.string.OldPasswordIsWrong.toString()
                 }
             }
 
@@ -105,11 +106,11 @@ class ProfileRepositoryImpl(): ProfileRepository {
                     user.updateEmail(newEmail)
                         .addOnCompleteListener { task ->
                             if (!task.isSuccessful) {
-                                errorMessage = "Old password is wrong!"
+                                errorMessage = R.string.OldPasswordIsWrong.toString()
                             }
                         }
                 } else {
-                    errorMessage = "Wrong password!"
+                    errorMessage = R.string.WrongPassword.toString()
                 }
             }
 

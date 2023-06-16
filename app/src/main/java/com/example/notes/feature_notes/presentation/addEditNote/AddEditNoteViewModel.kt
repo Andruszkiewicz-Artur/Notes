@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.example.notes.R
 
 @HiltViewModel
 class AddEditNoteViewModel @Inject constructor(
@@ -28,14 +29,14 @@ class AddEditNoteViewModel @Inject constructor(
 
     private val _title = mutableStateOf(
         TextFieldState(
-            placeholder = "Title..."
+            placeholder = R.string.Title.toString()
         )
     )
     val title: State<TextFieldState> = _title
 
     private val _content = mutableStateOf(
         TextFieldState(
-            placeholder = "Add content..."
+            placeholder = R.string.AddContent.toString()
         )
     )
     val content: State<TextFieldState> = _content
@@ -89,29 +90,35 @@ class AddEditNoteViewModel @Inject constructor(
             }
             is AddEditNoteEvent.SaveNote -> {
                 if (_title.value.text.isNotEmpty() && _content.value.text.isNotEmpty()) {
+                    val currentTime = System.currentTimeMillis()
+
                     val note = Note(
-                        id = currentId,
+                        id = currentId ?: currentTime.toInt(),
                         title = _title.value.text,
                         content = _content.value.text,
-                        timeCreate = System.currentTimeMillis(),
+                        timeCreate = currentTime,
                         status = StatusNoteEnum.Local
                     )
 
                     viewModelScope.launch {
+                        val result = remoteUseCases.uploadNoteUseCase.execute(note.toRemoteNote())
+                        if(!result.successful) {
+                            Log.d("Problem with add note to firebase", result.errorMessage ?: "Unknown error")
+                        }
+
+                        if(result.successful) {
+                            note.status = StatusNoteEnum.Sending
+                        }
+
                         try {
                             notesUseCases.insertNoteUseCase.invoke(note)
                             _eventFlow.emit(UiEvent.SaveNote)
                         } catch (e: InvalidNoteException) {
                             _eventFlow.emit(
                                 UiEvent.ShowSnackbar(
-                                    message = e.message ?: "Couldn't`t save note!"
+                                    message = e.message ?: R.string.CouldntSaveNote.toString()
                                 )
                             )
-                        }
-
-                        val result = remoteUseCases.uploadNoteUseCase.execute(note.toRemoteNote())
-                        if(!result.successful) {
-                            Log.d("Problem with add note to firebase", result.errorMessage ?: "Unknown error")
                         }
                     }
                 }

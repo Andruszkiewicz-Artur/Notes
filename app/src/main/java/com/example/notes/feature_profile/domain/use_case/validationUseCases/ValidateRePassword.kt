@@ -1,5 +1,6 @@
 package com.example.notes.feature_profile.domain.use_case.validationUseCases
 
+import com.example.notes.R
 import com.example.notes.feature_profile.domain.unit.ValidationResult
 
 class ValidateRePassword {
@@ -8,7 +9,7 @@ class ValidateRePassword {
         if(password != rePassword) {
             return ValidationResult(
                 successful = false,
-                errorMessage = "Passwords are not the same"
+                errorMessage = R.string.SamePassword.toString()
             )
         }
 

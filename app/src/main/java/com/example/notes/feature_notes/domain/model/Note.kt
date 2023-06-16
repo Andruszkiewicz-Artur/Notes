@@ -20,7 +20,7 @@ data class Note(
     val timeCreate: Long,
 
     @ColumnInfo(name = "status")
-    val status: StatusNoteEnum
+    var status: StatusNoteEnum
 )
 
 class InvalidNoteException(message: String): Exception(message)

@@ -1,10 +1,6 @@
 package com.example.notes.notes_future.presentation.profile.compose
 
-import android.widget.Space
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -12,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -22,10 +18,8 @@ import com.example.notes.core.util.graph.Screen
 import com.example.notes.feature_notes.presentation.auth
 import com.example.notes.feature_profile.presentation.profile.ProfileEvent
 import com.example.notes.feature_profile.presentation.profile.ProfileViewModel
-import com.example.notes.feature_profile.presentation.profile.UiEventProfile
 import com.example.notes.feature_profile.presentation.profile.compose.LoginRegisterPresentation
-import com.example.notes.feature_profile.presentation.registration.RegistrationEvent
-import kotlinx.coroutines.flow.collectLatest
+import com.example.notes.R
 
 @Composable
 fun ProfilePresentation(
@@ -58,14 +52,14 @@ fun ProfilePresentation(
                 Spacer(modifier = Modifier.height(40.dp))
 
                 ListButton(
-                    text = "Change Email",
+                    text = stringResource(id = R.string.ChangeEmail),
                     onClick = {
                         navController.navigate(Screen.ChangeEmail.route)
                     }
                 )
 
                 ListButton(
-                    text = "Change Password",
+                    text = stringResource(id = R.string.ChangePassword),
                     onClick = {
                         navController.navigate(Screen.ChangePassword.route)
                     }
@@ -79,7 +73,7 @@ fun ProfilePresentation(
                         .padding(vertical = 8.dp)
                 ) {
                     Text(
-                        text = "Synchronize data"
+                        text = stringResource(id = R.string.SynchronizeData)
                     )
 
                     Switch(
@@ -93,7 +87,7 @@ fun ProfilePresentation(
                 Spacer(modifier = Modifier.height(40.dp))
 
                 StandardButton(
-                    text = "Log out"
+                    text = stringResource(id = R.string.LogOut)
                 ) {
                     viewModel.onEvent(ProfileEvent.LogOut)
                 }

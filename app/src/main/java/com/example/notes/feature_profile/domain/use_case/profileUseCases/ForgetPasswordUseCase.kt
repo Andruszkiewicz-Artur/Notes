@@ -1,5 +1,6 @@
 package com.example.notes.feature_profile.domain.use_case.profileUseCases
 
+import com.example.notes.R
 import com.example.notes.feature_profile.domain.repository.ProfileRepository
 import com.example.notes.feature_profile.domain.unit.ValidationResult
 
@@ -11,7 +12,7 @@ class ForgetPasswordUseCase(
         if(email.isBlank()) {
             return ValidationResult(
                 successful = false,
-                errorMessage = "Fill field!"
+                errorMessage = R.string.FillField.toString()
             )
         }
 

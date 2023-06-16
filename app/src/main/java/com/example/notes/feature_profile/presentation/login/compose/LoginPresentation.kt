@@ -14,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -25,6 +26,7 @@ import com.example.notes.feature_profile.presentation.login.LoginEvent.ClickLogi
 import com.example.notes.feature_profile.presentation.login.LoginViewModel
 import com.example.notes.feature_profile.presentation.login.UiEventLogin
 import kotlinx.coroutines.flow.collectLatest
+import com.example.notes.R
 
 @Composable
 fun LoginPresentation(
@@ -61,12 +63,12 @@ fun LoginPresentation(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "Login",
+                    text = stringResource(id = R.string.Login),
                     style = MaterialTheme.typography.headlineLarge
                 )
 
                 Text(
-                    text = "Welcome back!",
+                    text = stringResource(id = R.string.WelcomeBack),
                     style = MaterialTheme.typography.headlineSmall
                 )
             }
@@ -108,7 +110,7 @@ fun LoginPresentation(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "Forget password?",
+                    text = stringResource(id = R.string.ForgetPassword),
                     modifier = Modifier
                         .clickable {
                             navController.navigate(Screen.ForgetPassword.route)
@@ -119,7 +121,7 @@ fun LoginPresentation(
             Spacer(modifier = Modifier.height(20.dp))
 
             StandardButton(
-                text = "Login"
+                text = stringResource(id = R.string.Login)
             ) {
                 viewModel.onEvent(ClickLogin(navController))
             }
@@ -131,7 +133,7 @@ fun LoginPresentation(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "Or"
+                    text = stringResource(id = R.string.Or)
                 )
             }
 
@@ -150,7 +152,7 @@ fun LoginPresentation(
                 ),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
             ) {
-                Text(text = "Register")
+                Text(text = stringResource(id = R.string.Register))
             }
         }
     }

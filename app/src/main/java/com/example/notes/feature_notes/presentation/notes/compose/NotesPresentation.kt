@@ -23,10 +23,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.notes.R
 import com.example.notes.notes_future.domain.model.Note
 import com.example.notes.feature_notes.presentation.notes.NotesViewModel
 import com.example.notes.feature_notes.domain.model.GridCellEnum
@@ -59,7 +61,7 @@ fun NotesPresentation(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "Notes",
+                    text = stringResource(id = R.string.notes),
                     style = MaterialTheme.typography.displayLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -77,7 +79,7 @@ fun NotesPresentation(
                     if (it == GridCellEnum.Grid) {
                         Icon(
                             imageVector = Icons.Filled.GridView,
-                            contentDescription = "Grid type",
+                            contentDescription = R.string.Grid_type.toString(),
                             modifier = Modifier
                                 .size(50.dp)
                                 .clickable {
@@ -87,7 +89,7 @@ fun NotesPresentation(
                     } else {
                         Icon(
                             imageVector = Icons.Filled.List,
-                            contentDescription = "Grid type",
+                            contentDescription = R.string.Grid_type.toString(),
                             modifier = Modifier
                                 .size(50.dp)
                                 .clickable {
@@ -138,7 +140,7 @@ fun NotesPresentation(
                     }
             } else {
                 Text(
-                    text = "None notes yet!",
+                    text = stringResource(id = R.string.None_notes_yet),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.secondary,
                     textAlign = TextAlign.Center,

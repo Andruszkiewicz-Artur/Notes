@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -22,6 +23,7 @@ import com.example.notes.feature_profile.presentation.registration.RegistrationV
 import com.example.notes.feature_profile.presentation.registration.UiEventRegistration
 import com.example.notes.feature_profile.presentation.unit.presentation.ValidateText
 import kotlinx.coroutines.flow.collectLatest
+import com.example.notes.R
 
 @Composable
 fun RegistrationPresentation(
@@ -59,12 +61,12 @@ fun RegistrationPresentation(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "Registration",
+                    text = stringResource(id = R.string.Registration),
                     style = MaterialTheme.typography.headlineLarge
                 )
 
                 Text(
-                    text = "Create your account",
+                    text = stringResource(id = R.string.CreateYourAccount),
                     style = MaterialTheme.typography.headlineSmall
                 )
             }
@@ -137,7 +139,7 @@ fun RegistrationPresentation(
             Spacer(modifier = Modifier.height(20.dp))
 
             StandardButton(
-                text = "Register"
+                text = stringResource(id = R.string.Register)
             ) {
                 viewModel.onEvent(RegistrationEvent.OnClickRegistration)
             }
@@ -149,10 +151,10 @@ fun RegistrationPresentation(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Text(text = "You have account?")
+                Text(text = stringResource(id = R.string.YouHaveAccount))
 
                 Text(
-                    text = " Log in!",
+                    text = stringResource(id = R.string.Login) + "!",
                     style = TextStyle(
                         fontWeight = FontWeight.Bold
                     ),

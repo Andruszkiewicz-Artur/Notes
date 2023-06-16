@@ -7,6 +7,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.notes.R
 import com.example.notes.core.compose.checkBox.CheckBoxState
 import com.example.notes.core.compose.textField.TextFieldState
 import com.example.notes.core.model.ProfileModel
@@ -29,23 +30,23 @@ class RegistrationViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _email = mutableStateOf(TextFieldState(
-        placeholder = "Email..."
+        placeholder = R.string.Email.toString()
     ))
     val email: State<TextFieldState> = _email
 
     private val _password = mutableStateOf(TextFieldState(
-        placeholder = "Password..."
+        placeholder = R.string.Password.toString()
     ))
     val password: State<TextFieldState> = _password
 
     private val _rePassword = mutableStateOf(TextFieldState(
-        placeholder = "Re-password..."
+        placeholder = R.string.RePassword.toString()
     ))
     val rePassword: State<TextFieldState> = _rePassword
 
     private val _checkBox = mutableStateOf(
         CheckBoxState(
-        text = "Accept rules of app."
+        text = R.string.AcceptRules.toString()
     )
     )
     val checkBox: State<CheckBoxState> = _checkBox

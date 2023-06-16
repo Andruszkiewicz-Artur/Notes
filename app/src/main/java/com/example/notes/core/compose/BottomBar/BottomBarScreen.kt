@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.notes.R
 
 sealed class BottomBarScreen(
     val route: String,
@@ -14,13 +15,13 @@ sealed class BottomBarScreen(
 ) {
     object Home: BottomBarScreen(
         route = "notes_screen",
-        title = "Notes",
+        title = R.string.notes.toString(),
         icon = Icons.Filled.Create
     )
 
     object Profile: BottomBarScreen(
         route = "profile_screen",
-        title = "Profile",
+        title = R.string.Profile.toString(),
         icon = Icons.Filled.Person
     )
 }

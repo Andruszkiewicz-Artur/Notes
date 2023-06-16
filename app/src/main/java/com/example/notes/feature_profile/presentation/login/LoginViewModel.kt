@@ -6,6 +6,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.notes.R
 import com.example.notes.core.compose.textField.TextFieldState
 import com.example.notes.core.model.ProfileModel
 import com.example.notes.core.util.graph.Screen
@@ -27,12 +28,12 @@ class LoginViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _email = mutableStateOf(TextFieldState(
-        placeholder = "Email..."
+        placeholder = R.string.Email.toString()
     ))
     val email: State<TextFieldState> = _email
 
     private val _password = mutableStateOf(TextFieldState(
-        placeholder = "Password..."
+        placeholder = R.string.Password.toString()
     ))
     val password: State<TextFieldState> = _password
 

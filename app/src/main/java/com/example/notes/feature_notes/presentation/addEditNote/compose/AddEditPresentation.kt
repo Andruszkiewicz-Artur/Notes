@@ -9,9 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -22,13 +20,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.notes.core.util.graph.Screen
 import com.example.notes.feature_notes.presentation.addEditNote.AddEditNoteEvent
 import com.example.notes.feature_notes.presentation.addEditNote.AddEditNoteViewModel
 import com.example.notes.feature_notes.presentation.addEditNote.UiEvent
 import com.example.notes.notes_future.present.addEditNote.compose.TextField
-import com.example.notes.notes_future.present.notes.compose.ButtonWithImage
 import kotlinx.coroutines.flow.collectLatest
+import com.example.notes.R
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -74,7 +71,7 @@ fun AddEditPresentation(
                 ) {
                     Image(
                         imageVector = Icons.Filled.Done,
-                        contentDescription = "Add/Edit note",
+                        contentDescription = R.string.AddEditNote.toString(),
                         modifier = Modifier
                             .size(40.dp)
                     )

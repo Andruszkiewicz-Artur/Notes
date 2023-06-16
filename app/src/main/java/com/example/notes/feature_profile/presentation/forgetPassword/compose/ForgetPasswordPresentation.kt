@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -18,6 +19,7 @@ import com.example.notes.feature_profile.presentation.forgetPassword.UiEventForg
 import com.example.notes.feature_profile.presentation.login.UiEventLogin
 import com.example.notes.feature_profile.presentation.unit.presentation.ValidateText
 import kotlinx.coroutines.flow.collectLatest
+import com.example.notes.R
 
 @Composable
 fun ForgetPasswordPresentation(
@@ -47,11 +49,11 @@ fun ForgetPasswordPresentation(
                 .fillMaxWidth(0.8f)
         ) {
             androidx.compose.material3.Text(
-                text = "Forget password?",
+                text = stringResource(id = R.string.ForgetPassword) + "?",
                 style = MaterialTheme.typography.headlineLarge
             )
             Text(
-                text = "If you forget password, send the message to reset password on your email.",
+                text = stringResource(id = R.string.ForgetPasswordInstuction),
                 style = MaterialTheme.typography.labelLarge
             )
             Spacer(modifier = Modifier.padding(top = 40.dp))
@@ -76,7 +78,7 @@ fun ForgetPasswordPresentation(
             )
 
             StandardButton(
-                text = "Send message"
+                text = stringResource(id = R.string.SendMessage)
             ) {
                 viewModel.onEvent(ForgetPasswordEvent.OnClickForgetPassword)
             }
