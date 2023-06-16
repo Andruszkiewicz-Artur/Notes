@@ -77,7 +77,7 @@ fun LoginPresentation(
 
             TextFieldBordered(
                 text = emailState.text,
-                placeholder = emailState.placeholder,
+                placeholder = stringResource(id = emailState.placeholder),
                 onValueChange = {
                     viewModel.onEvent(LoginEvent.EnteredLogin(it))
                 },
@@ -90,7 +90,7 @@ fun LoginPresentation(
             Spacer(modifier = Modifier.height(20.dp))
             TextFieldBordered(
                 text = passwordState.text,
-                placeholder = passwordState.placeholder,
+                placeholder = stringResource(id = passwordState.placeholder),
                 onValueChange = {
                     viewModel.onEvent(LoginEvent.EnteredPassword(it))
                 },

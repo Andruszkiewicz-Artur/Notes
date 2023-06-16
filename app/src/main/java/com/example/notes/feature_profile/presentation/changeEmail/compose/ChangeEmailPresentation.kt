@@ -50,7 +50,7 @@ fun ChangeEmailPresentation(
             Spacer(modifier = Modifier.height(40.dp))
             TextFieldBordered(
                 text = passwordState.text,
-                placeholder = passwordState.placeholder,
+                placeholder = stringResource(id = passwordState.placeholder),
                 onValueChange = {
                     viewModel.onEvent(ChangeEmailEvent.EnteredPassword(it))
                 },
@@ -65,7 +65,7 @@ fun ChangeEmailPresentation(
 
             TextFieldBordered(
                 text = emailState.text,
-                placeholder = emailState.placeholder,
+                placeholder = stringResource(id = emailState.placeholder),
                 onValueChange = {
                     viewModel.onEvent(ChangeEmailEvent.EnteredEmail(it))
                 },

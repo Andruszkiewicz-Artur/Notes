@@ -75,7 +75,7 @@ fun RegistrationPresentation(
 
             TextFieldBordered(
                 text = email.text,
-                placeholder = email.placeholder,
+                placeholder = stringResource(id = email.placeholder),
                 onValueChange = {
                     viewModel.onEvent(RegistrationEvent.EnteredEmail(it))
                 },
@@ -90,7 +90,7 @@ fun RegistrationPresentation(
 
             TextFieldBordered(
                 text = password.text,
-                placeholder = password.placeholder,
+                placeholder = stringResource(id = password.placeholder),
                 onValueChange = {
                     viewModel.onEvent(RegistrationEvent.EnteredPassword(it))
                 },
@@ -106,7 +106,7 @@ fun RegistrationPresentation(
 
             TextFieldBordered(
                 text = rePassword.text,
-                placeholder = rePassword.placeholder,
+                placeholder = stringResource(id = rePassword.placeholder),
                 onValueChange = {
                     viewModel.onEvent(RegistrationEvent.EnteredRePassword(it))
                 },
@@ -121,7 +121,7 @@ fun RegistrationPresentation(
             ValidateText(text = state.errorRePassword)
 
             CheckBox(
-                text = checkBox.text,
+                text = stringResource(id = checkBox.text),
                 checked = checkBox.isChacked,
                 onCheckedChange = {
                     viewModel.onEvent(RegistrationEvent.CheckBox(it))

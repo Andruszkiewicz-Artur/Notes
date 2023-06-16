@@ -1,6 +1,7 @@
 package com.example.notes.feature_profile.presentation.changeEmail
 
 import android.app.Application
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -9,11 +10,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.notes.R
 import com.example.notes.core.compose.textField.TextFieldState
 import com.example.notes.feature_notes.presentation.auth
+import com.example.notes.feature_profile.domain.unit.decodeError
 import com.example.notes.feature_profile.domain.use_case.profileUseCases.ProfileUseCases
 import com.example.notes.feature_profile.domain.use_case.validationUseCases.ValidateUseCases
-import com.example.notes.feature_profile.presentation.changePassword.UiEventChangePassword
-import com.google.firebase.auth.EmailAuthCredential
-import com.google.firebase.auth.EmailAuthProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -27,12 +26,12 @@ class ChangeEmailViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _password = mutableStateOf(TextFieldState(
-        placeholder = R.string.CurrentPassword.toString()
+        placeholder = R.string.CurrentPassword
     ))
     val password: State<TextFieldState> = _password
 
     private val _email = mutableStateOf(TextFieldState(
-        placeholder = R.string.NewEmail.toString()
+        placeholder = R.string.NewEmail
     ))
     val email: State<TextFieldState> = _email
 
@@ -81,7 +80,7 @@ class ChangeEmailViewModel @Inject constructor(
                     )
 
                     if(!changeEmailResult.successful) {
-                        Toast.makeText(application, changeEmailResult.errorMessage, Toast.LENGTH_LONG).show()
+                        Toast.makeText(application, decodeError(changeEmailResult.errorMessage, application), Toast.LENGTH_LONG).show()
                     } else {
                         viewModelScope.launch {
                             _eventFlow.emit(UiEventChangeEmail.ChangeEmail)
@@ -99,7 +98,7 @@ class ChangeEmailViewModel @Inject constructor(
 
         if (hasError) {
             _state.value = state.value.copy(
-                errorEmail = email.errorMessage
+                errorEmail = decodeError(email.errorMessage, application)
             )
         }
 

@@ -60,7 +60,7 @@ fun ForgetPasswordPresentation(
 
             TextFieldBordered(
                 text = emailState.text,
-                placeholder = emailState.placeholder,
+                placeholder = stringResource(id = emailState.placeholder),
                 onValueChange = {
                     viewModel.onEvent(ForgetPasswordEvent.EnteredEmail(it))
                 },

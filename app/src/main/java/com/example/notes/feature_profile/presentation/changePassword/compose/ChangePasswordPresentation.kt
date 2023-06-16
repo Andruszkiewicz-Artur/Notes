@@ -51,7 +51,7 @@ fun ChangePasswordPresentation(
 
             TextFieldBordered(
                 text = oldPasswordState.text,
-                placeholder = oldPasswordState.placeholder,
+                placeholder = stringResource(id = oldPasswordState.placeholder),
                 onValueChange = {
                     viewModel.onEvent(ChangePasswordEvent.EnteredOldPassword(it))
                 },
@@ -66,7 +66,7 @@ fun ChangePasswordPresentation(
 
             TextFieldBordered(
                 text = newPasswordState.text,
-                placeholder = newPasswordState.placeholder,
+                placeholder = stringResource(id = newPasswordState.placeholder),
                 onValueChange = {
                     viewModel.onEvent(ChangePasswordEvent.EnteredNewPassword(it))
                 },
@@ -83,7 +83,7 @@ fun ChangePasswordPresentation(
 
             TextFieldBordered(
                 text = rePasswordState.text,
-                placeholder = rePasswordState.placeholder,
+                placeholder = stringResource(id = rePasswordState.placeholder),
                 onValueChange = {
                     viewModel.onEvent(ChangePasswordEvent.EnteredRePassword(it))
                 },

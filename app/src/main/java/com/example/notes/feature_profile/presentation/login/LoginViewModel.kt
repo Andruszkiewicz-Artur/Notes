@@ -9,9 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.notes.R
 import com.example.notes.core.compose.textField.TextFieldState
 import com.example.notes.core.model.ProfileModel
-import com.example.notes.core.util.graph.Screen
 import com.example.notes.core.value.profileSetting
-import com.example.notes.feature_notes.presentation.auth
+import com.example.notes.feature_profile.domain.unit.decodeError
 import com.example.notes.feature_profile.domain.use_case.profileUseCases.ProfileUseCases
 import com.example.notes.feature_profile.domain.use_case.validationUseCases.ValidateUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,12 +27,12 @@ class LoginViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _email = mutableStateOf(TextFieldState(
-        placeholder = R.string.Email.toString()
+        placeholder = R.string.Email
     ))
     val email: State<TextFieldState> = _email
 
     private val _password = mutableStateOf(TextFieldState(
-        placeholder = R.string.Password.toString()
+        placeholder = R.string.Password
     ))
     val password: State<TextFieldState> = _password
 
@@ -69,7 +68,7 @@ class LoginViewModel @Inject constructor(
                 )
 
                 if(!loginResult.successful) {
-                    Toast.makeText(application, loginResult.errorMessage, Toast.LENGTH_LONG).show()
+                    Toast.makeText(application, decodeError(loginResult.errorMessage, application), Toast.LENGTH_LONG).show()
                 } else {
                     profileSetting = ProfileModel()
                     viewModelScope.launch {

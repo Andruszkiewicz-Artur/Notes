@@ -29,14 +29,14 @@ class AddEditNoteViewModel @Inject constructor(
 
     private val _title = mutableStateOf(
         TextFieldState(
-            placeholder = R.string.Title.toString()
+            placeholder = R.string.Title
         )
     )
     val title: State<TextFieldState> = _title
 
     private val _content = mutableStateOf(
         TextFieldState(
-            placeholder = R.string.AddContent.toString()
+            placeholder = R.string.AddContent
         )
     )
     val content: State<TextFieldState> = _content

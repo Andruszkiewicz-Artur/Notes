@@ -8,14 +8,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.notes.R
 import com.example.notes.core.compose.textField.TextFieldState
+import com.example.notes.feature_profile.domain.unit.decodeError
 import com.example.notes.feature_profile.domain.use_case.profileUseCases.ProfileUseCases
 import com.example.notes.feature_profile.domain.use_case.validationUseCases.ValidateUseCases
-import com.example.notes.feature_profile.presentation.login.UiEventLogin
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,7 +25,7 @@ class ForgetPasswordViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _email = mutableStateOf(TextFieldState(
-        placeholder = R.string.Email.toString()
+        placeholder = R.string.Email
     ))
     val email: State<TextFieldState> = _email
 
@@ -61,7 +58,7 @@ class ForgetPasswordViewModel @Inject constructor(
                     )
 
                     if(!loginResult.successful) {
-                        Toast.makeText(application, loginResult.errorMessage, Toast.LENGTH_LONG).show()
+                        Toast.makeText(application, decodeError(loginResult.errorMessage, application), Toast.LENGTH_LONG).show()
                     } else {
                         viewModelScope.launch {
                             _eventFlow.emit(UiEventForgetPassword.ClickForgetPassword)
@@ -77,7 +74,7 @@ class ForgetPasswordViewModel @Inject constructor(
 
         if (!email.successful) {
             _state.value = state.value.copy(
-                errorEmail = email.errorMessage
+                errorEmail = decodeError(email.errorMessage, application)
             )
         }
 

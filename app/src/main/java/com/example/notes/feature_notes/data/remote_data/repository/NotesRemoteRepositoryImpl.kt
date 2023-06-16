@@ -27,11 +27,9 @@ class NotesRemoteRepositoryImpl(): NotesRemoteRepository {
             val result = ref.child(userId)
                 .child("notes")
                 .get()
+                .await()
 
-//            return ValidationResult(
-//                successful = result.isSuccessful,
-//                errorMessage = result.exception?.message ?: "UnkownError"
-//            )
+            Log.d("Json data", result.toString())
         }
 
         return Resource.Error(

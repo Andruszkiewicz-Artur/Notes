@@ -3,6 +3,7 @@ package com.example.notes.feature_profile.presentation.profile
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.text.isDigitsOnly
 import androidx.core.util.rangeTo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,7 +33,7 @@ class ProfileViewModel @Inject constructor(
                 _state.value = state.value.copy(
                     isSynchronized = event.isSaved
                 )
-                val result = remoteUseCases.setUpSynchronizeUseCase.execute(_state.value.isSynchronized)
+                remoteUseCases.setUpSynchronizeUseCase.execute(_state.value.isSynchronized)
                 profileSetting?.isSynchronize = _state.value.isSynchronized
             }
             is ProfileEvent.LogOut -> {

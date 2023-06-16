@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -87,7 +88,7 @@ fun AddEditPresentation(
         ) {
             TextField(
                 text = titleState.text,
-                placeholder = titleState.placeholder,
+                placeholder = stringResource(id = titleState.placeholder),
                 onValueChange = {
                     viewModel.onEvent(AddEditNoteEvent.EnteredTitle(it))
                 },
@@ -103,7 +104,7 @@ fun AddEditPresentation(
 
             TextField(
                 text = contentState.text,
-                placeholder = contentState.placeholder,
+                placeholder = stringResource(id = contentState.placeholder),
                 onValueChange = {
                     viewModel.onEvent(AddEditNoteEvent.EnteredContent(it))
                 },

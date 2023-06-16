@@ -79,7 +79,7 @@ fun NotesPresentation(
                     if (it == GridCellEnum.Grid) {
                         Icon(
                             imageVector = Icons.Filled.GridView,
-                            contentDescription = R.string.Grid_type.toString(),
+                            contentDescription = stringResource(id = R.string.Grid_type),
                             modifier = Modifier
                                 .size(50.dp)
                                 .clickable {
@@ -89,7 +89,7 @@ fun NotesPresentation(
                     } else {
                         Icon(
                             imageVector = Icons.Filled.List,
-                            contentDescription = R.string.Grid_type.toString(),
+                            contentDescription = stringResource(id = R.string.Grid_type),
                             modifier = Modifier
                                 .size(50.dp)
                                 .clickable {

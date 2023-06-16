@@ -3,7 +3,7 @@
     <string name="notes">Notes</string>
     <string name="Grid_type">Grid type</string>
     <string name="None_notes_yet">None notes yet!</string>
-    <string name="CouldntSaveNote">Couldn't save note!</string>
+    <string name="CouldntSaveNote">Couldn\'t save note!</string>
     <string name="AddEditNote">Add/Edit Note</string>
     <string name="Title">Title...</string>
     <string name="AddContent">Add content...</string>

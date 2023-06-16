@@ -33,6 +33,7 @@ class NotesViewModel @Inject constructor(
         if (profileSetting?.isSynchronize == null) {
             viewModelScope.launch {
                 val result = remoteUseCases.checkIsSynchronize.execute()
+                val remoteNotes = remoteUseCases.takeAllNotesUseCase.execute()
 
                 when (result) {
                     is Resource.Error -> {
