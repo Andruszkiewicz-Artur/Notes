@@ -62,17 +62,19 @@ class LoginViewModel @Inject constructor(
                 )
             }
             is LoginEvent.ClickLogin -> {
-                val loginResult = profileUseCases.logInUseCase.execute(
-                    email = _email.value.text,
-                    password = _password.value.text
-                )
+                viewModelScope.launch {
+                    val loginResult = profileUseCases.logInUseCase.execute(
+                        email = _email.value.text,
+                        password = _password.value.text
+                    )
 
-                if(!loginResult.successful) {
-                    Toast.makeText(application, decodeError(loginResult.errorMessage, application), Toast.LENGTH_LONG).show()
-                } else {
-                    profileSetting = ProfileModel()
-                    viewModelScope.launch {
-                        _eventFlow.emit(UiEventLogin.LogIn)
+                    if(!loginResult.successful) {
+                        Toast.makeText(application, decodeError(loginResult.errorMessage, application), Toast.LENGTH_LONG).show()
+                    } else {
+                        profileSetting = ProfileModel()
+                        viewModelScope.launch {
+                            _eventFlow.emit(UiEventLogin.LogIn)
+                        }
                     }
                 }
             }

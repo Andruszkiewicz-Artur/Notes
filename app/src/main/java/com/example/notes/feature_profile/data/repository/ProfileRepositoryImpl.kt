@@ -1,5 +1,6 @@
 package com.example.notes.feature_profile.data.repository
 
+import android.util.Log
 import com.example.notes.R
 import com.example.notes.feature_notes.presentation.auth
 import com.example.notes.feature_profile.domain.repository.ProfileRepository
@@ -8,21 +9,15 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.tasks.await
 
 class ProfileRepositoryImpl(): ProfileRepository {
-    override fun LogIn(email: String, password: String): ValidationResult {
-        var errorMessage: String? = null
-
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    errorMessage = R.string.ProblemWithDatabase.toString()
-                }
-            }
+    override suspend fun LogIn(email: String, password: String): ValidationResult {
+        val result = auth.signInWithEmailAndPassword(email, password).await()
 
         return ValidationResult(
-            successful = errorMessage == null,
-            errorMessage = errorMessage
+            successful = result.user != null,
+            errorMessage = if (result.user != null) null else "Problem with logIn"
         )
     }
 

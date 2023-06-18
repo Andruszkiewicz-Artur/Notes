@@ -5,7 +5,7 @@ import com.google.firebase.auth.FirebaseUser
 
 interface ProfileRepository {
 
-    fun LogIn(email: String, password: String): ValidationResult
+    suspend fun LogIn(email: String, password: String): ValidationResult
 
     fun LogOut(): ValidationResult
 

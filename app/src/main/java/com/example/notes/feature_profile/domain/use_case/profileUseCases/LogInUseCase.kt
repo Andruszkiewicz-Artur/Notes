@@ -8,7 +8,7 @@ class LogInUseCase(
     private val repository: ProfileRepository
 ) {
 
-    fun execute(email: String, password: String): ValidationResult {
+    suspend fun execute(email: String, password: String): ValidationResult {
         if (email.isBlank() || password.isBlank()) {
             return ValidationResult(
                 successful = false,

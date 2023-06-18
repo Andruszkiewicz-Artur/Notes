@@ -57,6 +57,7 @@ class ProfileViewModel @Inject constructor(
 
     fun initFunc() {
         val currentUser = auth.currentUser
+        Log.d("auth", currentUser.toString())
         if(currentUser != null) {
             if (profileSetting?.isSynchronize == null) {
                 viewModelScope.launch {
