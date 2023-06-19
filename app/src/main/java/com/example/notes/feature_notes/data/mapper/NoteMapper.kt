@@ -2,6 +2,7 @@ package com.example.notes.feature_notes.data.mapper
 
 import com.example.notes.feature_notes.domain.model.RemoteContentNoteModel
 import com.example.notes.feature_notes.domain.model.RemoteNoteModel
+import com.example.notes.feature_notes.domain.model.StatusNoteEnum
 import com.example.notes.notes_future.domain.model.Note
 
 fun Note.toRemoteNote(): RemoteNoteModel {
@@ -10,7 +11,18 @@ fun Note.toRemoteNote(): RemoteNoteModel {
         value = RemoteContentNoteModel(
             title = title,
             content = content,
-            updateTime = timeCreate
+            updateTime = timeUpdate
         )
+    )
+}
+
+fun RemoteNoteModel.toNote(): Note {
+    return Note(
+        id = null,
+        title = value.title,
+        content = value.content,
+        timeUpdate = value.updateTime,
+        timeCreate = id.toLong(),
+        status = StatusNoteEnum.Sended
     )
 }

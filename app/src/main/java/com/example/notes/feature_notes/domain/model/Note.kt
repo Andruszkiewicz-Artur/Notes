@@ -19,6 +19,9 @@ data class Note(
     @ColumnInfo(name = "timeCreate")
     val timeCreate: Long,
 
+    @ColumnInfo(name = "timeUpdate")
+    val timeUpdate: Long,
+
     @ColumnInfo(name = "status")
     var status: StatusNoteEnum
 )

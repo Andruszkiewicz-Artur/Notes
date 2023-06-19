@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.notes.core.compose.textField.TextFieldState
 import com.example.notes.feature_notes.data.mapper.toRemoteNote
-import com.example.notes.feature_notes.domain.model.StatusNoteEnum
 import com.example.notes.notes_future.domain.model.InvalidNoteException
 import com.example.notes.notes_future.domain.model.Note
 import com.example.notes.feature_notes.domain.use_case.local.NotesUseCases
@@ -19,6 +18,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.example.notes.R
+import com.example.notes.feature_notes.domain.model.StatusNoteEnum
 
 @HiltViewModel
 class AddEditNoteViewModel @Inject constructor(
@@ -45,6 +45,7 @@ class AddEditNoteViewModel @Inject constructor(
     val eventFlow = _eventFlow.asSharedFlow()
 
     var currentId: Int? = null
+    var createTime: Long? = null
 
     init {
         savedStateHandle.get<Int>("noteId")?.let { noteId ->
@@ -52,6 +53,8 @@ class AddEditNoteViewModel @Inject constructor(
                 viewModelScope.launch {
                     notesUseCases.getNoteByIdUseCase.invoke(noteId)?.also { note ->
                         currentId = note.id
+                        createTime = note.timeCreate
+
                         _title.value = title.value.copy(
                             text = note.title,
                             isPlaceholder = false
@@ -92,11 +95,12 @@ class AddEditNoteViewModel @Inject constructor(
                 if (_title.value.text.isNotEmpty() && _content.value.text.isNotEmpty()) {
                     val currentTime = System.currentTimeMillis()
 
-                    val note = Note(
-                        id = currentId ?: currentTime.toInt(),
+                    var note = Note(
+                        id = currentId,
                         title = _title.value.text,
                         content = _content.value.text,
-                        timeCreate = currentTime,
+                        timeCreate = createTime ?: currentTime,
+                        timeUpdate = currentTime,
                         status = StatusNoteEnum.Local
                     )
 
@@ -104,10 +108,7 @@ class AddEditNoteViewModel @Inject constructor(
                         val result = remoteUseCases.uploadNoteUseCase.execute(note.toRemoteNote())
                         if(!result.successful) {
                             Log.d("Problem with add note to firebase", result.errorMessage ?: "Unknown error")
-                        }
-
-                        if(result.successful) {
-                            note.status = StatusNoteEnum.Sending
+                            note.status = StatusNoteEnum.Sended
                         }
 
                         try {
