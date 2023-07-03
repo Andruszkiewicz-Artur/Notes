@@ -13,9 +13,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,12 +36,13 @@ import com.example.notes.R
 import com.example.notes.notes_future.domain.model.Note
 import com.example.notes.feature_notes.presentation.notes.NotesViewModel
 import com.example.notes.feature_notes.domain.model.GridCellEnum
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedMutableState",
     "AutoboxingStateCreation"
 )
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
-    ExperimentalAnimationApi::class
+@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class, ExperimentalMaterialApi::class
 )
 @Composable
 fun NotesPresentation(
@@ -47,106 +52,117 @@ fun NotesPresentation(
     var gridCell by mutableStateOf(GridCellEnum.Grid)
     val state = viewModel.state.value
 
-    Scaffold {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp)
-                .padding(top = 16.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.Top,
-                horizontalArrangement = Arrangement.SpaceBetween,
+    val pullRefreshState = rememberSwipeRefreshState(state.isLoading)
+
+    SwipeRefresh(
+        state = pullRefreshState,
+        onRefresh = viewModel::loadingData,
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Scaffold {
+            Column(
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 16.dp)
             ) {
-                Text(
-                    text = stringResource(id = R.string.notes),
-                    style = MaterialTheme.typography.displayLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-                AnimatedContent(
-                    targetState = gridCell,
-                    transitionSpec = {
-                        fadeIn(
-                            animationSpec = tween(500)
-                        ) with fadeOut(
-                            animationSpec = tween(500)
-                        )
-                    }
-                ) {
-                    if (it == GridCellEnum.Grid) {
-                        Icon(
-                            imageVector = Icons.Filled.GridView,
-                            contentDescription = stringResource(id = R.string.Grid_type),
-                            modifier = Modifier
-                                .size(50.dp)
-                                .clickable {
-                                    gridCell = GridCellEnum.Flat
-                                }
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Filled.List,
-                            contentDescription = stringResource(id = R.string.Grid_type),
-                            modifier = Modifier
-                                .size(50.dp)
-                                .clickable {
-                                    gridCell = GridCellEnum.Grid
-                                }
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            if(state.notes.isNotEmpty()) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(
-                        if (gridCell == GridCellEnum.Grid) 2
-                        else 1
-                    ),
+                Row(
+                    verticalAlignment = Alignment.Top,
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f)
                 ) {
-                    itemsIndexed(state.notes) { index: Int, note: Note ->
-                        NoteItem(
-                            navHostController = navHostController,
-                            viewModel = viewModel,
-                            note = note,
-                            isSecondColor = if (gridCell == GridCellEnum.Grid) {
-                                if ((index / 2)%2 == 1) {
-                                    index % 2 == 0
-                                } else {
-                                    index % 2 == 1
-                                }
-                            } else {
-                                index % 2 == 0
-                            },
-                            modifier = Modifier
-                                .animateItemPlacement(
-                                    animationSpec = tween(
-                                        durationMillis = 1000
-                                    )
-                                )
-                        )
-                        if(index == state.notes.size - 1) {
-                            Spacer(modifier = Modifier.height(120.dp))
+                    Text(
+                        text = stringResource(id = R.string.notes),
+                        style = MaterialTheme.typography.displayLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+
+                    AnimatedContent(
+                        targetState = gridCell,
+                        transitionSpec = {
+                            fadeIn(
+                                animationSpec = tween(500)
+                            ) with fadeOut(
+                                animationSpec = tween(500)
+                            )
+                        }
+                    ) {
+                        if (it == GridCellEnum.Grid) {
+                            Icon(
+                                imageVector = Icons.Filled.GridView,
+                                contentDescription = stringResource(id = R.string.Grid_type),
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .clickable {
+                                        gridCell = GridCellEnum.Flat
+                                    }
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Filled.List,
+                                contentDescription = stringResource(id = R.string.Grid_type),
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .clickable {
+                                        gridCell = GridCellEnum.Grid
+                                    }
+                            )
                         }
                     }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                if (state.notes.isNotEmpty()) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(
+                            if (gridCell == GridCellEnum.Grid) 2
+                            else 1
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                    ) {
+                        itemsIndexed(state.notes) { index: Int, note: Note ->
+                            NoteItem(
+                                navHostController = navHostController,
+                                viewModel = viewModel,
+                                note = note,
+                                isSecondColor = if (gridCell == GridCellEnum.Grid) {
+                                    if ((index / 2) % 2 == 1) {
+                                        index % 2 == 0
+                                    } else {
+                                        index % 2 == 1
+                                    }
+                                } else {
+                                    index % 2 == 0
+                                },
+                                modifier = Modifier
+                                    .animateItemPlacement(
+                                        animationSpec = tween(
+                                            durationMillis = 1000
+                                        )
+                                    )
+                            )
+                            if (index == state.notes.size - 1) {
+                                Spacer(modifier = Modifier.height(120.dp))
+                            }
+                        }
                     }
-            } else {
-                Text(
-                    text = stringResource(id = R.string.None_notes_yet),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.secondary,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
+                } else {
+                    Text(
+                        text = stringResource(id = R.string.None_notes_yet),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.secondary,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    )
+                }
             }
         }
     }

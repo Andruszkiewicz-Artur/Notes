@@ -31,27 +31,28 @@ class NotesViewModel @Inject constructor(
     val state: State<NotesState> = _state
 
     init {
-        getAllNotes()
+        loadingData()
+    }
 
-        if (profileSetting?.isSynchronize == null) {
-            viewModelScope.launch {
+    fun loadingData() {
+        viewModelScope.launch {
+            _state.value = state.value.copy(
+                isLoading = true
+            )
+            getAllNotes()
+            delay(1500)
+
+            if (profileSetting?.isSynchronize == null) {
                 val result = remoteUseCases.checkIsSynchronize.execute()
-                viewModelScope.launch {
-                    val remoteNotes = remoteUseCases.takeAllNotesUseCase.execute()
+                val remoteNotes = remoteUseCases.takeAllNotesUseCase.execute()
 
-                    when (remoteNotes) {
-                        is Resource.Error -> {
-                            Log.d("Check", "error send")
-                            Log.d("Error taking remote notes", remoteNotes.message ?: "Unknown error!")
-                        }
-                        is Resource.Success -> {
-                            Log.d("Check", "Start delay")
-                            delay(2000)
-                            Log.d("Check", "Stop delay")
-
-                            if(remoteNotes.data != null) {
-                                synchronizeData(remoteNotes.data)
-                            }
+                when (remoteNotes) {
+                    is Resource.Error -> {
+                        Log.d("Error taking remote notes", remoteNotes.message ?: "Unknown error!")
+                    }
+                    is Resource.Success -> {
+                        if(remoteNotes.data != null) {
+                            synchronizeData(remoteNotes.data)
                         }
                     }
                 }
@@ -65,6 +66,10 @@ class NotesViewModel @Inject constructor(
                     }
                 }
             }
+
+            _state.value = state.value.copy(
+                isLoading = false
+            )
         }
     }
 
@@ -75,7 +80,7 @@ class NotesViewModel @Inject constructor(
         }
     }
 
-    private fun getAllNotes() {
+    private suspend fun getAllNotes() {
         notesUseCases.getAllNotesUseCase.invoke().onEach { notes ->
             _state.value = state.value.copy(
                 notes = notes
