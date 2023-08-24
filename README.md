@@ -7,4 +7,5 @@ It is a notebook with an internal and external database to which the user has ac
 - Firebase
 - Dagger hilt
 - Clean Architecture
+- Use Cases
 - Coroutines
