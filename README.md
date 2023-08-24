@@ -9,3 +9,5 @@ It is a notebook with an internal and external database to which the user has ac
 - Clean Architecture
 - Use Cases
 - Coroutines
+- Material3
+- Jetpack Compose 
