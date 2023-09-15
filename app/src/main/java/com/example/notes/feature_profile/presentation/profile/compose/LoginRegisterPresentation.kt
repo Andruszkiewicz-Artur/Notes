@@ -7,6 +7,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,32 +40,38 @@ fun LoginRegisterPresentation(
         ) {
             Text(
                 text = stringResource(id = R.string.noneLoginJet),
-                fontSize = 24.sp,
+                style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center
             )
             
             Spacer(modifier = Modifier.height(32.dp))
 
-            NavigationButton(
-                text = stringResource(id = R.string.Login),
-                isBorder = false
+            Button(
+                onClick = { navController.navigate(Screen.Login.route) },
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
-                navController.navigate(Screen.Login.route)
+                Text(text = stringResource(id = R.string.Login))
             }
             Text(
                 text = stringResource(id = R.string.Or),
-                fontSize = 24.sp,
+                style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Light,
                 modifier = Modifier
                     .padding(
                         vertical = 16.dp
                     )
             )
-            NavigationButton(
-                text = stringResource(id = R.string.Register),
-                isBorder = true
+
+            OutlinedButton(
+                onClick = { navController.navigate(Screen.Register.route) },
+                border = ButtonDefaults.outlinedButtonBorder.copy(
+                    width = 2.dp
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
-                navController.navigate(Screen.Register.route)
+                Text(text = stringResource(id = R.string.Register))
             }
         }
     }

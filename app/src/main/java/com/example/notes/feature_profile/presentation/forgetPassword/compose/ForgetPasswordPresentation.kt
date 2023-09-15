@@ -2,32 +2,34 @@ package com.example.notes.notes_future.presentation.forgotPassword.compose
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Email
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.notes.core.compose.button.StandardButton
-import com.example.notes.core.compose.textField.TextFieldBordered
 import com.example.notes.feature_profile.presentation.forgetPassword.ForgetPasswordEvent
 import com.example.notes.feature_profile.presentation.forgetPassword.ForgetPasswordViewModel
 import com.example.notes.feature_profile.presentation.forgetPassword.UiEventForgetPassword
-import com.example.notes.feature_profile.presentation.login.UiEventLogin
-import com.example.notes.feature_profile.presentation.unit.presentation.ValidateText
 import kotlinx.coroutines.flow.collectLatest
 import com.example.notes.R
+import com.example.notes.feature_profile.unit.comp.TextField
 
 @Composable
 fun ForgetPasswordPresentation(
     navController: NavHostController,
     viewModel: ForgetPasswordViewModel = hiltViewModel()
 ) {
-    val emailState = viewModel.email.value
-    val state = viewModel.state.value
+    val state = viewModel.state.collectAsState().value
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -49,38 +51,37 @@ fun ForgetPasswordPresentation(
                 .fillMaxWidth(0.8f)
         ) {
             androidx.compose.material3.Text(
-                text = stringResource(id = R.string.ForgetPassword) + "?",
-                style = MaterialTheme.typography.headlineLarge
+                text = stringResource(id = R.string.ForgetPassword),
+                style = MaterialTheme.typography.titleLarge
             )
             Text(
                 text = stringResource(id = R.string.ForgetPasswordInstuction),
-                style = MaterialTheme.typography.labelLarge
+                style = MaterialTheme.typography.bodyLarge
             )
             Spacer(modifier = Modifier.padding(top = 40.dp))
 
-            TextFieldBordered(
-                text = emailState.text,
-                placeholder = stringResource(id = emailState.placeholder),
+            TextField(
+                value = state.email,
                 onValueChange = {
                     viewModel.onEvent(ForgetPasswordEvent.EnteredEmail(it))
                 },
-                onFocusChange = {
-                    viewModel.onEvent(ForgetPasswordEvent.ChangeEmailFocus(it))
-                },
-                isPlaceholder = emailState.isPlaceholder,
-                singleLine = true
+                label = stringResource(id = R.string.Email),
+                leftIcon = Icons.Rounded.Email,
+                keyboardType = KeyboardType.Email,
+                errorMessage = state.errorEmail,
             )
 
-            ValidateText(
-                text = state.errorEmail,
-                spaceModifier = Modifier
-                    .height(40.dp)
-            )
+            Spacer(modifier = Modifier.height(32.dp))
 
-            StandardButton(
-                text = stringResource(id = R.string.SendMessage)
+            Button(
+                onClick = { viewModel.onEvent(ForgetPasswordEvent.OnClickForgetPassword) },
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
-                viewModel.onEvent(ForgetPasswordEvent.OnClickForgetPassword)
+                Text(
+                    text = stringResource(id = R.string.SendMessage),
+                    color = Color.White
+                )
             }
         }
     }

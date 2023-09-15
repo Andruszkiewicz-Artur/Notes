@@ -1,6 +1,7 @@
 package com.example.notes.feature_profile.presentation.login
 
 import android.app.Application
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -15,7 +16,10 @@ import com.example.notes.feature_profile.domain.use_case.profileUseCases.Profile
 import com.example.notes.feature_profile.domain.use_case.validationUseCases.ValidateUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,15 +30,8 @@ class LoginViewModel @Inject constructor(
     private val profileUseCases: ProfileUseCases
 ): ViewModel() {
 
-    private val _email = mutableStateOf(TextFieldState(
-        placeholder = R.string.Email
-    ))
-    val email: State<TextFieldState> = _email
-
-    private val _password = mutableStateOf(TextFieldState(
-        placeholder = R.string.Password
-    ))
-    val password: State<TextFieldState> = _password
+    private val _state = MutableStateFlow(LoginState())
+    val state = _state.asStateFlow()
 
     private val _eventFlow = MutableSharedFlow<UiEventLogin>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -42,42 +39,60 @@ class LoginViewModel @Inject constructor(
     fun onEvent(event: LoginEvent) {
         when (event) {
             is LoginEvent.EnteredLogin -> {
-                _email.value = email.value.copy(
-                    text = event.value
-                )
-            }
-            is LoginEvent.ChangeLoginFocus -> {
-                _email.value = email.value.copy(
-                    isPlaceholder = !event.focusState.isFocused && _email.value.text.isEmpty()
-                )
+                _state.update { it.copy(
+                    email = event.value
+                ) }
             }
             is LoginEvent.EnteredPassword -> {
-                _password.value = password.value.copy(
-                    text = event.value
-                )
-            }
-            is LoginEvent.ChangePasswordFocus -> {
-                _password.value = password.value.copy(
-                    isPlaceholder = !event.focusState.isFocused && _password.value.text.isEmpty()
-                )
+                _state.update { it.copy(
+                    password = event.value
+                ) }
             }
             is LoginEvent.ClickLogin -> {
-                viewModelScope.launch {
-                    val loginResult = profileUseCases.logInUseCase.execute(
-                        email = _email.value.text,
-                        password = _password.value.text
-                    )
+                if (isNoneErrors()) {
+                    viewModelScope.launch {
+                        val loginResult = profileUseCases.logInUseCase.execute(
+                            email = _state.value.email,
+                            password = _state.value.password
+                        )
 
-                    if(!loginResult.successful) {
-                        Toast.makeText(application, decodeError(loginResult.errorMessage, application), Toast.LENGTH_LONG).show()
-                    } else {
-                        profileSetting = ProfileModel()
-                        viewModelScope.launch {
-                            _eventFlow.emit(UiEventLogin.LogIn)
+                        if(!loginResult.successful) {
+                            Toast.makeText(application, decodeError(loginResult.errorMessage, application), Toast.LENGTH_LONG).show()
+                        } else {
+                            profileSetting = ProfileModel()
+                            viewModelScope.launch {
+                                _eventFlow.emit(UiEventLogin.LogIn)
+                            }
                         }
                     }
                 }
             }
+            LoginEvent.ChangeVisibilityPassword -> {
+                _state.update { it.copy(
+                    isPasswordPresented = it.isPasswordPresented.not()
+                ) }
+            }
         }
+    }
+
+    private fun isNoneErrors(): Boolean {
+        val email = validateUseCases.validateEmail.execute(_state.value.email)
+        val password = validateUseCases.validatePassword.execute(_state.value.password)
+
+        val hasError = listOf(
+            email,
+            password
+        ).any { !it.successful }
+
+        if (hasError) {
+            _state.value = state.value.copy(
+                emailErrorMessage = decodeError(email.errorMessage, application),
+                passwordErrorMessage = decodeError(password.errorMessage, application),
+            )
+        }
+
+        Log.d("has error", hasError.toString())
+
+        return !hasError
     }
 }

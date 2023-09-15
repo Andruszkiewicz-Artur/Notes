@@ -9,16 +9,40 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.tasks.await
 
 class ProfileRepositoryImpl(): ProfileRepository {
-    override suspend fun LogIn(email: String, password: String): ValidationResult {
-        val result = auth.signInWithEmailAndPassword(email, password).await()
 
-        return ValidationResult(
-            successful = result.user != null,
-            errorMessage = if (result.user != null) null else "Problem with logIn"
-        )
+    companion object {
+        private const val TAG = "ProfileRepositoryImpl"
+    }
+
+    override suspend fun LogIn(email: String, password: String): ValidationResult {
+        return try {
+            val result = auth.signInWithEmailAndPassword(email, password).await()
+
+            delay(500)
+
+            if (result.user != null) {
+                ValidationResult(
+                    successful = true,
+                    errorMessage = null
+                )
+            } else {
+                ValidationResult(
+                    successful = false,
+                    errorMessage = "Problem with logIn"
+                )
+            }
+        } catch (e: Exception) {
+            Log.d(TAG, "${e.message}")
+
+            ValidationResult(
+                successful = false,
+                errorMessage = "${e.message}"
+            )
+        }
     }
 
     override fun LogOut(): ValidationResult {
@@ -30,13 +54,37 @@ class ProfileRepositoryImpl(): ProfileRepository {
         )
     }
 
-    override fun Registration(email: String, password: String): ValidationResult {
-        val result = auth.createUserWithEmailAndPassword(email, password)
+    override suspend fun Registration(email: String, password: String): ValidationResult {
+        return try {
+            var result = false
+            val requestResult = auth.createUserWithEmailAndPassword(email, password)
+                .addOnSuccessListener {
+                    result = true
+            }.await()
 
-        return ValidationResult(
-            successful = result.isSuccessful,
-            errorMessage = result.exception?.message
-        )
+            delay(500)
+
+            Log.d(TAG, "${requestResult}")
+
+            if (result) {
+                ValidationResult(
+                    successful = true,
+                    errorMessage = null
+                )
+            } else {
+                ValidationResult(
+                    successful = false,
+                    errorMessage = "Problem with register"
+                )
+            }
+        } catch (e: Exception) {
+            Log.d(TAG, "${e.message}")
+
+            ValidationResult(
+                successful = false,
+                errorMessage = "${e.message}"
+            )
+        }
     }
 
     override fun ForgeinPassword(email: String): ValidationResult {

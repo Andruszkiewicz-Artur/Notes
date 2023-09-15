@@ -18,7 +18,10 @@ import com.example.notes.feature_profile.domain.use_case.profileUseCases.Profile
 import com.example.notes.feature_profile.domain.use_case.validationUseCases.ValidateUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,30 +32,12 @@ class RegistrationViewModel @Inject constructor(
     private val profileUseCases: ProfileUseCases
 ): ViewModel() {
 
-    private val _email = mutableStateOf(TextFieldState(
-        placeholder = R.string.Email
-    ))
-    val email: State<TextFieldState> = _email
+    companion object {
+        private const val TAG = "RegistrationViewModel_TAG"
+    }
 
-    private val _password = mutableStateOf(TextFieldState(
-        placeholder = R.string.Password
-    ))
-    val password: State<TextFieldState> = _password
-
-    private val _rePassword = mutableStateOf(TextFieldState(
-        placeholder = R.string.RePassword
-    ))
-    val rePassword: State<TextFieldState> = _rePassword
-
-    private val _checkBox = mutableStateOf(
-        CheckBoxState(
-        text = R.string.AcceptRules
-    )
-    )
-    val checkBox: State<CheckBoxState> = _checkBox
-
-    private val _state = mutableStateOf(RegistrationState())
-    val state: State<RegistrationState> = _state
+    private val _state = MutableStateFlow(RegistrationState())
+    val state = _state.asStateFlow()
 
     private val _eventFlow = MutableSharedFlow<UiEventRegistration>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -60,63 +45,50 @@ class RegistrationViewModel @Inject constructor(
     fun onEvent(event: RegistrationEvent) {
         when (event) {
             is RegistrationEvent.EnteredEmail -> {
-                _email.value = email.value.copy(
-                    text = event.value
-                )
-            }
-            is RegistrationEvent.ChangeFocusEmail -> {
-                _email.value = email.value.copy(
-                    isPlaceholder = !event.focusState.isFocused && _email.value.text.isEmpty()
-                )
+                _state.update { it.copy(
+                    email = event.value
+                ) }
             }
             is RegistrationEvent.EnteredPassword -> {
-                _password.value = password.value.copy(
-                    text = event.value
-                )
-            }
-            is RegistrationEvent.ChangeFocusPassword -> {
-                _password.value = password.value.copy(
-                    isPlaceholder = !event.focusState.isFocused && _password.value.text.isEmpty()
-                )
+                _state.update { it.copy(
+                    password = event.value
+                ) }
             }
             is RegistrationEvent.EnteredRePassword -> {
-                _rePassword.value = rePassword.value.copy(
-                    text = event.value
-                )
-            }
-            is RegistrationEvent.ChangeFocusRePassword -> {
-                _rePassword.value = rePassword.value.copy(
-                    isPlaceholder = !event.focusState.isFocused && _rePassword.value.text.isEmpty()
-                )
+                _state.update { it.copy(
+                    rePassword = event.value
+                ) }
             }
             is RegistrationEvent.CheckBox -> {
-                   _checkBox.value = checkBox.value.copy(
-                       isChacked = event.checkBox
-                   )
+                _state.update { it.copy(
+                    isTerms = event.checkBox
+                ) }
             }
             is RegistrationEvent.OnClickRegistration -> {
-                _state.value = state.value.copy(
-                    email = _email.value.text,
-                    password = _password.value.text,
-                    rePassword = _rePassword.value.text,
-                    isTerms = _checkBox.value.isChacked
-                )
+                viewModelScope.launch {
+                    if (isNoneErrors()) {
+                        val registrationResult = profileUseCases.registrationUseCase.execute(
+                            email = _state.value.email,
+                            password = _state.value.password
+                        )
 
-                if (isNoneErrors()) {
-                    val registrationResult = profileUseCases.registrationUseCase.execute(
-                        email = _email.value.text,
-                        password = _password.value.text
-                    )
+                        Log.d(TAG, "$registrationResult")
 
-                    if(!registrationResult.successful) {
-                        Toast.makeText(application, decodeError(registrationResult.errorMessage, application), Toast.LENGTH_LONG).show()
-                    } else {
-                        profileSetting = ProfileModel()
-                        viewModelScope.launch {
-                            _eventFlow.emit(UiEventRegistration.Register)
+                        if(!registrationResult.successful) {
+                            Toast.makeText(application, decodeError(registrationResult.errorMessage, application), Toast.LENGTH_LONG).show()
+                        } else {
+                            profileSetting = ProfileModel()
+                            viewModelScope.launch {
+                                _eventFlow.emit(UiEventRegistration.Register)
+                            }
                         }
                     }
                 }
+            }
+            RegistrationEvent.OnClickChangeVisibilityPassword -> {
+                _state.update { it.copy(
+                    isPresentedPassword = it.isPresentedPassword.not()
+                ) }
             }
         }
     }
@@ -136,7 +108,7 @@ class RegistrationViewModel @Inject constructor(
 
         if (hasError) {
             _state.value = state.value.copy(
-                erroeEmail = decodeError(email.errorMessage, application),
+                errorEmail = decodeError(email.errorMessage, application),
                 errorPassword = decodeError(password.errorMessage, application),
                 errorRePassword = decodeError(rePassword.errorMessage, application),
                 errorTerms = decodeError(terms.errorMessage, application)

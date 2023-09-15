@@ -9,7 +9,7 @@ interface ProfileRepository {
 
     fun LogOut(): ValidationResult
 
-    fun Registration(email: String, password: String): ValidationResult
+    suspend fun Registration(email: String, password: String): ValidationResult
 
     fun ForgeinPassword(email: String): ValidationResult
 

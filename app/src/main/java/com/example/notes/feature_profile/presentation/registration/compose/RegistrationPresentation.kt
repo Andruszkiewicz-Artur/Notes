@@ -2,21 +2,26 @@ package com.example.notes.notes_future.presentation.register.compose
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Email
+import androidx.compose.material.icons.rounded.Lock
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.notes.core.compose.button.StandardButton
 import com.example.notes.core.compose.checkBox.CheckBox
-import com.example.notes.core.compose.textField.TextFieldBordered
 import com.example.notes.core.util.graph.Screen
 import com.example.notes.feature_profile.presentation.registration.RegistrationEvent
 import com.example.notes.feature_profile.presentation.registration.RegistrationViewModel
@@ -24,17 +29,15 @@ import com.example.notes.feature_profile.presentation.registration.UiEventRegist
 import com.example.notes.feature_profile.presentation.unit.presentation.ValidateText
 import kotlinx.coroutines.flow.collectLatest
 import com.example.notes.R
+import com.example.notes.feature_profile.presentation.login.LoginEvent
+import com.example.notes.feature_profile.unit.comp.TextField
 
 @Composable
 fun RegistrationPresentation(
     navController: NavHostController,
     viewModel: RegistrationViewModel = hiltViewModel()
 ) {
-    val email = viewModel.email.value
-    val password = viewModel.password.value
-    val rePassword = viewModel.rePassword.value
-    val checkBox = viewModel.checkBox.value
-    val state = viewModel.state.value
+    val state = viewModel.state.collectAsState().value
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -62,102 +65,95 @@ fun RegistrationPresentation(
             ) {
                 Text(
                     text = stringResource(id = R.string.Registration),
-                    style = MaterialTheme.typography.headlineLarge
+                    style = MaterialTheme.typography.titleLarge
                 )
 
                 Text(
                     text = stringResource(id = R.string.CreateYourAccount),
-                    style = MaterialTheme.typography.headlineSmall
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            TextFieldBordered(
-                text = email.text,
-                placeholder = stringResource(id = email.placeholder),
+            TextField(
+                value = state.email,
                 onValueChange = {
                     viewModel.onEvent(RegistrationEvent.EnteredEmail(it))
                 },
-                onFocusChange = {
-                    viewModel.onEvent(RegistrationEvent.ChangeFocusEmail(it))
-                },
-                singleLine = true,
-                isPlaceholder = email.isPlaceholder
+                label = stringResource(id = R.string.Email),
+                leftIcon = Icons.Rounded.Email,
+                keyboardType = KeyboardType.Email,
+                errorMessage = state.errorEmail,
             )
 
-            ValidateText(text = state.erroeEmail)
-
-            TextFieldBordered(
-                text = password.text,
-                placeholder = stringResource(id = password.placeholder),
+            TextField(
+                value = state.password,
                 onValueChange = {
                     viewModel.onEvent(RegistrationEvent.EnteredPassword(it))
                 },
-                onFocusChange = {
-                    viewModel.onEvent(RegistrationEvent.ChangeFocusPassword(it))
+                label = stringResource(id = R.string.Password),
+                leftIcon = Icons.Rounded.Lock,
+                isPassword = true,
+                showPassword = state.isPresentedPassword,
+                clickVisibilityPassword = {
+                    viewModel.onEvent(RegistrationEvent.OnClickChangeVisibilityPassword)
                 },
-                singleLine = true,
-                isPlaceholder = password.isPlaceholder,
-                isSecure = true
+                keyboardType = KeyboardType.Password,
+                errorMessage = state.errorPassword
             )
 
-            ValidateText(text = state.errorPassword)
-
-            TextFieldBordered(
-                text = rePassword.text,
-                placeholder = stringResource(id = rePassword.placeholder),
+            TextField(
+                value = state.rePassword,
                 onValueChange = {
                     viewModel.onEvent(RegistrationEvent.EnteredRePassword(it))
                 },
-                onFocusChange = {
-                    viewModel.onEvent(RegistrationEvent.ChangeFocusRePassword(it))
+                label = stringResource(id = R.string.RePassword),
+                leftIcon = Icons.Rounded.Lock,
+                isPassword = true,
+                showPassword = state.isPresentedPassword,
+                clickVisibilityPassword = {
+                    viewModel.onEvent(RegistrationEvent.OnClickChangeVisibilityPassword)
                 },
-                singleLine = true,
-                isPlaceholder = rePassword.isPlaceholder,
-                isSecure = true
+                keyboardType = KeyboardType.Password,
+                errorMessage = state.errorRePassword
             )
 
-            ValidateText(text = state.errorRePassword)
-
             CheckBox(
-                text = stringResource(id = checkBox.text),
-                checked = checkBox.isChacked,
+                text = stringResource(id = R.string.AcceptRules),
+                checked = state.isTerms,
                 onCheckedChange = {
                     viewModel.onEvent(RegistrationEvent.CheckBox(it))
                 }
             )
 
-            ValidateText(
-                text = state.errorTerms,
-                modifier = Modifier
-                    .offset(
-                        y = -8.dp
-                    )
-            )
-
             Spacer(modifier = Modifier.height(20.dp))
 
-            StandardButton(
-                text = stringResource(id = R.string.Register)
+            Button(
+                onClick = { viewModel.onEvent(RegistrationEvent.OnClickRegistration) },
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
-                viewModel.onEvent(RegistrationEvent.OnClickRegistration)
+                Text(text = stringResource(id = R.string.Register))
             }
 
             Spacer(modifier = Modifier.height(10.dp))
 
             Row(
                 horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Text(text = stringResource(id = R.string.YouHaveAccount))
+                Text(
+                    text = stringResource(id = R.string.YouHaveAccount),
+                    style = MaterialTheme.typography.bodyMedium
+                )
 
                 Text(
-                    text = stringResource(id = R.string.Login) + "!",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold
-                    ),
+                    text = " " + stringResource(id = R.string.Login) + "!",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold,
                     modifier = Modifier
                         .clickable {
                             navController.popBackStack()

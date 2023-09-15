@@ -13,7 +13,10 @@ import com.example.notes.feature_profile.domain.use_case.profileUseCases.Profile
 import com.example.notes.feature_profile.domain.use_case.validationUseCases.ValidateUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,14 +26,8 @@ class ForgetPasswordViewModel @Inject constructor(
     private val validateUseCases: ValidateUseCases,
     private val profileUseCases: ProfileUseCases
 ): ViewModel() {
-
-    private val _email = mutableStateOf(TextFieldState(
-        placeholder = R.string.Email
-    ))
-    val email: State<TextFieldState> = _email
-
-    private val _state = mutableStateOf(ForgetPasswordState())
-    val state: State<ForgetPasswordState> = _state
+    private val _state = MutableStateFlow(ForgetPasswordState())
+    val state = _state.asStateFlow()
 
     private val _eventFlow = MutableSharedFlow<UiEventForgetPassword>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -38,20 +35,11 @@ class ForgetPasswordViewModel @Inject constructor(
     fun onEvent(event: ForgetPasswordEvent) {
         when (event) {
             is ForgetPasswordEvent.EnteredEmail -> {
-                _email.value = email.value.copy(
-                    text = event.value
-                )
-            }
-            is ForgetPasswordEvent.ChangeEmailFocus -> {
-                _email.value = email.value.copy(
-                    isPlaceholder = !event.focusState.isFocused && _email.value.text.isEmpty()
-                )
+                _state.update { it.copy(
+                    email = event.value
+                ) }
             }
             is ForgetPasswordEvent.OnClickForgetPassword -> {
-                _state.value = state.value.copy(
-                    email = _email.value.text
-                )
-
                 if(isNoneError()) {
                     val loginResult = profileUseCases.forgetPasswordUseCase.execute(
                         email = _state.value.email
@@ -70,7 +58,7 @@ class ForgetPasswordViewModel @Inject constructor(
     }
 
     fun isNoneError(): Boolean {
-        val email = validateUseCases.validateEmail.execute(_email.value.text)
+        val email = validateUseCases.validateEmail.execute(_state.value.email)
 
         if (!email.successful) {
             _state.value = state.value.copy(

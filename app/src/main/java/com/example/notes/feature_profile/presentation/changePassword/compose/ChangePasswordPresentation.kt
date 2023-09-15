@@ -10,7 +10,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.notes.core.compose.button.StandardButton
-import com.example.notes.core.compose.textField.TextFieldBordered
 import com.example.notes.feature_profile.presentation.changePassword.ChangePasswordEvent
 import com.example.notes.feature_profile.presentation.changePassword.ChangePasswordViewModel
 import com.example.notes.feature_profile.presentation.changePassword.UiEventChangePassword
@@ -48,50 +47,11 @@ fun ChangePasswordPresentation(
                 .fillMaxWidth(0.8f)
         ) {
             Spacer(modifier = Modifier.height(40.dp))
-
-            TextFieldBordered(
-                text = oldPasswordState.text,
-                placeholder = stringResource(id = oldPasswordState.placeholder),
-                onValueChange = {
-                    viewModel.onEvent(ChangePasswordEvent.EnteredOldPassword(it))
-                },
-                onFocusChange = {
-                    viewModel.onEvent(ChangePasswordEvent.ChangeOldPasswordFocus(it))
-                },
-                isPlaceholder = oldPasswordState.isPlaceholder,
-                isSecure = true
-            )
             
             Spacer(modifier = Modifier.height(40.dp))
 
-            TextFieldBordered(
-                text = newPasswordState.text,
-                placeholder = stringResource(id = newPasswordState.placeholder),
-                onValueChange = {
-                    viewModel.onEvent(ChangePasswordEvent.EnteredNewPassword(it))
-                },
-                onFocusChange = {
-                    viewModel.onEvent(ChangePasswordEvent.ChangeNewPasswordFocus(it))
-                },
-                isPlaceholder = newPasswordState.isPlaceholder,
-                isSecure = true
-            )
-
             ValidateText(
                 text = state.errorNewPassword
-            )
-
-            TextFieldBordered(
-                text = rePasswordState.text,
-                placeholder = stringResource(id = rePasswordState.placeholder),
-                onValueChange = {
-                    viewModel.onEvent(ChangePasswordEvent.EnteredRePassword(it))
-                },
-                onFocusChange = {
-                    viewModel.onEvent(ChangePasswordEvent.ChangeRePasswordFocus(it))
-                },
-                isPlaceholder = rePasswordState.isPlaceholder,
-                isSecure = true
             )
 
             ValidateText(

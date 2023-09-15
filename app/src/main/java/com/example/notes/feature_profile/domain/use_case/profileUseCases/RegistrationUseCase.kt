@@ -7,7 +7,7 @@ class RegistrationUseCase(
     private val repository: ProfileRepository
 ) {
 
-    fun execute(email: String, password: String): ValidationResult {
+    suspend fun execute(email: String, password: String): ValidationResult {
         return repository.Registration(
             email = email,
             password = password

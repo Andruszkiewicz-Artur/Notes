@@ -45,4 +45,5 @@
     <string name="ProblemWithLogOut">Problem with log out</string>
     <string name="TitleEmpty">Title can`t be empty!</string>
     <string name="ContentEmpty">Content can`t be empty!</string>
+    <string name="YouDontHaveAnAccount">You don`t have an accoutn?</string>
 </resources>

@@ -31,7 +31,10 @@ fun CheckBox(
             )
         )
         
-        Text(text = text)
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium
+        )
     }
     
 }

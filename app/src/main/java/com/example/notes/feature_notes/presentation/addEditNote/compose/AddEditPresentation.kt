@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.FloatingActionButtonDefaults
+import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -55,22 +57,12 @@ fun AddEditPresentation(
     Scaffold(
         floatingActionButton = {
             if (titleState.text.isNotBlank() && contentState.text.isNotBlank()) {
-                FloatingActionButton(
+                ExtendedFloatingActionButton(
                     onClick = {
                         viewModel.onEvent(AddEditNoteEvent.SaveNote)
-                    },
-                    backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-                    shape = CircleShape,
-                    elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp),
-                    modifier = Modifier
-                        .size(80.dp)
-                        .border(
-                            width = 10.dp,
-                            color = MaterialTheme.colorScheme.background,
-                            shape = CircleShape
-                        )
+                    }
                 ) {
-                    Image(
+                    Icon(
                         imageVector = Icons.Filled.Done,
                         contentDescription = R.string.AddEditNote.toString(),
                         modifier = Modifier
