@@ -41,15 +41,17 @@ class ForgetPasswordViewModel @Inject constructor(
             }
             is ForgetPasswordEvent.OnClickForgetPassword -> {
                 if(isNoneError()) {
-                    val loginResult = profileUseCases.forgetPasswordUseCase.execute(
-                        email = _state.value.email
-                    )
+                    viewModelScope.launch {
+                        val loginResult = profileUseCases.forgetPasswordUseCase.execute(
+                            email = _state.value.email
+                        )
 
-                    if(!loginResult.successful) {
-                        Toast.makeText(application, decodeError(loginResult.errorMessage, application), Toast.LENGTH_LONG).show()
-                    } else {
-                        viewModelScope.launch {
-                            _eventFlow.emit(UiEventForgetPassword.ClickForgetPassword)
+                        if(!loginResult.successful) {
+                            Toast.makeText(application, decodeError(loginResult.errorMessage, application), Toast.LENGTH_LONG).show()
+                        } else {
+                            viewModelScope.launch {
+                                _eventFlow.emit(UiEventForgetPassword.ClickForgetPassword)
+                            }
                         }
                     }
                 }

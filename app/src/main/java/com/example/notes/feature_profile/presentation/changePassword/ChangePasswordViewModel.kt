@@ -14,6 +14,9 @@ import com.example.notes.feature_profile.domain.use_case.profileUseCases.Profile
 import com.example.notes.feature_profile.domain.use_case.validationUseCases.ValidateUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,27 +26,8 @@ class ChangePasswordViewModel @Inject constructor(
     private val profileUseCases: ProfileUseCases,
     private val validateUseCases: ValidateUseCases
 ): ViewModel() {
-
-    private val _oldPassword = mutableStateOf(TextFieldState(
-        placeholder = R.string.OldPassword
-    )
-    )
-    val oldPassword: State<TextFieldState> = _oldPassword
-
-    private val _newPassword = mutableStateOf(TextFieldState(
-        placeholder = R.string.NewPassword
-    )
-    )
-    val newPassword: State<TextFieldState> = _newPassword
-
-    private val _rePassword = mutableStateOf(TextFieldState(
-        placeholder = R.string.RePassword
-    )
-    )
-    val rePassword: State<TextFieldState> = _rePassword
-
-    private val _state = mutableStateOf(ChangePasswordState())
-    val state: State<ChangePasswordState> = _state
+    private val _state = MutableStateFlow(ChangePasswordState())
+    val state = _state.asStateFlow()
 
     private val _eventFlow = MutableSharedFlow<UiEventChangePassword>()
     val eventFlow = _eventFlow
@@ -51,67 +35,53 @@ class ChangePasswordViewModel @Inject constructor(
     fun onEvent(event: ChangePasswordEvent) {
         when (event) {
             is ChangePasswordEvent.EnteredOldPassword -> {
-                _oldPassword.value = oldPassword.value.copy(
-                    text = event.text
-                )
-            }
-            is ChangePasswordEvent.ChangeOldPasswordFocus -> {
-                _oldPassword.value = oldPassword.value.copy(
-                    isPlaceholder = !event.focusState.isFocused && _oldPassword.value.text.isEmpty()
-                )
+                _state.update { it.copy(
+                    oldPassword = event.text
+                ) }
             }
             is ChangePasswordEvent.EnteredNewPassword -> {
-                _newPassword.value = newPassword.value.copy(
-                    text = event.text
-                )
-            }
-            is ChangePasswordEvent.ChangeNewPasswordFocus -> {
-                _newPassword.value = newPassword.value.copy(
-                    isPlaceholder = !event.focusState.isFocused && _newPassword.value.text.isEmpty()
-                )
+                _state.update { it.copy(
+                    newPassword = event.text
+                ) }
             }
             is ChangePasswordEvent.EnteredRePassword -> {
-                _rePassword.value = rePassword.value.copy(
-                    text = event.text
-                )
-            }
-            is ChangePasswordEvent.ChangeRePasswordFocus -> {
-                _rePassword.value = rePassword.value.copy(
-                    isPlaceholder = !event.focusState.isFocused && _rePassword.value.text.isEmpty()
-                )
+                _state.update { it.copy(
+                    newRePassword = event.text
+                ) }
             }
             is ChangePasswordEvent.ResetPassword -> {
-                _state.value = state.value.copy(
-                    oldPassword = _oldPassword.value.text,
-                    newPassword = _newPassword.value.text,
-                    newRePassword = _rePassword.value.text
-                )
-
                 val user = auth.currentUser
 
                 if (isNoneErrors() && user != null) {
-                   val changePasswordResult = profileUseCases.changePasswordUseCase.execute(
-                        user = user,
-                        email = user.email ?: "",
-                        oldPassword = _state.value.oldPassword,
-                        newPassword = _state.value.newPassword
-                    )
+                   viewModelScope.launch {
+                       val changePasswordResult = profileUseCases.changePasswordUseCase.execute(
+                           user = user,
+                           email = user.email ?: "",
+                           oldPassword = _state.value.oldPassword,
+                           newPassword = _state.value.newPassword
+                       )
 
-                    if(!changePasswordResult.successful) {
-                        Toast.makeText(application, decodeError(changePasswordResult.errorMessage, application), Toast.LENGTH_LONG).show()
-                    } else {
-                        viewModelScope.launch {
-                            _eventFlow.emit(UiEventChangePassword.ChangePassword)
-                        }
-                    }
+                       if(!changePasswordResult.successful) {
+                           Toast.makeText(application, decodeError(changePasswordResult.errorMessage, application), Toast.LENGTH_LONG).show()
+                       } else {
+                           viewModelScope.launch {
+                               _eventFlow.emit(UiEventChangePassword.ChangePassword)
+                           }
+                       }
+                   }
                 }
+            }
+            ChangePasswordEvent.ChangeVisibilityPassword -> {
+                _state.update { it.copy(
+                    isPresentedPassword = it.isPresentedPassword.not()
+                ) }
             }
         }
     }
 
     private fun isNoneErrors(): Boolean {
-        val password = validateUseCases.validatePassword.execute(_newPassword.value.text)
-        val rePassword = validateUseCases.validateRePassword.execute(_newPassword.value.text, _rePassword.value.text)
+        val password = validateUseCases.validatePassword.execute(_state.value.newPassword)
+        val rePassword = validateUseCases.validateRePassword.execute(_state.value.newPassword, _state.value.newRePassword)
 
         val hasError = listOf(
             password,

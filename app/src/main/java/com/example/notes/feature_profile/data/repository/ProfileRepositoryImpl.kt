@@ -87,79 +87,106 @@ class ProfileRepositoryImpl(): ProfileRepository {
         }
     }
 
-    override fun ForgeinPassword(email: String): ValidationResult {
-        var errorMessage: String? = null
+    override suspend fun ForgeinPassword(email: String): ValidationResult {
+        return try {
+            var errorMessage: String? = null
 
-        Firebase.auth.sendPasswordResetEmail(email)
-            .addOnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    errorMessage = R.string.ProblemWithDatabase.toString()
-                }
-            }
+            Firebase.auth.sendPasswordResetEmail(email)
+                .addOnCompleteListener { task ->
+                    if (!task.isSuccessful) {
+                        errorMessage = R.string.ProblemWithDatabase.toString()
+                    }
+                }.await()
 
-        return ValidationResult(
-            successful = errorMessage == null,
-            errorMessage = errorMessage
-        )
+            delay(500)
+
+            ValidationResult(
+                successful = errorMessage == null,
+                errorMessage = errorMessage
+            )
+        } catch (e: Exception) {
+            ValidationResult(
+                successful = false,
+                errorMessage = "${e.message}"
+            )
+        }
     }
 
-    override fun ChangePassword(
+    override suspend fun ChangePassword(
         user: FirebaseUser,
         email: String,
         oldPassword: String,
         newPassword: String
     ): ValidationResult {
-        var errorMessage: String? = null
-        val credential = EmailAuthProvider
-            .getCredential(email, oldPassword)
+        return try {
+            var errorMessage: String? = null
+            val credential = EmailAuthProvider
+                .getCredential(email, oldPassword)
 
-        user.reauthenticate(credential)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    user.updatePassword(newPassword)
-                        .addOnCompleteListener { task ->
-                            if (!task.isSuccessful) {
-                                errorMessage = R.string.ProblemWithDatabase.toString()
+            user.reauthenticate(credential)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        user.updatePassword(newPassword)
+                            .addOnCompleteListener { task ->
+                                if (!task.isSuccessful) {
+                                    errorMessage = R.string.ProblemWithDatabase.toString()
+                                }
                             }
-                        }
-                } else {
-                    errorMessage = R.string.OldPasswordIsWrong.toString()
-                }
-            }
+                    } else {
+                        errorMessage = R.string.OldPasswordIsWrong.toString()
+                    }
+                }.await()
 
-        return ValidationResult(
-            successful = errorMessage == null,
-            errorMessage = errorMessage
-        )
+            delay(500)
+
+            ValidationResult(
+                successful = errorMessage == null,
+                errorMessage = errorMessage
+            )
+        } catch (e: Exception) {
+            ValidationResult(
+                successful = false,
+                errorMessage = "${e.message}"
+            )
+        }
     }
 
-    override fun ChangeEmail(
+    override suspend fun ChangeEmail(
         user: FirebaseUser,
         oldEmail: String,
         newEmail: String,
         password: String
     ): ValidationResult {
-        var errorMessage: String? = null
-        val credential = EmailAuthProvider
-            .getCredential(oldEmail, password)
+        return try {
+            var errorMessage: String? = null
+            val credential = EmailAuthProvider
+                .getCredential(oldEmail, password)
 
-        user.reauthenticate(credential)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    user.updateEmail(newEmail)
-                        .addOnCompleteListener { task ->
-                            if (!task.isSuccessful) {
-                                errorMessage = R.string.OldPasswordIsWrong.toString()
+            user.reauthenticate(credential)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        user.updateEmail(newEmail)
+                            .addOnCompleteListener { task ->
+                                if (!task.isSuccessful) {
+                                    errorMessage = R.string.OldPasswordIsWrong.toString()
+                                }
                             }
-                        }
-                } else {
-                    errorMessage = R.string.WrongPassword.toString()
-                }
-            }
+                    } else {
+                        errorMessage = R.string.WrongPassword.toString()
+                    }
+                }.await()
 
-        return ValidationResult(
-            successful = errorMessage == null,
-            errorMessage = errorMessage
-        )
+            delay(500)
+
+            ValidationResult(
+                successful = errorMessage == null,
+                errorMessage = errorMessage
+            )
+        } catch (e: Exception) {
+            ValidationResult(
+                successful = false,
+                errorMessage = "${e.message}"
+            )
+        }
     }
 }

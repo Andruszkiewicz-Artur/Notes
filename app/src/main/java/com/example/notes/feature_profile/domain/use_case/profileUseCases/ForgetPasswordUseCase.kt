@@ -8,7 +8,7 @@ class ForgetPasswordUseCase(
     private val repository: ProfileRepository
 ) {
 
-    fun execute(email: String): ValidationResult {
+    suspend fun execute(email: String): ValidationResult {
         if(email.isBlank()) {
             return ValidationResult(
                 successful = false,

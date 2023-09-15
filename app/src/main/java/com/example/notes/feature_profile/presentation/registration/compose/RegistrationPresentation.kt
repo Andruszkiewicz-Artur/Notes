@@ -11,11 +11,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,11 +38,14 @@ import com.example.notes.R
 import com.example.notes.feature_profile.presentation.login.LoginEvent
 import com.example.notes.feature_profile.unit.comp.TextField
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RegistrationPresentation(
     navController: NavHostController,
     viewModel: RegistrationViewModel = hiltViewModel()
 ) {
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
     val state = viewModel.state.collectAsState().value
 
     LaunchedEffect(key1 = true) {
@@ -83,8 +92,14 @@ fun RegistrationPresentation(
                 },
                 label = stringResource(id = R.string.Email),
                 leftIcon = Icons.Rounded.Email,
+                imeAction = ImeAction.Next,
+                onNext = {
+                    focusRequester.requestFocus()
+                },
                 keyboardType = KeyboardType.Email,
                 errorMessage = state.errorEmail,
+                modifier = Modifier
+                    .focusRequester(focusRequester)
             )
 
             TextField(
@@ -94,13 +109,19 @@ fun RegistrationPresentation(
                 },
                 label = stringResource(id = R.string.Password),
                 leftIcon = Icons.Rounded.Lock,
+                imeAction = ImeAction.Next,
+                onNext = {
+                    focusRequester.requestFocus()
+                },
                 isPassword = true,
                 showPassword = state.isPresentedPassword,
                 clickVisibilityPassword = {
                     viewModel.onEvent(RegistrationEvent.OnClickChangeVisibilityPassword)
                 },
                 keyboardType = KeyboardType.Password,
-                errorMessage = state.errorPassword
+                errorMessage = state.errorPassword,
+                modifier = Modifier
+                    .focusRequester(focusRequester)
             )
 
             TextField(
@@ -110,13 +131,19 @@ fun RegistrationPresentation(
                 },
                 label = stringResource(id = R.string.RePassword),
                 leftIcon = Icons.Rounded.Lock,
+                imeAction = ImeAction.Done,
+                onNext = {
+                    keyboardController?.hide()
+                },
                 isPassword = true,
                 showPassword = state.isPresentedPassword,
                 clickVisibilityPassword = {
                     viewModel.onEvent(RegistrationEvent.OnClickChangeVisibilityPassword)
                 },
                 keyboardType = KeyboardType.Password,
-                errorMessage = state.errorRePassword
+                errorMessage = state.errorRePassword,
+                modifier = Modifier
+                    .focusRequester(focusRequester)
             )
 
             CheckBox(

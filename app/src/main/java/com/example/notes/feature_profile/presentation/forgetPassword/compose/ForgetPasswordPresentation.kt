@@ -10,9 +10,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -24,11 +27,13 @@ import kotlinx.coroutines.flow.collectLatest
 import com.example.notes.R
 import com.example.notes.feature_profile.unit.comp.TextField
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ForgetPasswordPresentation(
     navController: NavHostController,
     viewModel: ForgetPasswordViewModel = hiltViewModel()
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     val state = viewModel.state.collectAsState().value
 
     LaunchedEffect(key1 = true) {
@@ -69,6 +74,10 @@ fun ForgetPasswordPresentation(
                 leftIcon = Icons.Rounded.Email,
                 keyboardType = KeyboardType.Email,
                 errorMessage = state.errorEmail,
+                imeAction = ImeAction.Done,
+                onDone = {
+                    keyboardController?.hide()
+                }
             )
 
             Spacer(modifier = Modifier.height(32.dp))

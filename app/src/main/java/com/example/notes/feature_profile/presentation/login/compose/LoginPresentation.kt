@@ -14,11 +14,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,13 +39,14 @@ import kotlinx.coroutines.flow.collectLatest
 import com.example.notes.R
 import com.example.notes.feature_profile.unit.comp.TextField
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LoginPresentation(
     navController: NavHostController,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
-
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
     val state = viewModel.state.collectAsState().value
 
     LaunchedEffect(key1 = true) {
@@ -86,8 +93,14 @@ fun LoginPresentation(
                 },
                 label = stringResource(id = R.string.Email),
                 leftIcon = Icons.Rounded.Email,
+                imeAction = ImeAction.Next,
+                onNext = {
+                    focusRequester.freeFocus()
+                },
                 keyboardType = KeyboardType.Email,
                 errorMessage = state.emailErrorMessage,
+                modifier = Modifier
+                    .focusRequester(focusRequester)
             )
 
             TextField(
@@ -102,8 +115,14 @@ fun LoginPresentation(
                 clickVisibilityPassword = {
                     viewModel.onEvent(LoginEvent.ChangeVisibilityPassword)
                 },
+                imeAction = ImeAction.Done,
+                onDone = {
+                    keyboardController?.hide()
+                },
                 keyboardType = KeyboardType.Password,
-                errorMessage = state.passwordErrorMessage
+                errorMessage = state.passwordErrorMessage,
+                modifier = Modifier
+                    .focusRequester(focusRequester)
             )
 
             Spacer(modifier = Modifier.height(10.dp))

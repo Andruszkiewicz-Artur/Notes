@@ -11,9 +11,9 @@ interface ProfileRepository {
 
     suspend fun Registration(email: String, password: String): ValidationResult
 
-    fun ForgeinPassword(email: String): ValidationResult
+    suspend fun ForgeinPassword(email: String): ValidationResult
 
-    fun ChangePassword(user: FirebaseUser, email: String, oldPassword: String, newPassword: String): ValidationResult
+    suspend fun ChangePassword(user: FirebaseUser, email: String, oldPassword: String, newPassword: String): ValidationResult
 
-    fun ChangeEmail(user: FirebaseUser,oldEmail: String, newEmail: String, password: String): ValidationResult
+    suspend fun ChangeEmail(user: FirebaseUser,oldEmail: String, newEmail: String, password: String): ValidationResult
 }

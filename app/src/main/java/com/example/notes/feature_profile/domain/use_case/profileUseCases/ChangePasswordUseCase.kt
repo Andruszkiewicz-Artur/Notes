@@ -8,7 +8,7 @@ class ChangePasswordUseCase(
     private val repository: ProfileRepository
 ) {
 
-    fun execute(
+    suspend fun execute(
         user: FirebaseUser,
         email: String,
         oldPassword: String,
