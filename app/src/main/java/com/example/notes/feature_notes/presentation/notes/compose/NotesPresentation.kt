@@ -22,6 +22,7 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.notes.R
+import com.example.notes.core.value.Static
 import com.example.notes.notes_future.domain.model.Note
 import com.example.notes.feature_notes.presentation.notes.NotesViewModel
 import com.example.notes.feature_notes.domain.model.GridCellEnum
@@ -54,13 +56,20 @@ fun NotesPresentation(
 
     val pullRefreshState = rememberSwipeRefreshState(state.isLoading)
 
+    LaunchedEffect(key1 = Static.profileSetting) {
+        viewModel.loadingData()
+    }
+
     SwipeRefresh(
         state = pullRefreshState,
         onRefresh = viewModel::loadingData,
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Scaffold {
+        Scaffold(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
             Column(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally,

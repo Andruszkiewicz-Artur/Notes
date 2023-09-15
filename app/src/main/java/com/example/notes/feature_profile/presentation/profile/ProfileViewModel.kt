@@ -7,7 +7,7 @@ import androidx.core.text.isDigitsOnly
 import androidx.core.util.rangeTo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.notes.core.value.profileSetting
+import com.example.notes.core.value.Static
 import com.example.notes.feature_notes.domain.unit.Resource
 import com.example.notes.feature_notes.domain.use_case.remote.RemoteUseCases
 import com.example.notes.feature_notes.presentation.auth
@@ -34,7 +34,7 @@ class ProfileViewModel @Inject constructor(
                     isSynchronized = event.isSaved
                 )
                 remoteUseCases.setUpSynchronizeUseCase.execute(_state.value.isSynchronized)
-                profileSetting?.isSynchronize = _state.value.isSynchronized
+                Static.profileSetting?.isSynchronize = _state.value.isSynchronized
             }
             is ProfileEvent.LogOut -> {
                 viewModelScope.launch {
@@ -46,7 +46,7 @@ class ProfileViewModel @Inject constructor(
                             isUser = false
                         )
 
-                        profileSetting = null
+                        Static.profileSetting = null
                     } else {
                         Log.d("Problem with login", result.errorMessage.toString())
                     }
@@ -59,7 +59,7 @@ class ProfileViewModel @Inject constructor(
         val currentUser = auth.currentUser
         Log.d("auth", currentUser.toString())
         if(currentUser != null) {
-            if (profileSetting?.isSynchronize == null) {
+            if (Static.profileSetting?.isSynchronize == null) {
                 viewModelScope.launch {
                     val result = remoteUseCases.checkIsSynchronize.execute()
 
@@ -71,7 +71,7 @@ class ProfileViewModel @Inject constructor(
                             _state.value = state.value.copy(
                                 isSynchronized = result.data ?: _state.value.isSynchronized
                             )
-                            profileSetting?.isSynchronize = result.data
+                            Static.profileSetting?.isSynchronize = result.data
                         }
                     }
                 }
@@ -81,7 +81,7 @@ class ProfileViewModel @Inject constructor(
                 _state.value = state.value.copy(
                     email = user.email ?: "",
                     isUser = true,
-                    isSynchronized = profileSetting?.isSynchronize ?: false
+                    isSynchronized = Static.profileSetting?.isSynchronize ?: false
                 )
             }
         }

@@ -27,7 +27,7 @@ import com.example.notes.core.compose.BottomBar.BottomBarScreen
 import com.example.notes.core.model.ProfileModel
 import com.example.notes.core.util.graph.RootNavGraph
 import com.example.notes.core.util.graph.Screen
-import com.example.notes.core.value.profileSetting
+import com.example.notes.core.value.Static
 import com.example.notes.ui.theme.NotesTheme
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity() {
         auth = Firebase.auth
 
         if (auth.currentUser != null) {
-            profileSetting = ProfileModel()
+            Static.profileSetting = ProfileModel()
         }
 
         setContent {

@@ -5,10 +5,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.notes.core.value.profileSetting
+import com.example.notes.core.value.Static
 import com.example.notes.feature_notes.data.mapper.toNote
 import com.example.notes.feature_notes.domain.model.RemoteNoteModel
-import com.example.notes.feature_notes.domain.repository.NotesRemoteRepository
 import com.example.notes.feature_notes.domain.unit.Resource
 import com.example.notes.notes_future.domain.model.Note
 import com.example.notes.feature_notes.domain.use_case.local.NotesUseCases
@@ -42,7 +41,7 @@ class NotesViewModel @Inject constructor(
             getAllNotes()
             delay(1500)
 
-            if (profileSetting?.isSynchronize == null) {
+            if (Static.profileSetting?.isSynchronize == true) {
                 val result = remoteUseCases.checkIsSynchronize.execute()
                 val remoteNotes = remoteUseCases.takeAllNotesUseCase.execute()
 
@@ -62,7 +61,7 @@ class NotesViewModel @Inject constructor(
                         Log.d("Error isSynchronize", result.message.toString())
                     }
                     is Resource.Success -> {
-                        profileSetting?.isSynchronize = result.data
+                        Static.profileSetting?.isSynchronize = result.data
                     }
                 }
             }
@@ -80,7 +79,7 @@ class NotesViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getAllNotes() {
+    private fun getAllNotes() {
         notesUseCases.getAllNotesUseCase.invoke().onEach { notes ->
             _state.value = state.value.copy(
                 notes = notes
