@@ -2,13 +2,13 @@ package com.example.notes.feature_profile.presentation.changeEmail.compose
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Lock
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -128,12 +128,6 @@ fun ChangeEmailPresentation(
                 )
 
                 Spacer(modifier = Modifier.height(32.dp))
-
-                StandardButton(
-                    text = stringResource(id = R.string.ChangeEmail)
-                ) {
-                    viewModel.onEvent(ChangeEmailEvent.ChangeEmail)
-                }
 
                 Button(
                     onClick = { viewModel.onEvent(ChangeEmailEvent.ChangeEmail) },

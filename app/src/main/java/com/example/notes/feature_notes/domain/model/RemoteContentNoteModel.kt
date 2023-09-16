@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class RemoteContentNoteModel(
     val title: String,
     val content: String,
-    val updateTime: Long
+    val updateTime: Long,
+    val isDeleted: Boolean
 )

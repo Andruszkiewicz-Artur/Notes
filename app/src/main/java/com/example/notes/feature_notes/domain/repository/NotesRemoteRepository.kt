@@ -13,4 +13,6 @@ interface NotesRemoteRepository {
     fun setUpSynchronize(isSynchronized: Boolean): ValidationResult
 
     suspend fun checkIsSynchronize(): Resource<Boolean>
+
+    suspend fun deleteNote(remoteNoteModel: RemoteNoteModel): ValidationResult
 }

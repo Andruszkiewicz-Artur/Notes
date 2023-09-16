@@ -4,5 +4,6 @@ data class RemoteUseCases(
     val takeAllNotesUseCase: TakeAllNotesUseCase,
     val uploadNoteUseCase: UploadNoteUseCase,
     val setUpSynchronizeUseCase: SetUpSynchronizeUseCase,
-    val checkIsSynchronize: CheckIsSynchronize
+    val checkIsSynchronize: CheckIsSynchronize,
+    val deleteNoteUseCase: DeleteNoteUseCase
 )

@@ -1,5 +1,6 @@
 package com.example.notes.feature_notes.presentation.addEditNote
 
+import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -18,13 +19,15 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.example.notes.R
+import com.example.notes.core.value.Static
 import com.example.notes.feature_notes.domain.model.StatusNoteEnum
 
 @HiltViewModel
 class AddEditNoteViewModel @Inject constructor(
     private val notesUseCases: NotesUseCases,
     savedStateHandle: SavedStateHandle,
-    private val remoteUseCases: RemoteUseCases
+    private val remoteUseCases: RemoteUseCases,
+    private val application: Application
 ): ViewModel() {
 
     private val _title = mutableStateOf(
@@ -95,32 +98,22 @@ class AddEditNoteViewModel @Inject constructor(
                 if (_title.value.text.isNotEmpty() && _content.value.text.isNotEmpty()) {
                     val currentTime = System.currentTimeMillis()
 
-                    var note = Note(
+                    val note = Note(
                         id = currentId,
                         title = _title.value.text,
                         content = _content.value.text,
                         timeCreate = createTime ?: currentTime,
                         timeUpdate = currentTime,
-                        status = StatusNoteEnum.Local
+                        isDeleted = false
                     )
 
                     viewModelScope.launch {
-                        val result = remoteUseCases.uploadNoteUseCase.execute(note.toRemoteNote())
-                        if(!result.successful) {
-                            Log.d("Problem with add note to firebase", result.errorMessage ?: "Unknown error")
-                            note.status = StatusNoteEnum.Sended
-                        }
+                        notesUseCases.insertNoteUseCase.invoke(note)
 
-                        try {
-                            notesUseCases.insertNoteUseCase.invoke(note)
-                            _eventFlow.emit(UiEvent.SaveNote)
-                        } catch (e: InvalidNoteException) {
-                            _eventFlow.emit(
-                                UiEvent.ShowSnackbar(
-                                    message = e.message ?: R.string.CouldntSaveNote.toString()
-                                )
-                            )
-                        }
+                        if (Static.profileSetting?.isSynchronize == true) remoteUseCases.uploadNoteUseCase.execute(note)
+
+                        _eventFlow.emit(UiEvent.SaveNote)
+
                     }
                 }
             }

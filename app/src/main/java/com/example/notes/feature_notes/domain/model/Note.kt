@@ -22,8 +22,8 @@ data class Note(
     @ColumnInfo(name = "timeUpdate")
     val timeUpdate: Long,
 
-    @ColumnInfo(name = "status")
-    var status: StatusNoteEnum
+    @ColumnInfo(name = "isDeleted")
+    var isDeleted: Boolean
 )
 
 class InvalidNoteException(message: String): Exception(message)

@@ -20,9 +20,9 @@ import com.example.notes.core.util.graph.Screen
 
 @Composable
 fun NoteItem(
-    navHostController: NavHostController,
-    viewModel: NotesViewModel,
     note: Note,
+    onClickNote: () -> Unit,
+    onClickDeleteNote: () -> Unit,
     isSecondColor: Boolean,
     modifier: Modifier
 ) {
@@ -36,7 +36,7 @@ fun NoteItem(
                 shape = RoundedCornerShape(20.dp)
             )
             .clickable {
-                navHostController.navigate(Screen.AddEdit.sendNoteId(note.id!!))
+                onClickNote()
             }
             .padding(16.dp)
     ) {
@@ -62,7 +62,7 @@ fun NoteItem(
                 modifier = Modifier
                     .size(30.dp)
                     .clickable {
-                        viewModel.deleteNote(note)
+                        onClickDeleteNote()
                     },
                 tint = label
             )

@@ -11,7 +11,8 @@ fun Note.toRemoteNote(): RemoteNoteModel {
         value = RemoteContentNoteModel(
             title = title,
             content = content,
-            updateTime = timeUpdate
+            updateTime = timeUpdate,
+            isDeleted = isDeleted
         )
     )
 }
@@ -23,6 +24,6 @@ fun RemoteNoteModel.toNote(): Note {
         content = value.content,
         timeUpdate = value.updateTime,
         timeCreate = id.toLong(),
-        status = StatusNoteEnum.Sended
+        isDeleted = value.isDeleted
     )
 }

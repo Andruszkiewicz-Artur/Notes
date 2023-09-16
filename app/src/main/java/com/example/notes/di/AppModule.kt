@@ -113,7 +113,8 @@ object AppModule {
             takeAllNotesUseCase = TakeAllNotesUseCase(repository),
             uploadNoteUseCase = UploadNoteUseCase(repository),
             checkIsSynchronize = CheckIsSynchronize(repository),
-            setUpSynchronizeUseCase = SetUpSynchronizeUseCase(repository)
+            setUpSynchronizeUseCase = SetUpSynchronizeUseCase(repository),
+            deleteNoteUseCase = com.example.notes.feature_notes.domain.use_case.remote.DeleteNoteUseCase(repository)
         )
     }
 }

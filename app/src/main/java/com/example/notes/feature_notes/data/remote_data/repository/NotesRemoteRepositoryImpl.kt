@@ -12,6 +12,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.tasks.await
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.json.Json
@@ -22,6 +23,7 @@ class NotesRemoteRepositoryImpl(): NotesRemoteRepository {
     companion object {
         private val ref = Firebase.database.reference
         private val auth = FirebaseAuth.getInstance()
+        private const val TAG = "NotesRemoteRepositoryImpl_TAG"
     }
 
     override suspend fun takeAllNotes(): Resource<List<RemoteNoteModel>> {
@@ -36,14 +38,13 @@ class NotesRemoteRepositoryImpl(): NotesRemoteRepository {
                 .await()
 
             for (data in result.children) {
-                Log.d("Check value of result", data.child("updateTime").getValue().toString())
-                val time = data.child("updateTime").getValue().toString().toLong()
                 val note = RemoteNoteModel(
                     id = data.key.toString(),
                     value = RemoteContentNoteModel(
                         title = data.child("title").getValue().toString(),
                         content = data.child("content").getValue().toString(),
-                        updateTime = time
+                        updateTime = data.child("updateTime").getValue().toString().toLong(),
+                        isDeleted = data.child("isDeleted").getValue().toString().toBoolean()
                     )
                 )
                 remoteNoteList.add(
@@ -89,7 +90,9 @@ class NotesRemoteRepositoryImpl(): NotesRemoteRepository {
         val idUser = auth.uid
 
         if (idUser != null) {
-            val result = ref.child(idUser).child("isSynchronized").setValue(isSynchronized)
+            val result = ref.child(idUser)
+                .child("isSynchronized")
+                .setValue(isSynchronized)
 
             return ValidationResult(
                 successful = result.isSuccessful,
@@ -107,7 +110,10 @@ class NotesRemoteRepositoryImpl(): NotesRemoteRepository {
         val idUser = auth.uid
 
         if (idUser != null) {
-            val result = ref.child(idUser).child("isSynchronized").get().await()
+            val result = ref.child(idUser)
+                .child("isSynchronized")
+                .get()
+                .await()
 
             val value = result.value to Boolean
             val isSynchronized: Boolean? = value.first as Boolean?
@@ -126,5 +132,50 @@ class NotesRemoteRepositoryImpl(): NotesRemoteRepository {
         return Resource.Error(
             message = "Problem with idUser"
         )
+    }
+
+    override suspend fun deleteNote(remoteNoteModel: RemoteNoteModel): ValidationResult {
+        return try {
+            val idUser = auth.uid
+
+            if (idUser != null) {
+                var isDeleted = false
+
+                ref.child(idUser)
+                    .child("notes")
+                    .child(remoteNoteModel.id)
+                    .child("isDeleted")
+                    .setValue(true)
+                    .addOnSuccessListener {
+                        isDeleted = true
+                    }
+                    .await()
+
+                delay(500)
+
+                if(!isDeleted) {
+                    return ValidationResult(
+                        successful = false,
+                        errorMessage = "Problem with deleting note!"
+                    )
+                }
+
+                ValidationResult(
+                    successful = true,
+                    errorMessage = null
+                )
+            } else {
+                ValidationResult(
+                    successful = false,
+                    errorMessage = "Problem taking dataUser"
+                )
+            }
+        } catch (e: Exception) {
+            Log.d(TAG, "${e.message}")
+            ValidationResult(
+                successful = false,
+                errorMessage = "${e.message}"
+            )
+        }
     }
 }
