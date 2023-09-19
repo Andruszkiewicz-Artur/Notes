@@ -12,4 +12,10 @@ It is a notebook with an internal and external database to which the user has ac
 - Material3
 - Jetpack Compose 
 
-<p><b>App presentation: </b> <a href = "https://youtu.be/D0voXfabm6Q">link to video on youtube</a></p>
+# Presentation App
+<p align = "center">
+  <a href = "https://youtu.be/D0voXfabm6Q">Link to video</a>
+</p>
+<p align = "Center">
+  <img src="https://i.postimg.cc/8CNmt3f5/Presentation-Mobile-App-4.jpg" href="">
+</p>
