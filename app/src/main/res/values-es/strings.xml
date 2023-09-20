@@ -46,4 +46,5 @@
     <string name="ProblemWithLogOut">Problema al cerrar sesión</string>
     <string name="TitleEmpty">¡El título no puede estar vacío!</string>
     <string name="ContentEmpty">¡El contenido no puede estar vacío!</string>
+    <string name="YouDontHaveAnAccount">¿No tienes una cuenta?</string>
 </resources>

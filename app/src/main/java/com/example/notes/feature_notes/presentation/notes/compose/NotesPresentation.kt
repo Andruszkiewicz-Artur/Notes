@@ -6,7 +6,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.with
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -100,7 +100,7 @@ fun NotesPresentation(
                         transitionSpec = {
                             fadeIn(
                                 animationSpec = tween(500)
-                            ) with fadeOut(
+                            ) togetherWith fadeOut(
                                 animationSpec = tween(500)
                             )
                         },

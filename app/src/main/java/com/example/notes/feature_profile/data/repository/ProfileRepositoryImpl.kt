@@ -12,7 +12,7 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.tasks.await
 
-class ProfileRepositoryImpl(): ProfileRepository {
+class ProfileRepositoryImpl : ProfileRepository {
 
     companion object {
         private const val TAG = "ProfileRepositoryImpl"

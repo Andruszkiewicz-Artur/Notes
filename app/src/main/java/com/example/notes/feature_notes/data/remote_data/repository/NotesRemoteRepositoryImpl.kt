@@ -18,7 +18,7 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonDecoder
 
-class NotesRemoteRepositoryImpl(): NotesRemoteRepository {
+class NotesRemoteRepositoryImpl : NotesRemoteRepository {
 
     companion object {
         private val ref = Firebase.database.reference
@@ -41,10 +41,10 @@ class NotesRemoteRepositoryImpl(): NotesRemoteRepository {
                 val note = RemoteNoteModel(
                     id = data.key.toString(),
                     value = RemoteContentNoteModel(
-                        title = data.child("title").getValue().toString(),
-                        content = data.child("content").getValue().toString(),
-                        updateTime = data.child("updateTime").getValue().toString().toLong(),
-                        isDeleted = data.child("isDeleted").getValue().toString().toBoolean()
+                        title = data.child("title").value.toString(),
+                        content = data.child("content").value.toString(),
+                        updateTime = data.child("updateTime").value.toString().toLong(),
+                        isDeleted = data.child("isDeleted").value.toString().toBoolean()
                     )
                 )
                 remoteNoteList.add(

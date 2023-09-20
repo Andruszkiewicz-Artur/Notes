@@ -46,4 +46,5 @@
     <string name="ProblemWithLogOut">Problem z wylogowaniem</string>
     <string name="TitleEmpty">Tytuł nie może być pusty!</string>
     <string name="ContentEmpty">Treść nie może być pusta!</string>
+    <string name="YouDontHaveAnAccount">Nie masz konta?</string>
 </resources>
