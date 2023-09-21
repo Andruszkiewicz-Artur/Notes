@@ -13,8 +13,9 @@ class ValidatePassword {
             )
         }
 
-        val containsLetterAndDigits = password.any{ it.isLetterOrDigit() }
-        if (!containsLetterAndDigits) {
+        val containsLetter = password.any{ it.isLetter() }
+        val containsDigits = password.any{ it.isDigit() }
+        if (!(containsDigits && containsLetter)) {
             return ValidationResult(
                 successful = false,
                 errorMessage = R.string.DigitLetterPassword.toString()
