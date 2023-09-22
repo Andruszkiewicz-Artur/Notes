@@ -1,6 +1,7 @@
 package com.example.notes.feature_profile.presentation.changePassword
 
 import android.app.Application
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -22,7 +23,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChangePasswordViewModel @Inject constructor(
-    private val application: Application,
     private val profileUseCases: ProfileUseCases,
     private val validateUseCases: ValidateUseCases
 ): ViewModel() {
@@ -52,7 +52,7 @@ class ChangePasswordViewModel @Inject constructor(
             is ChangePasswordEvent.ResetPassword -> {
                 val user = auth.currentUser
 
-                if (isNoneErrors() && user != null) {
+                if (isNoneErrors(event.context) && user != null) {
                    viewModelScope.launch {
                        val changePasswordResult = profileUseCases.changePasswordUseCase.execute(
                            user = user,
@@ -62,7 +62,7 @@ class ChangePasswordViewModel @Inject constructor(
                        )
 
                        if(!changePasswordResult.successful) {
-                           Toast.makeText(application, decodeError(changePasswordResult.errorMessage, application), Toast.LENGTH_LONG).show()
+                           Toast.makeText(event.context, decodeError(changePasswordResult.errorMessage, event.context), Toast.LENGTH_LONG).show()
                        } else {
                            viewModelScope.launch {
                                _eventFlow.emit(UiEventChangePassword.ChangePassword)
@@ -79,7 +79,7 @@ class ChangePasswordViewModel @Inject constructor(
         }
     }
 
-    private fun isNoneErrors(): Boolean {
+    private fun isNoneErrors(context: Context): Boolean {
         val password = validateUseCases.validatePassword.execute(_state.value.newPassword)
         val rePassword = validateUseCases.validateRePassword.execute(_state.value.newPassword, _state.value.newRePassword)
 
@@ -90,8 +90,8 @@ class ChangePasswordViewModel @Inject constructor(
 
         if (hasError) {
             _state.value = state.value.copy(
-                errorNewPassword = decodeError(password.errorMessage, application),
-                errorNewRePassword = decodeError(password.errorMessage, application)
+                errorNewPassword = decodeError(password.errorMessage, context),
+                errorNewRePassword = decodeError(password.errorMessage, context)
             )
         }
 

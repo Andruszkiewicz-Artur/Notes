@@ -1,6 +1,7 @@
 package com.example.notes.feature_profile.presentation.login
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.State
@@ -26,7 +27,6 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val validateUseCases: ValidateUseCases,
-    private val application: Application,
     private val profileUseCases: ProfileUseCases
 ): ViewModel() {
 
@@ -49,7 +49,7 @@ class LoginViewModel @Inject constructor(
                 ) }
             }
             is LoginEvent.ClickLogin -> {
-                if (isNoneErrors()) {
+                if (isNoneErrors(event.context)) {
                     viewModelScope.launch {
                         val loginResult = profileUseCases.logInUseCase.execute(
                             email = _state.value.email,
@@ -57,7 +57,7 @@ class LoginViewModel @Inject constructor(
                         )
 
                         if(!loginResult.successful) {
-                            Toast.makeText(application, decodeError(loginResult.errorMessage, application), Toast.LENGTH_LONG).show()
+                            Toast.makeText(event.context, decodeError(loginResult.errorMessage, event.context), Toast.LENGTH_LONG).show()
                         } else {
                            Static.profileSetting = ProfileModel()
                             viewModelScope.launch {
@@ -75,7 +75,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun isNoneErrors(): Boolean {
+    private fun isNoneErrors(context: Context): Boolean {
         val email = validateUseCases.validateEmail.execute(_state.value.email)
         val password = validateUseCases.validatePassword.execute(_state.value.password)
 
@@ -86,8 +86,8 @@ class LoginViewModel @Inject constructor(
 
         if (hasError) {
             _state.value = state.value.copy(
-                emailErrorMessage = decodeError(email.errorMessage, application),
-                passwordErrorMessage = decodeError(password.errorMessage, application),
+                emailErrorMessage = decodeError(email.errorMessage, context),
+                passwordErrorMessage = decodeError(password.errorMessage, context),
             )
         }
 

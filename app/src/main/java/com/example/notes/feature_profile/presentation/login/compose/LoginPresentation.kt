@@ -48,6 +48,7 @@ fun LoginPresentation(
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val state = viewModel.state.collectAsState().value
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -146,7 +147,7 @@ fun LoginPresentation(
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
-                onClick = { viewModel.onEvent(ClickLogin(navController)) },
+                onClick = { viewModel.onEvent(ClickLogin(context)) },
                 modifier = Modifier
                     .fillMaxWidth()
             ) {

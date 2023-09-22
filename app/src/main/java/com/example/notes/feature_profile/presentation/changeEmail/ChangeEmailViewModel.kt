@@ -23,7 +23,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChangeEmailViewModel @Inject constructor(
-    private val application: Application,
     private val profileUseCases: ProfileUseCases,
     private val validateUseCases: ValidateUseCases
 ): ViewModel() {
@@ -48,7 +47,7 @@ class ChangeEmailViewModel @Inject constructor(
             is ChangeEmailEvent.ChangeEmail -> {
                 val user = auth.currentUser
 
-                if (isNoneError() && user != null) {
+                if (isNoneError(event.context) && user != null) {
                     viewModelScope.launch {
                         val changeEmailResult = profileUseCases.changeEmailUseCase.execute(
                             user = user,
@@ -58,7 +57,7 @@ class ChangeEmailViewModel @Inject constructor(
                         )
 
                         if(!changeEmailResult.successful) {
-                            Toast.makeText(application, decodeError(changeEmailResult.errorMessage, application), Toast.LENGTH_LONG).show()
+                            Toast.makeText(event.context, decodeError(changeEmailResult.errorMessage, event.context), Toast.LENGTH_LONG).show()
                         } else {
                             viewModelScope.launch {
                                 _eventFlow.emit(UiEventChangeEmail.ChangeEmail)
@@ -75,7 +74,7 @@ class ChangeEmailViewModel @Inject constructor(
         }
     }
 
-    private fun isNoneError(): Boolean {
+    private fun isNoneError(context: Context): Boolean {
         val password = validateUseCases.validatePassword.execute(_state.value.password)
         val email = validateUseCases.validateEmail.execute(_state.value.email)
 
@@ -83,8 +82,8 @@ class ChangeEmailViewModel @Inject constructor(
 
         if (hasError) {
             _state.value = state.value.copy(
-                errorPassword = decodeError(password.errorMessage, application),
-                errorEmail = decodeError(email.errorMessage, application)
+                errorPassword = decodeError(password.errorMessage, context),
+                errorEmail = decodeError(email.errorMessage, context)
             )
         }
 

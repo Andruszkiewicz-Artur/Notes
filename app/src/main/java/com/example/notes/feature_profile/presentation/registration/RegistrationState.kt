@@ -9,5 +9,6 @@ data class RegistrationState(
     val errorRePassword: String? = null,
     val isTerms: Boolean = false,
     val errorTerms: String? = null,
-    val isPresentedPassword: Boolean = false
+    val isPresentedPassword: Boolean = false,
+    val isRegistered: Boolean = false
 )

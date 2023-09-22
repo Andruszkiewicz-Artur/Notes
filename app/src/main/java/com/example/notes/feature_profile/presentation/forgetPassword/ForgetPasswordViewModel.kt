@@ -1,6 +1,7 @@
 package com.example.notes.feature_profile.presentation.forgetPassword
 
 import android.app.Application
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -22,7 +23,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ForgetPasswordViewModel @Inject constructor(
-    private val application: Application,
     private val validateUseCases: ValidateUseCases,
     private val profileUseCases: ProfileUseCases
 ): ViewModel() {
@@ -40,14 +40,14 @@ class ForgetPasswordViewModel @Inject constructor(
                 ) }
             }
             is ForgetPasswordEvent.OnClickForgetPassword -> {
-                if(isNoneError()) {
+                if(isNoneError(event.context)) {
                     viewModelScope.launch {
                         val loginResult = profileUseCases.forgetPasswordUseCase.execute(
                             email = _state.value.email
                         )
 
                         if(!loginResult.successful) {
-                            Toast.makeText(application, decodeError(loginResult.errorMessage, application), Toast.LENGTH_LONG).show()
+                            Toast.makeText(event.context, decodeError(loginResult.errorMessage, event.context), Toast.LENGTH_LONG).show()
                         } else {
                             viewModelScope.launch {
                                 _eventFlow.emit(UiEventForgetPassword.ClickForgetPassword)
@@ -59,12 +59,12 @@ class ForgetPasswordViewModel @Inject constructor(
         }
     }
 
-    fun isNoneError(): Boolean {
+    fun isNoneError(context: Context): Boolean {
         val email = validateUseCases.validateEmail.execute(_state.value.email)
 
         if (!email.successful) {
             _state.value = state.value.copy(
-                errorEmail = decodeError(email.errorMessage, application)
+                errorEmail = decodeError(email.errorMessage, context)
             )
         }
 

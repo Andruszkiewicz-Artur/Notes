@@ -21,6 +21,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -45,6 +46,7 @@ fun ChangePasswordPresentation(
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val state = viewModel.state.collectAsState().value
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -154,7 +156,7 @@ fun ChangePasswordPresentation(
                 Spacer(modifier = Modifier.height(32.dp))
 
                 Button(
-                    onClick = { viewModel.onEvent(ChangePasswordEvent.ResetPassword) },
+                    onClick = { viewModel.onEvent(ChangePasswordEvent.ResetPassword(context)) },
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {

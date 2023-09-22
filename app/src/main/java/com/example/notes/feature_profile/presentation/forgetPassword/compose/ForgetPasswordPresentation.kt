@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -35,6 +36,7 @@ fun ForgetPasswordPresentation(
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val state = viewModel.state.collectAsState().value
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -83,7 +85,7 @@ fun ForgetPasswordPresentation(
             Spacer(modifier = Modifier.height(32.dp))
 
             Button(
-                onClick = { viewModel.onEvent(ForgetPasswordEvent.OnClickForgetPassword) },
+                onClick = { viewModel.onEvent(ForgetPasswordEvent.OnClickForgetPassword(context)) },
                 modifier = Modifier
                     .fillMaxWidth()
             ) {

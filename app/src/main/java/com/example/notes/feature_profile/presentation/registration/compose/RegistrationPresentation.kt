@@ -17,6 +17,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -47,15 +48,10 @@ fun RegistrationPresentation(
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val state = viewModel.state.collectAsState().value
+    val context = LocalContext.current
 
-    LaunchedEffect(key1 = true) {
-        viewModel.eventFlow.collectLatest { event ->
-            when (event) {
-                is UiEventRegistration.Register -> {
-                    navController.popBackStack()
-                }
-            }
-        }
+    LaunchedEffect(key1 = state.isRegistered) {
+        if (state.isRegistered) navController.popBackStack()
     }
 
     Box(
@@ -157,7 +153,7 @@ fun RegistrationPresentation(
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
-                onClick = { viewModel.onEvent(RegistrationEvent.OnClickRegistration) },
+                onClick = { viewModel.onEvent(RegistrationEvent.OnClickRegistration(context)) },
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
