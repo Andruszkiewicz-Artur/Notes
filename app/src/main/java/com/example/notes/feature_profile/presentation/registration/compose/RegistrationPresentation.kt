@@ -32,9 +32,6 @@ import com.example.notes.core.compose.checkBox.CheckBox
 import com.example.notes.core.util.graph.Screen
 import com.example.notes.feature_profile.presentation.registration.RegistrationEvent
 import com.example.notes.feature_profile.presentation.registration.RegistrationViewModel
-import com.example.notes.feature_profile.presentation.registration.UiEventRegistration
-import com.example.notes.feature_profile.presentation.unit.presentation.ValidateText
-import kotlinx.coroutines.flow.collectLatest
 import com.example.notes.R
 import com.example.notes.feature_profile.presentation.login.LoginEvent
 import com.example.notes.feature_profile.unit.comp.TextField

@@ -34,8 +34,6 @@ import com.example.notes.core.util.graph.Screen
 import com.example.notes.feature_profile.presentation.login.LoginEvent
 import com.example.notes.feature_profile.presentation.login.LoginEvent.ClickLogin
 import com.example.notes.feature_profile.presentation.login.LoginViewModel
-import com.example.notes.feature_profile.presentation.login.UiEventLogin
-import kotlinx.coroutines.flow.collectLatest
 import com.example.notes.R
 import com.example.notes.feature_profile.unit.comp.TextField
 
@@ -50,14 +48,8 @@ fun LoginPresentation(
     val state = viewModel.state.collectAsState().value
     val context = LocalContext.current
 
-    LaunchedEffect(key1 = true) {
-        viewModel.eventFlow.collectLatest { event ->
-            when (event) {
-                is UiEventLogin.LogIn -> {
-                    navController.popBackStack()
-                }
-            }
-        }
+    LaunchedEffect(key1 = state.isLogIn) {
+        if (state.isLogIn) navController.popBackStack()
     }
 
     Box(

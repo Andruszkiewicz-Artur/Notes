@@ -5,5 +5,6 @@ data class LoginState(
     val emailErrorMessage: String? = null,
     val password: String = "",
     val passwordErrorMessage: String? = null,
-    val isPasswordPresented: Boolean = false
+    val isPasswordPresented: Boolean = false,
+    val isLogIn: Boolean = false
 )

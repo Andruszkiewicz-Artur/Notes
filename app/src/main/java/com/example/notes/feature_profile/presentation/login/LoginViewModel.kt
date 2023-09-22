@@ -33,9 +33,6 @@ class LoginViewModel @Inject constructor(
     private val _state = MutableStateFlow(LoginState())
     val state = _state.asStateFlow()
 
-    private val _eventFlow = MutableSharedFlow<UiEventLogin>()
-    val eventFlow = _eventFlow.asSharedFlow()
-
     fun onEvent(event: LoginEvent) {
         when (event) {
             is LoginEvent.EnteredLogin -> {
@@ -59,10 +56,10 @@ class LoginViewModel @Inject constructor(
                         if(!loginResult.successful) {
                             Toast.makeText(event.context, decodeError(loginResult.errorMessage, event.context), Toast.LENGTH_LONG).show()
                         } else {
-                           Static.profileSetting = ProfileModel()
-                            viewModelScope.launch {
-                                _eventFlow.emit(UiEventLogin.LogIn)
-                            }
+                            Static.profileSetting = ProfileModel()
+                            _state.update { it.copy(
+                                isLogIn = true
+                            ) }
                         }
                     }
                 }

@@ -41,9 +41,6 @@ class RegistrationViewModel @Inject constructor(
     private val _state = MutableStateFlow(RegistrationState())
     val state = _state.asStateFlow()
 
-    private val _eventFlow = MutableSharedFlow<UiEventRegistration>()
-    val eventFlow = _eventFlow.asSharedFlow()
-
     fun onEvent(event: RegistrationEvent) {
         when (event) {
             is RegistrationEvent.EnteredEmail -> {

@@ -23,8 +23,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.notes.feature_profile.presentation.forgetPassword.ForgetPasswordEvent
 import com.example.notes.feature_profile.presentation.forgetPassword.ForgetPasswordViewModel
-import com.example.notes.feature_profile.presentation.forgetPassword.UiEventForgetPassword
-import kotlinx.coroutines.flow.collectLatest
 import com.example.notes.R
 import com.example.notes.feature_profile.unit.comp.TextField
 
@@ -38,14 +36,8 @@ fun ForgetPasswordPresentation(
     val state = viewModel.state.collectAsState().value
     val context = LocalContext.current
 
-    LaunchedEffect(key1 = true) {
-        viewModel.eventFlow.collectLatest { event ->
-            when (event) {
-                is UiEventForgetPassword.ClickForgetPassword -> {
-                    navController.popBackStack()
-                }
-            }
-        }
+    LaunchedEffect(key1 = state.isSendMessage) {
+        if (state.isSendMessage) navController.popBackStack()
     }
 
     Box(

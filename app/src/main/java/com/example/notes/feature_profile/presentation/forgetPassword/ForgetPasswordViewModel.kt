@@ -1,21 +1,14 @@
 package com.example.notes.feature_profile.presentation.forgetPassword
 
-import android.app.Application
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.notes.R
-import com.example.notes.core.compose.textField.TextFieldState
 import com.example.notes.feature_profile.domain.unit.decodeError
 import com.example.notes.feature_profile.domain.use_case.profileUseCases.ProfileUseCases
 import com.example.notes.feature_profile.domain.use_case.validationUseCases.ValidateUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -28,9 +21,6 @@ class ForgetPasswordViewModel @Inject constructor(
 ): ViewModel() {
     private val _state = MutableStateFlow(ForgetPasswordState())
     val state = _state.asStateFlow()
-
-    private val _eventFlow = MutableSharedFlow<UiEventForgetPassword>()
-    val eventFlow = _eventFlow.asSharedFlow()
 
     fun onEvent(event: ForgetPasswordEvent) {
         when (event) {
@@ -50,7 +40,9 @@ class ForgetPasswordViewModel @Inject constructor(
                             Toast.makeText(event.context, decodeError(loginResult.errorMessage, event.context), Toast.LENGTH_LONG).show()
                         } else {
                             viewModelScope.launch {
-                                _eventFlow.emit(UiEventForgetPassword.ClickForgetPassword)
+                                _state.update { it.copy(
+                                    isSendMessage = true
+                                ) }
                             }
                         }
                     }
