@@ -113,15 +113,22 @@ class ProfileRepositoryImpl : ProfileRepository {
     }
 
     override suspend fun ChangePassword(
-        user: FirebaseUser,
-        email: String,
         oldPassword: String,
         newPassword: String
     ): ValidationResult {
         return try {
+            val user = auth.currentUser
+            val email = user?.email
+            if (user == null || email == null) {
+                ValidationResult(
+                    successful = false,
+                    errorMessage = R.string.ProblemWithTakingData.toString()
+                )
+            }
+
             var errorMessage: String? = null
             val credential = EmailAuthProvider
-                .getCredential(email, oldPassword)
+                .getCredential(email!!, oldPassword)
 
             user.reauthenticate(credential)
                 .addOnCompleteListener { task ->
@@ -152,15 +159,22 @@ class ProfileRepositoryImpl : ProfileRepository {
     }
 
     override suspend fun ChangeEmail(
-        user: FirebaseUser,
-        oldEmail: String,
         newEmail: String,
         password: String
     ): ValidationResult {
         return try {
+            val user = auth.currentUser
+            val oldEmail = user?.email
+            if (user == null || oldEmail == null) {
+                ValidationResult(
+                    successful = false,
+                    errorMessage = R.string.ProblemWithTakingData.toString()
+                )
+            }
+
             var errorMessage: String? = null
             val credential = EmailAuthProvider
-                .getCredential(oldEmail, password)
+                .getCredential(oldEmail!!, password)
 
             user.reauthenticate(credential)
                 .addOnCompleteListener { task ->

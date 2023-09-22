@@ -8,14 +8,10 @@ class ChangeEmailUseCase(
     private val repository: ProfileRepository
 ) {
     suspend fun execute(
-        user: FirebaseUser,
-        oldEmail: String,
         newEmail: String,
         password: String
     ): ValidationResult {
         return repository.ChangeEmail(
-            user = user,
-            oldEmail = oldEmail,
             newEmail = newEmail,
             password = password
         )

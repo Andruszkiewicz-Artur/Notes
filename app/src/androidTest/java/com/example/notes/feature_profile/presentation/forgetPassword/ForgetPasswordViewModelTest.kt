@@ -66,7 +66,7 @@ class ForgetPasswordViewModelTest {
         viewModel.onEvent(ForgetPasswordEvent.OnClickForgetPassword(ApplicationProvider.getApplicationContext()))
 
         dispatcher.scheduler.advanceUntilIdle()
-        
+
         assertThat(viewModel.state.value.isSendMessage).isTrue()
     }
 

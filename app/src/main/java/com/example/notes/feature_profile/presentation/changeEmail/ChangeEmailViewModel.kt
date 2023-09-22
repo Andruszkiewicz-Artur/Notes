@@ -29,9 +29,6 @@ class ChangeEmailViewModel @Inject constructor(
     private val _state = MutableStateFlow(ChangeEmailState())
     val state = _state.asStateFlow()
 
-    private val _eventFlow = MutableSharedFlow<UiEventChangeEmail>()
-    val eventFlow = _eventFlow
-
     fun onEvent(event: ChangeEmailEvent) {
         when (event) {
             is ChangeEmailEvent.EnteredEmail -> {
@@ -45,13 +42,9 @@ class ChangeEmailViewModel @Inject constructor(
                 ) }
             }
             is ChangeEmailEvent.ChangeEmail -> {
-                val user = auth.currentUser
-
-                if (isNoneError(event.context) && user != null) {
+                if (isNoneError(event.context)) {
                     viewModelScope.launch {
                         val changeEmailResult = profileUseCases.changeEmailUseCase.execute(
-                            user = user,
-                            oldEmail = user.email ?: "",
                             newEmail = _state.value.email,
                             password = _state.value.password
                         )
@@ -59,9 +52,9 @@ class ChangeEmailViewModel @Inject constructor(
                         if(!changeEmailResult.successful) {
                             Toast.makeText(event.context, decodeError(changeEmailResult.errorMessage, event.context), Toast.LENGTH_LONG).show()
                         } else {
-                            viewModelScope.launch {
-                                _eventFlow.emit(UiEventChangeEmail.ChangeEmail)
-                            }
+                            _state.update { it.copy(
+                                isEmailChanged = true
+                            ) }
                         }
                     }
                 }

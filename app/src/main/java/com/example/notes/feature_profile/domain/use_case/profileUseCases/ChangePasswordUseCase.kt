@@ -9,14 +9,10 @@ class ChangePasswordUseCase(
 ) {
 
     suspend fun execute(
-        user: FirebaseUser,
-        email: String,
         oldPassword: String,
         newPassword: String
     ): ValidationResult {
         return repository.ChangePassword(
-            user = user,
-            email = email,
             oldPassword = oldPassword,
             newPassword = newPassword
         )

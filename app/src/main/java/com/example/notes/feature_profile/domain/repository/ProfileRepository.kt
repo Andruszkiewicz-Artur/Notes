@@ -13,7 +13,7 @@ interface ProfileRepository {
 
     suspend fun ForgeinPassword(email: String): ValidationResult
 
-    suspend fun ChangePassword(user: FirebaseUser, email: String, oldPassword: String, newPassword: String): ValidationResult
+    suspend fun ChangePassword(oldPassword: String, newPassword: String): ValidationResult
 
-    suspend fun ChangeEmail(user: FirebaseUser,oldEmail: String, newEmail: String, password: String): ValidationResult
+    suspend fun ChangeEmail(newEmail: String, password: String): ValidationResult
 }

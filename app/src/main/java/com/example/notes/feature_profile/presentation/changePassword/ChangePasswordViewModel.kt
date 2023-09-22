@@ -29,9 +29,6 @@ class ChangePasswordViewModel @Inject constructor(
     private val _state = MutableStateFlow(ChangePasswordState())
     val state = _state.asStateFlow()
 
-    private val _eventFlow = MutableSharedFlow<UiEventChangePassword>()
-    val eventFlow = _eventFlow
-
     fun onEvent(event: ChangePasswordEvent) {
         when (event) {
             is ChangePasswordEvent.EnteredOldPassword -> {
@@ -50,13 +47,9 @@ class ChangePasswordViewModel @Inject constructor(
                 ) }
             }
             is ChangePasswordEvent.ResetPassword -> {
-                val user = auth.currentUser
-
-                if (isNoneErrors(event.context) && user != null) {
+                if (isNoneErrors(event.context)) {
                    viewModelScope.launch {
                        val changePasswordResult = profileUseCases.changePasswordUseCase.execute(
-                           user = user,
-                           email = user.email ?: "",
                            oldPassword = _state.value.oldPassword,
                            newPassword = _state.value.newPassword
                        )
@@ -64,9 +57,9 @@ class ChangePasswordViewModel @Inject constructor(
                        if(!changePasswordResult.successful) {
                            Toast.makeText(event.context, decodeError(changePasswordResult.errorMessage, event.context), Toast.LENGTH_LONG).show()
                        } else {
-                           viewModelScope.launch {
-                               _eventFlow.emit(UiEventChangePassword.ChangePassword)
-                           }
+                           _state.update { it.copy(
+                               isPasswordChanged = true
+                           ) }
                        }
                    }
                 }
@@ -91,7 +84,7 @@ class ChangePasswordViewModel @Inject constructor(
         if (hasError) {
             _state.value = state.value.copy(
                 errorNewPassword = decodeError(password.errorMessage, context),
-                errorNewRePassword = decodeError(password.errorMessage, context)
+                errorNewRePassword = decodeError(rePassword.errorMessage, context)
             )
         }
 

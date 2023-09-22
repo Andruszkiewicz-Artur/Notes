@@ -46,4 +46,5 @@
     <string name="TitleEmpty">Title can`t be empty!</string>
     <string name="ContentEmpty">Content can`t be empty!</string>
     <string name="YouDontHaveAnAccount">You don`t have an account?</string>
+    <string name="ProblemWithTakingData">Problem with taking data</string>
 </resources>

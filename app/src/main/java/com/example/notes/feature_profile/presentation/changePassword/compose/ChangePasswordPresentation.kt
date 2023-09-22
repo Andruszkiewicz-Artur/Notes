@@ -31,8 +31,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.notes.feature_profile.presentation.changePassword.ChangePasswordEvent
 import com.example.notes.feature_profile.presentation.changePassword.ChangePasswordViewModel
-import com.example.notes.feature_profile.presentation.changePassword.UiEventChangePassword
-import kotlinx.coroutines.flow.collectLatest
 import com.example.notes.R
 import com.example.notes.feature_profile.unit.comp.TextField
 
@@ -48,14 +46,8 @@ fun ChangePasswordPresentation(
     val state = viewModel.state.collectAsState().value
     val context = LocalContext.current
 
-    LaunchedEffect(key1 = true) {
-        viewModel.eventFlow.collectLatest { event ->
-            when (event) {
-                is UiEventChangePassword.ChangePassword -> {
-                    navController.popBackStack()
-                }
-            }
-        }
+    LaunchedEffect(key1 = state.isPasswordChanged) {
+        if (state.isPasswordChanged) navController.popBackStack()
     }
     
     Scaffold(

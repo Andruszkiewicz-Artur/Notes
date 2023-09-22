@@ -30,15 +30,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.notes.core.compose.button.StandardButton
 import com.example.notes.feature_profile.presentation.changeEmail.ChangeEmailEvent
 import com.example.notes.feature_profile.presentation.changeEmail.ChangeEmailViewModel
-import com.example.notes.feature_profile.presentation.changeEmail.UiEventChangeEmail
-import com.example.notes.feature_profile.presentation.changePassword.UiEventChangePassword
-import com.example.notes.feature_profile.presentation.unit.presentation.ValidateText
-import kotlinx.coroutines.flow.collectLatest
 import com.example.notes.R
-import com.example.notes.feature_profile.presentation.login.LoginEvent
 import com.example.notes.feature_profile.unit.comp.TextField
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -53,14 +47,8 @@ fun ChangeEmailPresentation(
     val state = viewModel.state.collectAsState().value
     val context = LocalContext.current
 
-    LaunchedEffect(key1 = true) {
-        viewModel.eventFlow.collectLatest { event ->
-            when (event) {
-                is UiEventChangeEmail.ChangeEmail -> {
-                    navController.popBackStack()
-                }
-            }
-        }
+    LaunchedEffect(key1 = state.isEmailChanged) {
+        if (state.isEmailChanged) navController.popBackStack()
     }
 
     Scaffold(

@@ -5,5 +5,6 @@ data class ChangeEmailState(
     val email: String = "",
     val errorEmail: String? = null,
     val errorPassword: String? = null,
-    val isPresentedPassword: Boolean = false
+    val isPresentedPassword: Boolean = false,
+    val isEmailChanged: Boolean = false
 )
