@@ -118,12 +118,12 @@ class NotesRemoteRepositoryImpl : NotesRemoteRepository {
             val value = result.value to Boolean
             val isSynchronized: Boolean? = value.first as Boolean?
 
-            if(isSynchronized != null) {
-                return Resource.Success(
+            return if(isSynchronized != null) {
+                Resource.Success(
                     data = isSynchronized
                 )
             } else {
-                return Resource.Error(
+                Resource.Error(
                     message = "Unknown Error"
                 )
             }

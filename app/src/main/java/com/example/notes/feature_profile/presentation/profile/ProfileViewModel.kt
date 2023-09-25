@@ -3,8 +3,6 @@ package com.example.notes.feature_profile.presentation.profile
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.core.text.isDigitsOnly
-import androidx.core.util.rangeTo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.notes.core.value.Static
@@ -12,9 +10,8 @@ import com.example.notes.feature_notes.domain.unit.Resource
 import com.example.notes.feature_notes.domain.use_case.remote.RemoteUseCases
 import com.example.notes.feature_notes.presentation.auth
 import com.example.notes.feature_profile.domain.use_case.profileUseCases.ProfileUseCases
+import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -55,15 +52,12 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun initFunc() {
-        val currentUser = auth.currentUser
-        Log.d("auth", currentUser.toString())
-        if(currentUser != null) {
+    fun initFunc(currentUserEmail: String? =  auth.currentUser?.email) {
+
+        if(currentUserEmail != null) {
             if (Static.profileSetting?.isSynchronize == null) {
                 viewModelScope.launch {
-                    val result = remoteUseCases.checkIsSynchronize.execute()
-
-                    when (result) {
+                    when (val result = remoteUseCases.checkIsSynchronize.execute()) {
                         is Resource.Error -> {
                             Log.d("Error isSynchronize", result.message.toString())
                         }
@@ -77,13 +71,11 @@ class ProfileViewModel @Inject constructor(
                 }
             }
 
-            currentUser.let { user ->
-                _state.value = state.value.copy(
-                    email = user.email ?: "",
-                    isUser = true,
-                    isSynchronized = Static.profileSetting?.isSynchronize ?: false
-                )
-            }
+            _state.value = state.value.copy(
+                email = currentUserEmail,
+                isUser = true,
+                isSynchronized = Static.profileSetting?.isSynchronize ?: false
+            )
         }
     }
 }
