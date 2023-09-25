@@ -1,20 +1,13 @@
 package com.example.notes.feature_profile.presentation.changePassword
 
-import android.app.Application
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.notes.R
-import com.example.notes.core.compose.textField.TextFieldState
-import com.example.notes.feature_notes.presentation.auth
 import com.example.notes.feature_profile.domain.unit.decodeError
 import com.example.notes.feature_profile.domain.use_case.profileUseCases.ProfileUseCases
 import com.example.notes.feature_profile.domain.use_case.validationUseCases.ValidateUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -38,15 +39,11 @@ fun AddEditPresentation(
 ) {
     val context = LocalContext.current
 
-    val titleState = viewModel.title.value
-    val contentState = viewModel.content.value
+    val state = viewModel.state.collectAsState().value
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when(event) {
-                is UiEvent.SaveNote -> {
-                    navHostController.navigateUp()
-                }
                 is UiEvent.ShowSnackbar -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
                 }
@@ -56,7 +53,7 @@ fun AddEditPresentation(
 
     Scaffold(
         floatingActionButton = {
-            if (titleState.text.isNotBlank() && contentState.text.isNotBlank()) {
+            if (state.title.isNotBlank() && state.content.isNotBlank()) {
                 ExtendedFloatingActionButton(
                     onClick = {
                         viewModel.onEvent(AddEditNoteEvent.SaveNote)
@@ -79,15 +76,11 @@ fun AddEditPresentation(
                 .padding(16.dp)
         ) {
             TextField(
-                text = titleState.text,
-                placeholder = stringResource(id = titleState.placeholder),
+                text = state.title,
+                placeholder = stringResource(id = R.string.Title),
                 onValueChange = {
                     viewModel.onEvent(AddEditNoteEvent.EnteredTitle(it))
                 },
-                onFocusChange = {
-                    viewModel.onEvent(AddEditNoteEvent.ChangeTitleFocus(it))
-                },
-                isPlaceholder = titleState.isPlaceholder,
                 singleLine = true,
                 textStyle = MaterialTheme.typography.displayMedium
             )
@@ -95,15 +88,11 @@ fun AddEditPresentation(
             Spacer(modifier = Modifier.height(16.dp))
 
             TextField(
-                text = contentState.text,
-                placeholder = stringResource(id = contentState.placeholder),
+                text = state.content,
+                placeholder = stringResource(id = R.string.AddContent),
                 onValueChange = {
                     viewModel.onEvent(AddEditNoteEvent.EnteredContent(it))
                 },
-                onFocusChange = {
-                    viewModel.onEvent(AddEditNoteEvent.ChangeContentFocus(it))
-                },
-                isPlaceholder = contentState.isPlaceholder,
                 textStyle = MaterialTheme.typography.headlineSmall
             )
         }
