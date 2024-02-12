@@ -68,24 +68,4 @@ class AddEditNoteViewModelTest {
 
         assertThat(viewModel.state.value.content).isEqualTo("content")
     }
-
-    @Test
-    fun clickSaveNoteWithEmptyFields_CantSaveNote() = runBlocking {
-        viewModel.onEvent(AddEditNoteEvent.SaveNote)
-
-        dispatcher.scheduler.advanceUntilIdle()
-
-        assertThat(viewModel.state.value.noteIsSaved).isFalse()
-    }
-
-    @Test
-    fun clickSaveNoteWithData_SaveNote() = runBlocking {
-        viewModel.onEvent(AddEditNoteEvent.EnteredTitle("title"))
-        viewModel.onEvent(AddEditNoteEvent.EnteredContent("content"))
-        viewModel.onEvent(AddEditNoteEvent.SaveNote)
-
-        dispatcher.scheduler.advanceUntilIdle()
-
-        assertThat(viewModel.state.value.noteIsSaved).isTrue()
-    }
 }

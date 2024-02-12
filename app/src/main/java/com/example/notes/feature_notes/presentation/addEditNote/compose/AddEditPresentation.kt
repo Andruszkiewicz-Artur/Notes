@@ -30,6 +30,7 @@ import com.example.notes.feature_notes.presentation.addEditNote.UiEvent
 import com.example.notes.notes_future.present.addEditNote.compose.TextField
 import kotlinx.coroutines.flow.collectLatest
 import com.example.notes.R
+import com.example.notes.feature_notes.presentation.addEditNote.AddEditNoteUiEvent
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -37,15 +38,13 @@ fun AddEditPresentation(
     navHostController: NavHostController,
     viewModel: AddEditNoteViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
-
     val state = viewModel.state.collectAsState().value
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when(event) {
-                is UiEvent.ShowSnackbar -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
+                AddEditNoteUiEvent.SaveNote -> {
+                    navHostController.popBackStack()
                 }
             }
         }

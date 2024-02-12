@@ -12,6 +12,7 @@ import com.example.notes.core.util.extensions.toast
 import com.example.notes.core.value.Static
 import com.example.notes.feature_notes.data.mapper.toNote
 import com.example.notes.feature_notes.data.mapper.toRemoteNote
+import com.example.notes.feature_notes.domain.model.GridCellEnum
 import com.example.notes.feature_notes.domain.model.RemoteNoteModel
 import com.example.notes.feature_notes.domain.model.StatusNoteEnum
 import com.example.notes.feature_notes.domain.unit.Resource
@@ -113,6 +114,15 @@ class NotesViewModel @Inject constructor(
                         notesUseCases.insertNoteUseCase.invoke(newNote)
                     }
                 }
+            }
+            NotesEvent.ChangeTypeOfPresentingList -> {
+                val newTypeOfSorting = when (_state.value.typeOfPresentingList) {
+                    GridCellEnum.Grid -> GridCellEnum.Flat
+                    GridCellEnum.Flat -> GridCellEnum.Grid
+                }
+                _state.update { it.copy(
+                    typeOfPresentingList = newTypeOfSorting
+                ) }
             }
         }
     }

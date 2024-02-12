@@ -26,7 +26,7 @@ class AddEditNoteViewModel @Inject constructor(
     private val _state = MutableStateFlow(AddEditNoteState())
     val state = _state.asStateFlow()
 
-    private val _eventFlow = MutableSharedFlow<UiEvent>()
+    private val _eventFlow = MutableSharedFlow<AddEditNoteUiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
     var currentId: Int? = null
@@ -79,9 +79,7 @@ class AddEditNoteViewModel @Inject constructor(
                         notesUseCases.insertNoteUseCase.invoke(note)
                         if (Static.profileSetting?.isSynchronize == true) remoteUseCases.uploadNoteUseCase.execute(note)
 
-                        _state.update { it.copy(
-                            noteIsSaved = true
-                        ) }
+                        _eventFlow.emit(AddEditNoteUiEvent.SaveNote)
                     }
                 }
             }
