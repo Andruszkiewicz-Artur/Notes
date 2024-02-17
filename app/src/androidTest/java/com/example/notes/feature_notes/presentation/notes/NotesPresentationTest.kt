@@ -61,5 +61,11 @@ class NotesPresentationTest {
         composeRule.onNodeWithTag(TestTags.FlatCell_TAG).assertIsDisplayed()
         composeRule.onNodeWithTag(TestTags.GridCell_TAG).assertIsNotDisplayed()
     }
-
+    
+    @Test
+    fun isBottomBar_isPresented() {
+        composeRule.onNodeWithContentDescription("Add/Edit note").assertIsDisplayed()
+        composeRule.onAllNodesWithContentDescription("Navigation Icon")[0].isDisplayed()
+        composeRule.onAllNodesWithContentDescription("Navigation Icon")[1].isDisplayed()
+    }
 }
