@@ -20,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -31,6 +32,7 @@ import com.example.notes.notes_future.present.addEditNote.compose.TextField
 import kotlinx.coroutines.flow.collectLatest
 import com.example.notes.R
 import com.example.notes.feature_notes.presentation.addEditNote.AddEditNoteUiEvent
+import com.example.notes.feature_notes.utils.test.TestTags
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -56,7 +58,9 @@ fun AddEditPresentation(
                 ExtendedFloatingActionButton(
                     onClick = {
                         viewModel.onEvent(AddEditNoteEvent.SaveNote)
-                    }
+                    },
+                    modifier = Modifier
+                        .testTag(TestTags.SaveNoteButton_TAG)
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Done,
@@ -81,7 +85,9 @@ fun AddEditPresentation(
                     viewModel.onEvent(AddEditNoteEvent.EnteredTitle(it))
                 },
                 singleLine = true,
-                textStyle = MaterialTheme.typography.displayMedium
+                textStyle = MaterialTheme.typography.displayMedium,
+                modifier = Modifier
+                    .testTag(TestTags.TitleTextField_TAG)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -92,7 +98,9 @@ fun AddEditPresentation(
                 onValueChange = {
                     viewModel.onEvent(AddEditNoteEvent.EnteredContent(it))
                 },
-                textStyle = MaterialTheme.typography.headlineSmall
+                textStyle = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier
+                    .testTag(TestTags.ContentTextField_TAG)
             )
         }
     }

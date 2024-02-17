@@ -31,7 +31,8 @@ fun TextField(
     onValueChange: (String) -> Unit,
     singleLine: Boolean = false,
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    modifier: Modifier = Modifier
 ) {
     androidx.compose.material3.TextField(
         value = text,
@@ -56,7 +57,7 @@ fun TextField(
                 style = textStyle
             )
         },
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
     )
 }
